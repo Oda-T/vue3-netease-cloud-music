@@ -6,8 +6,8 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, getCurrentInstance, ref, onMounted, onBeforeMount, reactive, toRef, toRefs, computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { defineComponent, getCurrentInstance, ref, onMounted, onBeforeMount, reactive, toRef, toRefs, computed, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 
 export default defineComponent({
   name: 'home',
@@ -29,6 +29,21 @@ export default defineComponent({
     const list = reactive({
       _li: 123
     })
+
+    const state2 = reactive({
+      list: []
+    })
+
+    console.log(useRoute())
+    console.log(useRouter())
+
+    watch(
+      () => state2.list,
+      (val, oldVal) => {
+        console.log(val)
+        console.log(oldVal)
+      }
+    )
 
     onMounted(() => {
       list._li++

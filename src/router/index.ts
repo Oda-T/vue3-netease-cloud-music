@@ -5,13 +5,12 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'home',
-    component: Home,
-    children: [
-      {
-        path: '*',
-        redirect: { name: 'home' }
-      }
-    ]
+    component: Home
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'home',
+    component: Home
   }
 ]
 
