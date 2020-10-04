@@ -1,16 +1,24 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
-import Home from '@/views/home.vue'
+import Layout from '@/layout/index.vue'
+import Home from '@/views/home/index.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
-    name: 'home',
-    component: Home
+    name: 'layout',
+    redirect: '/home',
+    component: Layout,
+    children: [
+      {
+        path: 'home',
+        component: Home,
+        name: 'home'
+      }
+    ]
   },
   {
     path: '/:pathMatch(.*)*',
-    name: 'home',
-    component: Home
+    redirect: '/'
   }
 ]
 
