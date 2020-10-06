@@ -8,9 +8,8 @@ import { defineComponent, reactive, toRefs, computed } from 'vue'
 import { useRoute } from 'vue-router'
 
 export default defineComponent({
-  name: 'Home',
-  props: {},
-  setup(props) {
+  name: 'Download',
+  setup() {
     const route = useRoute()
 
     const state = reactive({
@@ -18,8 +17,6 @@ export default defineComponent({
         return route.path
       })
     })
-
-    console.log(props)
 
     return {
       ...toRefs(state)
