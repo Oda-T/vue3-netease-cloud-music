@@ -20,20 +20,16 @@ module.exports = {
     }
   },
 
-  configureWebpack: {
-    resolve: {
-      alias: {
-        '@': resolve('src')
-      }
-    }
-  },
   chainWebpack(config) {
     // 替换svg loader
     const svgRule = config.module.rule('svg')
 
     svgRule.uses.clear()
     svgRule
-      .use('svg-sprite-loader')
+      .test(/\.svg$/)
+      .include.add(resolve('src/assets'))
+      .end()
+      .use('svg-sprite-loader') // 启用 svg-sprite-loader
       .loader('svg-sprite-loader')
       .tap(options => {
         options = {
@@ -41,20 +37,11 @@ module.exports = {
         }
         return options
       })
-    // config.module
-    //   .rule('svg')
-    //   .exclude.add(resolve('src/assets/svg'))
-    //   .end()
-    // config.module
-    //   .rule('icons')
-    //   .test(/\.svg$/)
-    //   .include.add(resolve('src/assets/svg'))
-    //   .end()
-    //   .use('svg-sprite-loader')
-    //   .loader('svg-sprite-loader')
-    //   .options({
-    //     symbolId: 'icon-[name]'
-    //   })
-    //   .end()
+      .end()
+      .use('svgo-loader') // 压缩 svg
+      .loader('svgo-loader')
+      .options({
+        plugins: [{ removeTitle: true }, { convertColors: { shorthex: false } }, { convertPathData: false }]
+      })
   }
 }

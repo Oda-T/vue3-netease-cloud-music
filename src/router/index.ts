@@ -4,7 +4,7 @@ import Layout from '@/layout/index.vue'
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
-    redirect: '/discover',
+    redirect: { name: 'discover' },
     component: Layout,
     children: [
       {
@@ -13,19 +13,29 @@ const routes: Array<RouteRecordRaw> = [
         name: 'discover'
       },
       {
-        path: 'creator',
-        component: () => import(/* webpackChunkName: "creator" */ '@/views/creator/index.vue'),
-        name: 'creator'
+        path: 'discover/toplist',
+        component: () => import(/* webpackChunkName: "toplist" */ '@/views/discover/toplist.vue'),
+        name: 'toplist'
       },
       {
-        path: 'download',
-        component: () => import(/* webpackChunkName: "download" */ '@/views/download/index.vue'),
-        name: 'download'
+        path: 'discover/playlist',
+        component: () => import(/* webpackChunkName: "playlist" */ '@/views/discover/playlist.vue'),
+        name: 'playlist'
       },
       {
-        path: 'friend',
-        component: () => import(/* webpackChunkName: "friend" */ '@/views/friend/index.vue'),
-        name: 'friend'
+        path: 'discover/djradio',
+        component: () => import(/* webpackChunkName: "djradio" */ '@/views/discover/djradio.vue'),
+        name: 'djradio'
+      },
+      {
+        path: 'discover/artist',
+        component: () => import(/* webpackChunkName: "artist" */ '@/views/discover/artist.vue'),
+        name: 'artist'
+      },
+      {
+        path: 'discover/album',
+        component: () => import(/* webpackChunkName: "album" */ '@/views/discover/album.vue'),
+        name: 'album'
       },
       {
         path: 'my',
@@ -33,20 +43,45 @@ const routes: Array<RouteRecordRaw> = [
         name: 'my'
       },
       {
-        path: 'nmusician',
-        component: () => import(/* webpackChunkName: "nmusician" */ '@/views/nmusician/index.vue'),
-        name: 'nmusician'
+        path: 'friend',
+        component: () => import(/* webpackChunkName: "friend" */ '@/views/friend/index.vue'),
+        name: 'friend'
       },
       {
         path: 'store',
         component: () => import(/* webpackChunkName: "store" */ '@/views/store/index.vue'),
         name: 'store'
+      },
+      {
+        path: 'creator',
+        component: () => import(/* webpackChunkName: "creator" */ '@/views/creator/index.vue'),
+        name: 'creator'
+      },
+      {
+        path: 'nmusician',
+        component: () => import(/* webpackChunkName: "nmusician" */ '@/views/nmusician/index.vue'),
+        name: 'nmusician'
+      },
+      {
+        path: 'download',
+        component: () => import(/* webpackChunkName: "download" */ '@/views/download/index.vue'),
+        name: 'download'
+      },
+      {
+        path: 'song',
+        component: () => import(/* webpackChunkName: "song" */ '@/views/song/index.vue'),
+        name: 'song'
+      },
+      {
+        path: 'album',
+        component: () => import(/* webpackChunkName: "album" */ '@/views/album/index.vue'),
+        name: 'album'
       }
     ]
   },
   {
     path: '/:pathMatch(.*)*',
-    redirect: '/'
+    redirect: { name: 'discover' }
   }
 ]
 
