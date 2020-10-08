@@ -74,6 +74,7 @@ export default defineComponent({
 .c-player {
   min-width: 375px;
   height: @bottomHeight;
+  z-index: 1000;
   .c-player-detail {
     width: 0px;
     height: 100%;

@@ -19,7 +19,6 @@ module.exports = {
       errors: false
     }
   },
-
   chainWebpack(config) {
     // 替换svg loader
     const svgRule = config.module.rule('svg')
