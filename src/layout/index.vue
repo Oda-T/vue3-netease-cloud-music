@@ -47,7 +47,7 @@ import { defineComponent, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import mdui from 'mdui'
 
-import Player from '@/components/player/index.vue'
+import Player from '@/components/player.vue'
 
 export default defineComponent({
   components: {

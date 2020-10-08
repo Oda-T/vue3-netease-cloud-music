@@ -11,42 +11,11 @@
         <div class="recommend-card-item">
           <!-- 每日推荐歌曲 -->
           <div class="mdui-card recommend-card-list mdui-hoverable" v-for="item in cards" :key="item.id">
-            <!-- 卡片的媒体内容，可以包含图片、视频等媒体内容，以及标题、副标题 -->
-            <div class="mdui-card-media">
-              <router-link :to="item.id">
-                <img :src="item.picUrl" />
-              </router-link>
-
-              <div class="mdui-card-menu">
-                <button class="mdui-btn mdui-btn-icon mdui-text-color-white  mdui-text-color-theme-700"><i class="mdui-icon material-icons">play_circle_outline</i></button>
-              </div>
-            </div>
-            <!-- 卡片的标题和副标题 -->
-            <div class="mdui-card-primary">
-              <div class="mdui-card-primary-title recommend-card-list-title">{{ item.name }}</div>
-              <div class="mdui-card-primary-subtitle">{{ item.playCount }}</div>
-            </div>
+            <card :item="item"></card>
           </div>
           <!-- 每日推荐 dj -->
           <div class="mdui-card recommend-card-list mdui-hoverable" v-for="item in cardsDj" :key="item.id">
-            <!-- 卡片的媒体内容，可以包含图片、视频等媒体内容，以及标题、副标题 -->
-            <div class="mdui-card-media">
-              <router-link :to="item.id">
-                <img :src="item.picUrl" />
-              </router-link>
-
-              <div class="mdui-card-menu">
-                <button class="mdui-btn mdui-btn-icon mdui-text-color-white  mdui-text-color-theme-700"><i class="mdui-icon material-icons">play_circle_outline</i></button>
-              </div>
-            </div>
-
-            <!-- 卡片的标题和副标题 -->
-            <div class="mdui-card-primary">
-              <div class="mdui-card-primary-title recommend-card-list-title">
-                <i style="border:1px solid red;border-radius:5px;font-size:13px;letter-spacing:-2px;margin-right:8px;padding:2px;">电台节目</i>{{ item.name }}
-              </div>
-              <div class="mdui-card-primary-subtitle">{{ item.playCount }}</div>
-            </div>
+            <card :item="item"></card>
           </div>
         </div>
       </div>
@@ -60,12 +29,14 @@ import { defineComponent, onMounted, reactive } from 'vue'
 import mdui from 'mdui'
 import axios from 'axios'
 
-import Swipe from '@/components/swipe/index.vue'
+import Swipe from '@/components/swipe.vue'
+import Card from '@/components/card.vue'
 
 export default defineComponent({
   name: 'Discover',
   components: {
-    Swipe
+    Swipe,
+    Card
   },
   setup() {
     interface T {
@@ -74,11 +45,14 @@ export default defineComponent({
       playCount: string | number
       copywriter: string
       picUrl: string
+      showIcon: boolean
     }
 
     interface B extends T {
       program: { listenerCount: number }
     }
+
+    console.log(Card)
 
     const cards: Array<T> = reactive([])
     const cardsDj: Array<T> = reactive([])
@@ -103,7 +77,8 @@ export default defineComponent({
           name: res[i].name,
           playCount: handlePlayCount(res[i].playCount),
           copywriter: res[i].copywriter,
-          picUrl: res[i].picUrl + '?param=280y280'
+          picUrl: res[i].picUrl + '?param=280y280',
+          showIcon: false
         })
       }
     }
@@ -114,7 +89,8 @@ export default defineComponent({
           name: res[i].name,
           playCount: handlePlayCount(res[i].program.listenerCount),
           copywriter: res[i].copywriter,
-          picUrl: res[i].picUrl + '?param=280y280'
+          picUrl: res[i].picUrl + '?param=280y280',
+          showIcon: true
         })
       }
     }
@@ -158,24 +134,16 @@ export default defineComponent({
     width: 100%;
     height: 100%;
     display: flex;
+
     .recommend-card-item {
       width: 1320px;
       display: flex;
       flex-wrap: wrap;
       justify-content: flex-start;
+
       .recommend-card-list {
         width: 280px;
         margin: 25px;
-
-        .recommend-card-list-title {
-          font-size: 16px;
-          line-height: 28px;
-          overflow: hidden;
-          height: 60px;
-          display: -webkit-box;
-          -webkit-box-orient: vertical;
-          -webkit-line-clamp: 2;
-        }
       }
     }
     &::before {
