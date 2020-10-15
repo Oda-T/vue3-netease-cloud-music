@@ -61,7 +61,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue'
+import { defineComponent, nextTick, onMounted, ref } from 'vue'
 
 export default defineComponent({
   name: 'Player',
@@ -79,8 +79,8 @@ export default defineComponent({
     const cDetailAvatar = ref(null)
     const cDetailAvatarBtn = ref(null)
 
-    let timer = null
-    let timerBtn = null
+    let timer: number
+    let timerBtn: number
 
     const toggleAvatarShowHide: () => void = () => {
       if (!avatarShow) {
@@ -135,19 +135,19 @@ export default defineComponent({
     }
 
     return {
-      toggleAvatarShowHide,
-      togglePlayerBtnShow,
-      togglePlayerBtnHide,
-      toggleAvatarBtnShow,
-      toggleAvatarBtnHide,
-      handlePlay,
       circleOutline,
       curTime,
       totalTime,
       cPlayerHide,
       cPlayerHideBtn,
       cDetailAvatar,
-      cDetailAvatarBtn
+      cDetailAvatarBtn,
+      toggleAvatarShowHide,
+      togglePlayerBtnShow,
+      togglePlayerBtnHide,
+      toggleAvatarBtnShow,
+      toggleAvatarBtnHide,
+      handlePlay
     }
   }
 })
