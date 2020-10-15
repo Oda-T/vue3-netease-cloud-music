@@ -42,5 +42,44 @@ module.exports = {
       .options({
         plugins: [{ removeTitle: true }, { convertColors: { shorthex: false } }, { convertPathData: false }]
       })
+
+    config.when(process.env.NODE_ENV !== 'development', config => {
+      config
+        .plugin('ScriptExtHtmlWebpackPlugin')
+        .after('html')
+        .use('script-ext-html-webpack-plugin', [
+          {
+            // 内联runtime js文件到html
+            inline: /runtime\..*\.js$/
+          }
+        ])
+        .end()
+
+      config.optimization.splitChunks({
+        chunks: 'all',
+        cacheGroups: {
+          libs: {
+            name: 'chunk-libs',
+            test: /[\\/]node_modules[\\/]/,
+            priority: 10,
+            chunks: 'initial'
+          },
+          mdui: {
+            name: 'chunk-mdui',
+            priority: 20,
+            test: /[\\/]node_modules[\\/]_?mdui(.*)/
+          },
+          commons: {
+            name: 'chunk-commons',
+            test: resolve('src/components'),
+            minChunks: 2,
+            priority: 5,
+            reuseExistingChunk: true
+          }
+        }
+      })
+      // https:// webpack.js.org/configuration/optimization/#optimizationruntimechunk
+      config.optimization.runtimeChunk('single')
+    })
   }
 }

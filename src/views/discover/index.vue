@@ -2,7 +2,6 @@
   <div>
     <swipe />
     <div class="g-hot-recommend">
-      <div class="recommend-list">热门推荐</div>
       <div class="mdui-chip">
         <span class="mdui-chip-icon"><i class="mdui-icon material-icons">face</i></span>
         <span class="mdui-chip-title">Example Chip</span>

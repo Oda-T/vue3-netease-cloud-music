@@ -119,13 +119,3 @@ export default defineComponent({
   }
 })
 </script>
-
-<style lang="less">
-@import '@/styles/variables.less';
-
-@media (min-width: 1024px) {
-  .g-left-drawer {
-    margin-bottom: @bottomHeight !important;
-  }
-}
-</style>

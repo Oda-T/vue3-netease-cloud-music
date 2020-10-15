@@ -1,6 +1,6 @@
 <template>
   <div class="c-swipe">
-    <!-- 左侧swipe -->
+    <!-- swipe -->
     <div class="c-swipe-lf mdui-shadow-2">
       <div class="c-swipe-container">
         <router-link class="c-swipe-link" v-for="item in banners" :key="item.id" :to="item.aHref">
@@ -10,10 +10,6 @@
       <div class="c-swipe-pagination">
         <span class="c-swipe-pagination-inner" v-for="(item, index) in banners" :key="item.id" @click="handleSwipe(index)"></span>
       </div>
-    </div>
-    <!-- 右侧download -->
-    <div class="c-swipe-download">
-      <div class="mdui-card"><div class="mdui-card-media c-swipe-download-bg"></div></div>
     </div>
   </div>
 </template>
@@ -119,14 +115,14 @@ export default defineComponent({
 
 <style lang="less" scoped>
 .c-swipe {
-  width: 990px;
+  width: 730px;
   height: 271px;
   position: relative;
   clear: both;
   margin: 0 auto;
   .c-swipe-lf {
     float: left;
-    width: 730px;
+    width: 100%;
     height: 100%;
     position: relative;
 
@@ -167,23 +163,6 @@ export default defineComponent({
         background-color: #ffffff;
         margin: 0 10px;
       }
-    }
-  }
-  .c-swipe-download {
-    float: left;
-    width: 254px;
-    height: 100%;
-    position: relative;
-    .c-swipe-download-bg {
-      height: 271px;
-      background: url(https://s2.music.126.net/style/web2/img/index/download.png?48b888b2b9e3da6bf3746c732775cde8) no-repeat center 0px;
-    }
-    .c-swipe-download-btn {
-      position: absolute;
-      left: 19px;
-      bottom: 30px;
-      width: 215px;
-      height: 56px;
     }
   }
 }
