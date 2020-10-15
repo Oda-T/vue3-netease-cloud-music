@@ -2,10 +2,10 @@
   <!-- mdui底栏改造 -->
   <div class="c-player mdui-shadow-24 mdui-color-red-900">
     <!-- 显示隐藏内容 -->
-    <div class="c-player-hide" ref="cPlayerHide" @mouseenter="togglePlayerBtnShow" @mouseleave="togglePlayerBtnHide">
+    <div class="c-player-hide" :style="{ height: cPlayerHideHeight }" @mouseenter="togglePlayerBtnShow" @mouseleave="togglePlayerBtnHide">
       <img class="c-player-hide-avatar" src="https://p1.music.126.net/cIR63lyPGgQ4mAyuOTg8lA==/109951165109878587.jpg?param=300y300" alt="" />
 
-      <div class="c-player-hide-btn" ref="cPlayerHideBtn">
+      <div class="c-player-hide-btn" :style="{ display: cPlayerHideBtnDisplay, opacity: cPlayerHideBtnOpacity }">
         <button class="c-player-hide-btn-prev mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon material-icons">fast_rewind</i></button>
         <button class="c-player-hide-btn-play mdui-btn mdui-btn-icon mdui-ripple" @click="handlePlay">
           <i class="mdui-icon material-icons">{{ circleOutline }}</i>
@@ -38,9 +38,14 @@
 
     <!-- 头部，包含头像、标题、作者 -->
     <div class="c-player-detail">
-      <div class="c-player-detail-avatar" ref="cDetailAvatar" @mouseenter="toggleAvatarBtnShow" @mouseleave="toggleAvatarBtnHide">
+      <div class="c-player-detail-avatar" :style="{ width: cDetailAvatarWidth }" @mouseenter="toggleAvatarBtnShow" @mouseleave="toggleAvatarBtnHide">
         <img src="https://p1.music.126.net/cIR63lyPGgQ4mAyuOTg8lA==/109951165109878587.jpg?param=56y56" />
-        <button class="c-player-detail-avatar-play mdui-btn mdui-btn-icon mdui-ripple" ref="cDetailAvatarBtn" @click="handlePlay">
+        <button
+          class="c-player-detail-avatar-play mdui-btn mdui-btn-icon mdui-ripple"
+          :style="{ display: cDetailAvatarBtnDisplay, opacity: cDetailAvatarBtnOpacity }"
+          ref="cDetailAvatarBtn"
+          @click="handlePlay"
+        >
           <i class="mdui-icon material-icons">{{ circleOutline }}</i>
         </button>
       </div>
@@ -61,7 +66,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, nextTick, onMounted, ref } from 'vue'
+import { defineComponent, ref } from 'vue'
 
 export default defineComponent({
   name: 'Player',
@@ -74,22 +79,27 @@ export default defineComponent({
     let avatarShow = false
     let isPlay = false
 
-    const cPlayerHide = ref(null)
-    const cPlayerHideBtn = ref(null)
-    const cDetailAvatar = ref(null)
-    const cDetailAvatarBtn = ref(null)
+    const cPlayerHideHeight = ref('')
+
+    const cPlayerHideBtnDisplay = ref('')
+    const cPlayerHideBtnOpacity = ref('')
+
+    const cDetailAvatarBtnDisplay = ref('')
+    const cDetailAvatarBtnOpacity = ref('')
+
+    const cDetailAvatarWidth = ref('')
 
     let timer: number
     let timerBtn: number
 
     const toggleAvatarShowHide: () => void = () => {
       if (!avatarShow) {
-        cPlayerHide.value.style.height = '300px'
-        cDetailAvatar.value.style.width = '0px'
+        cPlayerHideHeight.value = '300px'
+        cDetailAvatarWidth.value = '0px'
         avatarShow = true
       } else {
-        cPlayerHide.value.style.height = '0px'
-        cDetailAvatar.value.style.width = '56px'
+        cPlayerHideHeight.value = '0px'
+        cDetailAvatarWidth.value = '56px'
         avatarShow = false
       }
     }
@@ -97,30 +107,30 @@ export default defineComponent({
     const togglePlayerBtnShow: () => void = () => {
       clearTimeout(timer)
 
-      cPlayerHideBtn.value.style.display = 'block'
+      cPlayerHideBtnDisplay.value = 'block'
       setTimeout(() => {
-        cPlayerHideBtn.value.style.opacity = '1'
+        cPlayerHideBtnOpacity.value = '1'
       }, 10)
     }
     const togglePlayerBtnHide: () => void = () => {
-      cPlayerHideBtn.value.style.opacity = '0'
+      cPlayerHideBtnOpacity.value = '0'
       timer = setTimeout(() => {
-        cPlayerHideBtn.value.style.display = 'none'
+        cPlayerHideBtnDisplay.value = 'none'
       }, 500)
     }
 
     const toggleAvatarBtnShow: () => void = () => {
       clearTimeout(timerBtn)
 
-      cDetailAvatarBtn.value.style.display = 'block'
+      cDetailAvatarBtnDisplay.value = 'block'
       setTimeout(() => {
-        cDetailAvatarBtn.value.style.opacity = '1'
+        cDetailAvatarBtnOpacity.value = '1'
       }, 10)
     }
     const toggleAvatarBtnHide: () => void = () => {
-      cDetailAvatarBtn.value.style.opacity = '0'
+      cDetailAvatarBtnOpacity.value = '0'
       timerBtn = setTimeout(() => {
-        cDetailAvatarBtn.value.style.display = 'none'
+        cDetailAvatarBtnDisplay.value = 'none'
       }, 500)
     }
 
@@ -138,10 +148,12 @@ export default defineComponent({
       circleOutline,
       curTime,
       totalTime,
-      cPlayerHide,
-      cPlayerHideBtn,
-      cDetailAvatar,
-      cDetailAvatarBtn,
+      cPlayerHideHeight,
+      cPlayerHideBtnDisplay,
+      cPlayerHideBtnOpacity,
+      cDetailAvatarBtnDisplay,
+      cDetailAvatarBtnOpacity,
+      cDetailAvatarWidth,
       toggleAvatarShowHide,
       togglePlayerBtnShow,
       togglePlayerBtnHide,
