@@ -184,7 +184,7 @@ export default defineComponent({
 
 <style lang="less" scoped>
 .c-swipe {
-  width: 1280px;
+  width: 1260px;
   height: 271px;
   position: relative;
   // clear: both;
@@ -213,7 +213,7 @@ export default defineComponent({
     .c-swipe-link-pre {
       display: block;
       bottom: 20px;
-      left: -250px;
+      left: -245px;
       width: 539px;
       height: 200px;
       opacity: 0.7;
@@ -226,7 +226,7 @@ export default defineComponent({
     .c-swipe-link-next {
       display: block;
       bottom: 20px;
-      left: 730px - 539px + 250px;
+      left: 730px - 539px + 245px;
       width: 539px;
       height: 200px;
       opacity: 0.7;

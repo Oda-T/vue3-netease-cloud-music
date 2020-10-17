@@ -15,27 +15,27 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: 'discover/toplist',
         component: () => import(/* webpackChunkName: "toplist" */ '@/views/discover/toplist.vue'),
-        name: 'toplist'
+        name: 'discoverToplist'
       },
       {
         path: 'discover/playlist',
         component: () => import(/* webpackChunkName: "playlist" */ '@/views/discover/playlist.vue'),
-        name: 'playlist'
+        name: 'discoverPlaylist'
       },
       {
         path: 'discover/djradio',
         component: () => import(/* webpackChunkName: "djradio" */ '@/views/discover/djradio.vue'),
-        name: 'djradio'
+        name: 'discoverDjradio'
       },
       {
         path: 'discover/artist',
         component: () => import(/* webpackChunkName: "artist" */ '@/views/discover/artist.vue'),
-        name: 'artist'
+        name: 'discoverArtist'
       },
       {
         path: 'discover/album',
         component: () => import(/* webpackChunkName: "album" */ '@/views/discover/album.vue'),
-        name: 'album'
+        name: 'discoverAlbum'
       },
       {
         path: 'my',

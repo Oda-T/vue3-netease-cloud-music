@@ -35,7 +35,7 @@
     </div>
 
     <!-- 底栏播放器 -->
-    <player ids="123213" />
+    <player ids="" />
 
     <!-- 路由 -->
     <router-view />
@@ -63,11 +63,11 @@ export default defineComponent({
         name: 'discover',
         children: [
           { content: '推荐', name: 'discover' },
-          { content: '排行榜', name: 'toplist' },
-          { content: '歌单', name: 'playlist' },
-          { content: '主播电台', name: 'djradio' },
-          { content: '歌手', name: 'artist' },
-          { content: '新碟上架', name: 'album' }
+          { content: '排行榜', name: 'discoverToplist' },
+          { content: '歌单', name: 'discoverPlaylist' },
+          { content: '主播电台', name: 'discoverDjradio' },
+          { content: '歌手', name: 'discoverArtist' },
+          { content: '新碟上架', name: 'discoverAlbum' }
         ]
       },
       {

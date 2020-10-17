@@ -2,10 +2,15 @@
   <div>
     <swipe />
     <div class="g-hot-recommend">
-      <div class="mdui-chip">
-        <span class="mdui-chip-icon"><i class="mdui-icon material-icons">face</i></span>
-        <span class="mdui-chip-title">Example Chip</span>
+      <div class="recommend-playlist">
+        <div class="recommend-playlist-hot-title mdui-chip mdui-color-red-900">
+          <span class="mdui-chip-title">热门推荐</span>
+        </div>
+        <router-link class="recommend-playlist-hot mdui-chip" v-for="item in playlistHot" :key="item.id" :to="'/discover/playlist/?cat=' + item">
+          <span class="mdui-chip-title">{{ item }}</span>
+        </router-link>
       </div>
+
       <div class="recommend-card">
         <div class="recommend-card-item">
           <!-- 每日推荐歌曲 -->
@@ -51,6 +56,7 @@ export default defineComponent({
       program: { listenerCount: number }
     }
 
+    const playlistHot: Array<string> = reactive([])
     const cards: Array<T> = reactive([])
     const cardsDj: Array<T> = reactive([])
 
@@ -67,8 +73,14 @@ export default defineComponent({
       return _nS
     }
 
+    const handlePlaylistHot: (a: Array<{ name: string }>) => void = res => {
+      for (let i = 0, j = res.length; i < j; i++) {
+        playlistHot.push(res[i].name)
+      }
+    }
+
     const handleRecommendCard: (a: Array<T>) => void = res => {
-      for (let i = 0; i < 5; i++) {
+      for (let i = 0; i < 8; i++) {
         cards.push({
           id: '/playlist?id=' + res[i].id.toString(),
           name: res[i].name,
@@ -80,7 +92,7 @@ export default defineComponent({
       }
     }
     const handleRecommendCardDj: (a: Array<B>) => void = res => {
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < 4; i++) {
         cardsDj.push({
           id: '/dj?id=' + res[i].id.toString(),
           name: res[i].name,
@@ -91,11 +103,18 @@ export default defineComponent({
         })
       }
     }
+    // 热门歌单分类
+    axios({
+      url: 'http://localhost:3000/playlist/hot'
+    }).then(res => {
+      if (res.status === 200) {
+        handlePlaylistHot(res.data.tags)
+      }
+    })
 
     // 首页推荐歌单
     axios({
-      url: 'http://localhost:3000/personalized',
-      method: 'get'
+      url: 'http://localhost:3000/personalized'
     }).then(res => {
       handleRecommendCard(res.data.result)
       return Promise.resolve()
@@ -103,8 +122,7 @@ export default defineComponent({
 
     // 首页推荐电台
     axios({
-      url: 'http://localhost:3000/personalized/djprogram',
-      method: 'get'
+      url: 'http://localhost:3000/personalized/djprogram'
     }).then(res => {
       handleRecommendCardDj(res.data.result)
     })
@@ -113,6 +131,7 @@ export default defineComponent({
       mdui.mutation()
     })
     return {
+      playlistHot,
       cards,
       cardsDj
     }
@@ -121,35 +140,58 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
+@media screen and (min-width: 600px) {
+  .recommend-card-list {
+    width: calc(100% / 3 - 30px);
+  }
+}
+@media screen and (min-width: 1023px) {
+  .recommend-card-list {
+    width: calc(100% / 4 - 30px);
+  }
+}
+@media screen and(min-width: 1919px) {
+  .recommend-card-list {
+    width: calc(100% / 6 - 30px);
+  }
+}
+@media screen and(min-width: 2559px) {
+  .recommend-card-list {
+    width: calc(100% / 8 - 30px);
+  }
+}
+
 .g-hot-recommend {
   width: 100%;
-  margin-bottom: 80px !important;
-  .recommend-list {
-    width: 300px;
+  .recommend-playlist {
+    width: 85%;
+    max-width: 1500px;
+    overflow: hidden;
+    margin: 0 auto;
+    height: 100px;
+    .recommend-playlist-hot-title {
+      margin: 50px 10px 0px 10px;
+    }
+    .recommend-playlist-hot {
+      margin: 40px 10px 0px 10px;
+    }
   }
+
   .recommend-card {
     width: 100%;
     height: 100%;
-    display: flex;
 
     .recommend-card-item {
-      width: 1320px;
+      width: 85%;
+      max-width: 1500px;
+      margin: 0 auto;
       display: flex;
       flex-wrap: wrap;
       justify-content: flex-start;
 
       .recommend-card-list {
-        width: 280px;
-        margin: 25px;
+        margin: 15px;
       }
-    }
-    &::before {
-      flex-grow: 1;
-      content: ' ';
-    }
-    &::after {
-      flex-grow: 1;
-      content: ' ';
     }
   }
 }
