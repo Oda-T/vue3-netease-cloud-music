@@ -86,6 +86,11 @@ const routes: Array<RouteRecordRaw> = [
         path: 'album',
         component: () => import(/* webpackChunkName: "album" */ '@/views/album/index.vue'),
         name: 'album'
+      },
+      {
+        path: 'm/at/:id',
+        component: () => import(/* webpackChunkName: "album" */ '@/views/m/at.vue'),
+        name: 'at'
       }
     ]
   },

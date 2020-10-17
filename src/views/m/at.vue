@@ -8,13 +8,13 @@ import { defineComponent, reactive, toRefs, computed } from 'vue'
 import { useRoute } from 'vue-router'
 
 export default defineComponent({
-  name: 'Song',
+  name: 'At',
   setup() {
     const route = useRoute()
 
     const state = reactive({
       count: computed(() => {
-        return route.query.id
+        return route.params.id
       })
     })
 

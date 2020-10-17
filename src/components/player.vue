@@ -1,9 +1,9 @@
 <template>
   <!-- mdui底栏改造 -->
-  <div class="c-player mdui-shadow-24 mdui-color-red-900">
+  <div class="c-player mdui-shadow-24 mdui-color-red-900" :style="{ width: cPlayerWidth, overflow: cPlayerOverflow }">
     <!-- 显示隐藏内容 -->
     <div class="c-player-hide" :style="{ height: cPlayerHideHeight }" @mouseenter="togglePlayerBtnShow" @mouseleave="togglePlayerBtnHide">
-      <img class="c-player-hide-avatar" src="https://p1.music.126.net/cIR63lyPGgQ4mAyuOTg8lA==/109951165109878587.jpg?param=300y300" alt="" />
+      <img class="c-player-hide-avatar" :src="avatarL" alt="" />
 
       <div class="c-player-hide-btn" :style="{ display: cPlayerHideBtnDisplay, opacity: cPlayerHideBtnOpacity }">
         <button class="c-player-hide-btn-prev mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon material-icons">fast_rewind</i></button>
@@ -13,7 +13,9 @@
         <button class="c-player-hide-btn-next mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon material-icons">fast_forward</i></button>
       </div>
 
-      <button class="c-player-hide-list mdui-btn mdui-btn-icon mdui-ripple" mdui-menu="{target: '#example-attr'}"><i class="mdui-icon material-icons">more_vert</i></button>
+      <button class="c-player-hide-list mdui-btn mdui-btn-icon mdui-ripple" mdui-menu="{target: '#example-attr',align:'right',position:'bottom'}">
+        <i class="mdui-icon material-icons">more_vert</i>
+      </button>
       <ul class="mdui-menu" id="example-attr">
         <li class="mdui-menu-item">
           <a href="javascript:;" class="mdui-ripple">Refresh</a>
@@ -39,7 +41,7 @@
     <!-- 头部，包含头像、标题、作者 -->
     <div class="c-player-detail">
       <div class="c-player-detail-avatar" :style="{ width: cDetailAvatarWidth }" @mouseenter="toggleAvatarBtnShow" @mouseleave="toggleAvatarBtnHide">
-        <img src="https://p1.music.126.net/cIR63lyPGgQ4mAyuOTg8lA==/109951165109878587.jpg?param=56y56" />
+        <img :src="avatarS" />
         <button
           class="c-player-detail-avatar-play mdui-btn mdui-btn-icon mdui-ripple"
           :style="{ display: cDetailAvatarBtnDisplay, opacity: cDetailAvatarBtnOpacity }"
@@ -51,8 +53,8 @@
       </div>
 
       <div class="c-player-detail-detail">
-        <div class="c-player-detail-title mdui-text-truncate">TitleTitleTitleTitleTitleTitleTitleTitleTitle</div>
-        <div class="c-player-detail-author mdui-text-truncate">AuthorAuthor</div>
+        <div class="c-player-detail-title mdui-text-truncate">{{ title }}{{ songUrl }}</div>
+        <div class="c-player-detail-author mdui-text-truncate">{{ author }}</div>
       </div>
 
       <div class="c-player-detail-btn">
@@ -66,11 +68,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, reactive, ref, toRefs, watch } from 'vue'
+
+import axios from 'axios'
 
 export default defineComponent({
   name: 'Player',
-  setup() {
+  props: {
+    ids: String
+  },
+  setup(props) {
     const circleOutline = ref('play_arrow')
 
     const curTime = ref('00:00')
@@ -78,6 +85,9 @@ export default defineComponent({
 
     let avatarShow = false
     let isPlay = false
+
+    const cPlayerWidth = ref('')
+    const cPlayerOverflow = ref('')
 
     const cPlayerHideHeight = ref('')
 
@@ -92,9 +102,31 @@ export default defineComponent({
     let timer: number
     let timerBtn: number
 
+    // 解构ids
+    const { ids } = toRefs(props)
+    const songUrl = ref('')
+    const songs = reactive({
+      title: '',
+      author: '',
+      avatarL: 'http://s4.music.126.net/style/web2/img/default/default_album.jpg',
+      avatarS: 'http://s4.music.126.net/style/web2/img/default/default_album.jpg'
+    })
+
+    const togglePlayerWidth: (val?: string) => void = val => {
+      if (val) {
+        cPlayerWidth.value = '320px'
+        cPlayerOverflow.value = 'visible'
+      } else {
+        setTimeout(() => {
+          cPlayerOverflow.value = 'hidden'
+        }, 450)
+        cPlayerWidth.value = '0px'
+      }
+    }
+
     const toggleAvatarShowHide: () => void = () => {
       if (!avatarShow) {
-        cPlayerHideHeight.value = '300px'
+        cPlayerHideHeight.value = '320px'
         cDetailAvatarWidth.value = '0px'
         avatarShow = true
       } else {
@@ -143,11 +175,56 @@ export default defineComponent({
         isPlay = true
       }
     }
+    // 监听音乐ids的变化
+    watch(
+      () => {
+        if (ids) {
+          return ids.value
+        }
+      },
+      val => {
+        togglePlayerWidth(val)
+
+        // 获取音乐url
+        axios({
+          url: `http://localhost:3000/song/url?id=${val}`
+        })
+          .then(res => {
+            if (res.status === 200 && val) {
+              songUrl.value = res.data.data[0].url
+            }
+          })
+          .catch(err => {
+            console.log(err)
+          })
+
+        // 获取音乐详情
+        axios({
+          url: `http://localhost:3000/song/detail?ids=${val}`
+        })
+          .then(res => {
+            if (res.status === 200 && val) {
+              const _songs = res.data.songs[0]
+
+              songs.title = _songs.name
+              songs.author = _songs.ar[0].name
+              songs.avatarL = _songs.al.picUrl + '?param=280y280'
+              songs.avatarS = _songs.al.picUrl + '?param=56y56'
+            }
+          })
+          .catch(err => {
+            console.log(err)
+          })
+      },
+      { immediate: true }
+    )
 
     return {
       circleOutline,
       curTime,
       totalTime,
+      cPlayerWidth,
+      cPlayerOverflow,
       cPlayerHideHeight,
       cPlayerHideBtnDisplay,
       cPlayerHideBtnOpacity,
@@ -159,7 +236,9 @@ export default defineComponent({
       togglePlayerBtnHide,
       toggleAvatarBtnShow,
       toggleAvatarBtnHide,
-      handlePlay
+      handlePlay,
+      songUrl,
+      ...toRefs(songs)
     }
   }
 })
@@ -167,14 +246,17 @@ export default defineComponent({
 
 <style lang="less" scoped>
 .c-player {
-  width: 300px;
+  width: 320px;
+  transition: width 0.5s;
+  overflow: hidden;
   z-index: 1000;
   position: fixed;
-  right: 0px;
+  left: 0px;
   bottom: 0px;
+  z-index: 5001;
   .c-player-detail {
     height: 80px;
-    margin: 0 10px;
+    margin: 0 11px;
     display: flex;
     .c-player-detail-avatar {
       margin-top: 11px;
@@ -183,6 +265,10 @@ export default defineComponent({
       transition: width 0.5s;
       position: relative;
       overflow: hidden;
+      img {
+        width: 100%;
+        height: 100%;
+      }
       .c-player-detail-avatar-play {
         position: absolute;
         width: 56px;
@@ -197,15 +283,15 @@ export default defineComponent({
 
     .c-player-detail-detail {
       width: 170px;
-      margin: 0 10px;
+      margin: 0 11px;
       flex-grow: 1;
       .c-player-detail-title {
-        margin-top: 15px;
+        margin-top: 16px;
         width: 100%;
         font-size: 110%;
       }
       .c-player-detail-author {
-        margin-top: 13px;
+        margin-top: 15px;
         font-size: 80%;
         opacity: 0.7;
         width: 100%;
@@ -235,7 +321,7 @@ export default defineComponent({
   }
 
   .c-player-hide {
-    width: 300px;
+    width: 320px;
     height: 0px;
     transition: height 0.5s;
     overflow: hidden;
@@ -247,11 +333,12 @@ export default defineComponent({
     }
     .c-player-hide-btn {
       position: absolute;
-      width: 300px;
-      height: 300px;
+      width: 100%;
+      height: 100%;
       line-height: 76px;
       top: 50%;
       left: 50%;
+      background-color: rgba(0, 0, 0, 0.2);
       transform: translate(-50%, -50%);
       transition: opacity 0.5s;
       display: none;

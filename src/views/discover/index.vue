@@ -51,8 +51,6 @@ export default defineComponent({
       program: { listenerCount: number }
     }
 
-    console.log(Card)
-
     const cards: Array<T> = reactive([])
     const cardsDj: Array<T> = reactive([])
 
