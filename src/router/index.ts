@@ -49,9 +49,15 @@ const routes: Array<RouteRecordRaw> = [
         name: 'friend'
       },
       {
-        path: 'store',
-        component: () => import(/* webpackChunkName: "store" */ '@/views/store/index.vue'),
+        path: 'store/product',
+        alias: 'store',
+        component: () => import(/* webpackChunkName: "store" */ '@/views/store/product.vue'),
         name: 'store'
+      },
+      {
+        path: 'store/newalbum/detail',
+        component: () => import(/* webpackChunkName: "store" */ '@/views/store/newalbum.vue'),
+        name: 'storeNewalbum'
       },
       {
         path: 'creator',

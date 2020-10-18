@@ -8,7 +8,7 @@ import { defineComponent, reactive, toRefs, computed } from 'vue'
 import { useRoute } from 'vue-router'
 
 export default defineComponent({
-  name: 'Store',
+  name: 'newalbum',
   setup() {
     const route = useRoute()
 

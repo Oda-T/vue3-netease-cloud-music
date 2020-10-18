@@ -2,12 +2,24 @@
   <div class="c-swipe">
     <!-- swipe -->
     <div class="c-swipe-container">
-      <router-link class="c-swipe-link mdui-shadow-24" v-for="item in banners" :key="item.id" :to="item.aHref">
-        <img class="c-swipe-img" :src="item.imgSrc" alt="" />
+      <router-link
+        class="c-swipe-link mdui-shadow-24"
+        v-for="(itemlink, indexlink) in banners"
+        :key="itemlink.id"
+        :to="itemlink.aHref"
+        :class="{ 'c-swipe-link-pre': indexlink === preIndex, 'c-swipe-link-cur': indexlink === curIndex, 'c-swipe-link-next': indexlink === nextIndex }"
+      >
+        <img class="c-swipe-img" :src="itemlink.imgSrc" :alt="itemlink.imgSrc" />
       </router-link>
     </div>
     <div class="c-swipe-pagination">
-      <span v-for="(item, index) in banners" class="c-swipe-pagination-inner" :key="item.id" @click.stop="handleClickSwipe(index)"></span>
+      <span
+        v-for="(itempag, indexpag) in banners"
+        class="c-swipe-pagination-inner"
+        :class="{ 'c-swipe-pagination-inner-active': indexpag === curIndex }"
+        :key="itempag.id"
+        @click.stop="handleClickSwipe(indexpag)"
+      ></span>
     </div>
     <button class="c-swipe-arrow-left mdui-btn mdui-btn-raised mdui-btn-icon mdui-color-red-900 mdui-ripple" @click.stop="handleClickArrow(-1)">
       <i class="mdui-icon material-icons">chevron_left</i>
@@ -19,7 +31,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, onMounted } from 'vue'
+import { defineComponent, reactive, ref, onMounted } from 'vue'
 
 import axios from 'axios'
 
@@ -43,12 +55,13 @@ export default defineComponent({
     const banners: Array<B> = reactive([])
 
     let swipeNode: NodeListOf<HTMLElement>
-    let paginationNode: NodeListOf<HTMLElement>
 
     //初始化index
-    let curIndex = 0
-    let nodeLength = 0
+    const preIndex = ref(0)
+    const curIndex = ref(0)
+    const nextIndex = ref(0)
 
+    let nodeLength = 0
     let timer = 0
 
     // 根据图片类型不同，路由跳转到不同界面
@@ -84,82 +97,58 @@ export default defineComponent({
 
     // swipe点击切换动作
     const handleSwipe: (index: number) => void = i => {
-      if (i === curIndex) {
+      if (i === curIndex.value) {
         return
       }
-      const _pre = swipeNode[getCorrectIndex(curIndex - 1)].classList
-      const _cur = swipeNode[getCorrectIndex(curIndex)].classList
-      const _next = swipeNode[getCorrectIndex(curIndex + 1)].classList
 
-      // remove pre class
-      if (_pre.contains('c-swipe-link-pre')) {
-        _pre.remove('c-swipe-link-pre')
-      }
-
-      if (_cur.contains('c-swipe-link-cur')) {
-        _cur.remove('c-swipe-link-cur')
-      }
-
-      if (_next.contains('c-swipe-link-next')) {
-        _next.remove('c-swipe-link-next')
-      }
-
-      // add class
-      swipeNode[getCorrectIndex(i - 1)].classList.add('c-swipe-link-pre')
-      swipeNode[getCorrectIndex(i)].classList.add('c-swipe-link-cur')
-      swipeNode[getCorrectIndex(i + 1)].classList.add('c-swipe-link-next')
-
-      paginationNode[curIndex].classList.remove('c-swipe-pagination-inner-active')
-      paginationNode[getCorrectIndex(i)].classList.add('c-swipe-pagination-inner-active')
-
-      curIndex = i
+      preIndex.value = getCorrectIndex(i - 1)
+      curIndex.value = getCorrectIndex(i)
+      nextIndex.value = getCorrectIndex(i + 1)
     }
 
     // 点击清除timer
     const handleClickSwipe: (index: number) => void = i => {
       clearInterval(timer)
+
       handleSwipe(i)
 
       timer = setInterval(() => {
-        handleSwipe(curIndex + 1)
-        if (curIndex >= nodeLength) {
-          curIndex = 0
-        } else if (curIndex < 0) {
-          curIndex = nodeLength - 1
+        handleSwipe(curIndex.value + 1)
+        if (curIndex.value >= nodeLength) {
+          curIndex.value = 0
+        } else if (curIndex.value < 0) {
+          curIndex.value = nodeLength - 1
         }
-      }, 5000)
+      }, 10000)
     }
 
     // 左右箭头
     const handleClickArrow: (d: number) => void = d => {
       if (d < 0) {
-        handleClickSwipe(getCorrectIndex(curIndex - 1))
+        handleClickSwipe(getCorrectIndex(curIndex.value - 1))
       } else {
-        handleClickSwipe(getCorrectIndex(curIndex + 1))
+        handleClickSwipe(getCorrectIndex(curIndex.value + 1))
       }
     }
 
     // 初始化swipe
     const initSwipe: () => void = () => {
       swipeNode = document.querySelectorAll('.c-swipe-link')
-      paginationNode = document.querySelectorAll('.c-swipe-pagination-inner')
 
       nodeLength = swipeNode.length
 
-      // 初始化样式
-      swipeNode[getCorrectIndex(-1)].classList.add('c-swipe-link-pre')
-      swipeNode[getCorrectIndex(0)].classList.add('c-swipe-link-cur')
-      swipeNode[getCorrectIndex(1)].classList.add('c-swipe-link-next')
-      paginationNode[getCorrectIndex(0)].classList.add('c-swipe-pagination-inner-active')
+      preIndex.value = getCorrectIndex(-1)
+      curIndex.value = getCorrectIndex(0)
+      nextIndex.value = getCorrectIndex(1)
 
       timer = setInterval(() => {
-        handleSwipe(curIndex + 1)
-        if (curIndex >= nodeLength) {
-          curIndex = 0
-        } else if (curIndex < 0) {
-          curIndex = nodeLength - 1
+        handleSwipe(curIndex.value + 1)
+        if (curIndex.value >= nodeLength) {
+          curIndex.value = 0
+        } else if (curIndex.value < 0) {
+          curIndex.value = nodeLength - 1
         }
-      }, 5000)
+      }, 10000)
     }
 
     onMounted(() => {
@@ -181,6 +170,9 @@ export default defineComponent({
     })
 
     return {
+      preIndex,
+      curIndex,
+      nextIndex,
       banners,
       handleClickSwipe,
       handleClickArrow

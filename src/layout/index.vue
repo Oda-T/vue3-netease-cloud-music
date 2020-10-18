@@ -24,7 +24,12 @@
     <div class="mdui-drawer g-left-drawer">
       <ul class="mdui-list" mdui-collapse="{accordion: true}">
         <li v-for="(item, index) in listItem" :key="item.id" class="mdui-collapse-item mdui-collapse-item-open">
-          <div class="left-drawer-list mdui-collapse-item-header mdui-list-item mdui-ripple" @click.stop="handleTypoTitle(item.content, item.name), handleActiveListItem(index)">
+          <div
+            class="left-drawer-list mdui-collapse-item-header mdui-list-item mdui-ripple"
+            :class="{ 'mdui-list-item-active': index === curIndex }"
+            @click.stop="handleTypoTitle(item.content, item.name)"
+            @click=";(curIndex = index), (curChildIndex = -1)"
+          >
             <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-theme-700">{{ item.icon }}</i>
             <div class="mdui-list-item-content">{{ item.content }}</div>
           </div>
@@ -33,7 +38,9 @@
               v-for="(i, index) in item.children"
               :key="i.id"
               class="left-drawer-list-child mdui-list-item mdui-ripple"
-              @click.stop="handleTypoSubTitle(i.content, i.name), handleActiveChildListItem(index)"
+              :class="{ 'mdui-list-item-active': index === curChildIndex }"
+              @click.stop="handleTypoSubTitle(i.content, i.name)"
+              @click=";(curChildIndex = index), (curIndex = -1)"
             >
               {{ i.content }}
             </li>
@@ -131,50 +138,21 @@ export default defineComponent({
       sbuTitle.value = content
     }
 
-    let ListItemNode: NodeListOf<HTMLElement>
-    let ChildListItemNode: NodeListOf<HTMLElement>
-
-    let preList = 0
-    let preChildList = 0
-
-    const handleActiveListItem: (one: number) => void = index => {
-      if (ChildListItemNode[preChildList].classList.contains('mdui-list-item-active')) {
-        ChildListItemNode[preChildList].classList.remove('mdui-list-item-active')
-      }
-
-      if (ListItemNode[preList].classList.contains('mdui-list-item-active')) {
-        ListItemNode[preList].classList.remove('mdui-list-item-active')
-      }
-
-      ListItemNode[index].classList.add('mdui-list-item-active')
-      preList = index
-    }
-
-    const handleActiveChildListItem: (one: number) => void = index => {
-      if (ChildListItemNode[preChildList].classList.contains('mdui-list-item-active')) {
-        ChildListItemNode[preChildList].classList.remove('mdui-list-item-active')
-      }
-      if (ListItemNode[preList].classList.contains('mdui-list-item-active')) {
-        ListItemNode[preList].classList.remove('mdui-list-item-active')
-      }
-
-      ChildListItemNode[index].classList.add('mdui-list-item-active')
-      preChildList = index
-    }
+    const curIndex = ref(-1)
+    const curChildIndex = ref(0)
 
     onMounted(() => {
       mdui.mutation()
-
-      ListItemNode = document.querySelectorAll('.left-drawer-list')
-      ChildListItemNode = document.querySelectorAll('.left-drawer-list-child')
+      // curIndex.value = -1
+      // curChildIndex.value = 0
     })
 
     return {
       listItem,
       title,
       sbuTitle,
-      handleActiveListItem,
-      handleActiveChildListItem,
+      curIndex,
+      curChildIndex,
       handleTypoTitle,
       handleTypoSubTitle
     }
