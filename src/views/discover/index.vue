@@ -1,14 +1,30 @@
 <template>
   <div>
     <swipe />
+
     <div class="g-hot-recommend">
       <div class="recommend-playlist">
-        <div class="recommend-playlist-hot-title mdui-chip mdui-color-red-900">
+        <!-- 分割线 -->
+        <div class="mdui-typo">
+          <hr />
+        </div>
+
+        <div class="recommend-playlist-hot mdui-chip mdui-color-red-900">
           <span class="mdui-chip-title">热门推荐</span>
         </div>
+
         <router-link class="recommend-playlist-hot mdui-chip" v-for="item in playlistHot" :key="item.id" :to="'/discover/playlist/?cat=' + item">
           <span class="mdui-chip-title">{{ item }}</span>
         </router-link>
+
+        <router-link class="recommend-playlist-hot mdui-chip" style="float:right" to="/discover/playlist">
+          <span class="mdui-chip-title">更多</span>
+        </router-link>
+
+        <!-- 分割线 -->
+        <div class="mdui-typo">
+          <hr />
+        </div>
       </div>
 
       <div class="recommend-card">
@@ -64,7 +80,7 @@ export default defineComponent({
       // Number(n)
       let _n = Number(n)
       let _nS = ''
-      if (_n > 9999) {
+      if (_n > 99999) {
         _n = Math.round(_n / 10000)
         _nS = _n.toString() + '万'
       } else {
@@ -80,7 +96,7 @@ export default defineComponent({
     }
 
     const handleRecommendCard: (a: Array<T>) => void = res => {
-      for (let i = 0; i < 8; i++) {
+      for (let i = 0; i < 5; i++) {
         cards.push({
           id: '/playlist?id=' + res[i].id.toString(),
           name: res[i].name,
@@ -92,7 +108,7 @@ export default defineComponent({
       }
     }
     const handleRecommendCardDj: (a: Array<B>) => void = res => {
-      for (let i = 0; i < 4; i++) {
+      for (let i = 0; i < 3; i++) {
         cardsDj.push({
           id: '/dj?id=' + res[i].id.toString(),
           name: res[i].name,
@@ -169,12 +185,10 @@ export default defineComponent({
     max-width: 1500px;
     overflow: hidden;
     margin: 0 auto;
-    height: 100px;
-    .recommend-playlist-hot-title {
-      margin: 50px 10px 0px 10px;
-    }
+    height: 95px;
+
     .recommend-playlist-hot {
-      margin: 40px 10px 0px 10px;
+      margin: 20px 10px 8px;
     }
   }
 

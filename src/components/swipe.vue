@@ -3,7 +3,7 @@
     <!-- swipe -->
     <div class="c-swipe-container">
       <router-link
-        class="c-swipe-link mdui-shadow-24"
+        class="c-swipe-link mdui-shadow-16"
         v-for="(itemlink, indexlink) in banners"
         :key="itemlink.id"
         :to="itemlink.aHref"
@@ -106,12 +106,8 @@ export default defineComponent({
       nextIndex.value = getCorrectIndex(i + 1)
     }
 
-    // 点击清除timer
-    const handleClickSwipe: (index: number) => void = i => {
-      clearInterval(timer)
-
-      handleSwipe(i)
-
+    // 定时器
+    const handleInterval: () => void = () => {
       timer = setInterval(() => {
         handleSwipe(curIndex.value + 1)
         if (curIndex.value >= nodeLength) {
@@ -120,6 +116,15 @@ export default defineComponent({
           curIndex.value = nodeLength - 1
         }
       }, 10000)
+    }
+
+    // 点击清除timer
+    const handleClickSwipe: (index: number) => void = i => {
+      clearInterval(timer)
+
+      handleSwipe(i)
+
+      handleInterval()
     }
 
     // 左右箭头
@@ -141,14 +146,7 @@ export default defineComponent({
       curIndex.value = getCorrectIndex(0)
       nextIndex.value = getCorrectIndex(1)
 
-      timer = setInterval(() => {
-        handleSwipe(curIndex.value + 1)
-        if (curIndex.value >= nodeLength) {
-          curIndex.value = 0
-        } else if (curIndex.value < 0) {
-          curIndex.value = nodeLength - 1
-        }
-      }, 10000)
+      handleInterval()
     }
 
     onMounted(() => {
@@ -186,8 +184,7 @@ export default defineComponent({
   width: 1260px;
   height: 271px;
   position: relative;
-  // clear: both;
-  margin: 0 auto;
+  margin: 20px auto 10px auto;
 
   .c-swipe-container {
     width: 730px;

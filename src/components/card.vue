@@ -19,7 +19,7 @@
         <i v-if="item.showIcon" style="border:1px solid red;border-radius:5px;font-size:13px;letter-spacing:-2px;margin-right:8px;padding:2px;">电台节目</i>
         <router-link :to="item.id" class="recommend-card-list-title-inner">{{ item.name }}</router-link>
       </div>
-      <div class="mdui-card-primary-subtitle">{{ item.playCount }}</div>
+      <div class="mdui-card-primary-subtitle"><i class="recommend-card-list-title-icon mdui-icon material-icons">headset</i>{{ item.playCount }}</div>
     </div>
   </div>
 </template>
@@ -100,5 +100,9 @@ export default defineComponent({
       text-decoration: underline;
     }
   }
+}
+.recommend-card-list-title-icon {
+  font-size: 20px;
+  vertical-align: text-top;
 }
 </style>
