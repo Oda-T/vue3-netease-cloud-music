@@ -4,8 +4,9 @@
     <div class="mdui-appbar mdui-appbar-fixed">
       <div class="mdui-toolbar mdui-color-red-900">
         <span class="mdui-btn mdui-btn-icon mdui-ripple mdui-ripple-white" mdui-drawer="{target:'.g-left-drawer'}"><i class="mdui-icon material-icons">menu</i></span>
-        <a href="/discover" class="mdui-typo-headline">网易云音乐</a>
+        <a href="/" class="mdui-typo-headline">网易云音乐</a>
         <a class="mdui-typo-title">{{ title }}</a>
+        <a v-if="sbuTitle" class="type-title-subTitle">{{ sbuTitle }}</a>
         <div class="mdui-toolbar-spacer"></div>
         <a class="mdui-btn mdui-btn-icon mdui-ripple mdui-ripple-white" mdui-tooltip="{content: '音乐/视频/电台/用户'}"><i class="mdui-icon material-icons">search</i></a>
         <a class="mdui-btn mdui-btn-icon mdui-ripple mdui-ripple-white" @click="handleTypoTitle('创作者中心', 'creator')" mdui-tooltip="{content: '创作者中心'}">
@@ -22,13 +23,20 @@
     <!-- 左侧抽屉 -->
     <div class="mdui-drawer g-left-drawer">
       <ul class="mdui-list" mdui-collapse="{accordion: true}">
-        <li v-for="item in listItem" :key="item.id" class="mdui-collapse-item mdui-collapse-item-open" @click.stop="handleTypoTitle(item.content, item.name)">
-          <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+        <li v-for="(item, index) in listItem" :key="item.id" class="mdui-collapse-item mdui-collapse-item-open">
+          <div class="left-drawer-list mdui-collapse-item-header mdui-list-item mdui-ripple" @click.stop="handleTypoTitle(item.content, item.name), handleActiveListItem(index)">
             <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-theme-700">{{ item.icon }}</i>
             <div class="mdui-list-item-content">{{ item.content }}</div>
           </div>
           <ul v-if="item.children" class="mdui-collapse-item-body mdui-list mdui-list-dense">
-            <li v-for="i in item.children" :key="i.id" class="mdui-list-item mdui-ripple" @click.stop="handleTypoTitle(i.content, i.name)">{{ i.content }}</li>
+            <li
+              v-for="(i, index) in item.children"
+              :key="i.id"
+              class="left-drawer-list-child mdui-list-item mdui-ripple"
+              @click.stop="handleTypoSubTitle(i.content, i.name), handleActiveChildListItem(index)"
+            >
+              {{ i.content }}
+            </li>
           </ul>
         </li>
       </ul>
@@ -98,24 +106,83 @@ export default defineComponent({
     ]
 
     const title = ref('发现音乐')
+    const sbuTitle = ref('推荐')
 
     const handleTypoTitle: (ct: string, rt?: string) => void = (content, name) => {
       // 路由跳转
       name = name || 'discover'
       router.push({ name: name })
+
       // title改变
       title.value = content
+      if (content === '发现音乐') {
+        sbuTitle.value = '推荐'
+      } else {
+        sbuTitle.value = ''
+      }
+    }
+    const handleTypoSubTitle: (ct: string, rt?: string) => void = (content, name) => {
+      // 路由跳转
+      name = name || 'discover'
+      router.push({ name: name })
+
+      // title改变
+      title.value = '发现音乐'
+      sbuTitle.value = content
+    }
+
+    let ListItemNode: NodeListOf<HTMLElement>
+    let ChildListItemNode: NodeListOf<HTMLElement>
+
+    let preList = 0
+    let preChildList = 0
+
+    const handleActiveListItem: (one: number) => void = index => {
+      if (ChildListItemNode[preChildList].classList.contains('mdui-list-item-active')) {
+        ChildListItemNode[preChildList].classList.remove('mdui-list-item-active')
+      }
+
+      if (ListItemNode[preList].classList.contains('mdui-list-item-active')) {
+        ListItemNode[preList].classList.remove('mdui-list-item-active')
+      }
+
+      ListItemNode[index].classList.add('mdui-list-item-active')
+      preList = index
+    }
+
+    const handleActiveChildListItem: (one: number) => void = index => {
+      if (ChildListItemNode[preChildList].classList.contains('mdui-list-item-active')) {
+        ChildListItemNode[preChildList].classList.remove('mdui-list-item-active')
+      }
+      if (ListItemNode[preList].classList.contains('mdui-list-item-active')) {
+        ListItemNode[preList].classList.remove('mdui-list-item-active')
+      }
+
+      ChildListItemNode[index].classList.add('mdui-list-item-active')
+      preChildList = index
     }
 
     onMounted(() => {
       mdui.mutation()
+
+      ListItemNode = document.querySelectorAll('.left-drawer-list')
+      ChildListItemNode = document.querySelectorAll('.left-drawer-list-child')
     })
 
     return {
       listItem,
       title,
-      handleTypoTitle
+      sbuTitle,
+      handleActiveListItem,
+      handleActiveChildListItem,
+      handleTypoTitle,
+      handleTypoSubTitle
     }
   }
 })
 </script>
+<style lang="less" scoped>
+.type-title-subTitle {
+  width: 65px;
+}
+</style>

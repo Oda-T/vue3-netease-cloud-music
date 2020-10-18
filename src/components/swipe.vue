@@ -84,6 +84,9 @@ export default defineComponent({
 
     // swipe点击切换动作
     const handleSwipe: (index: number) => void = i => {
+      if (i === curIndex) {
+        return
+      }
       const _pre = swipeNode[getCorrectIndex(curIndex - 1)].classList
       const _cur = swipeNode[getCorrectIndex(curIndex)].classList
       const _next = swipeNode[getCorrectIndex(curIndex + 1)].classList
@@ -124,7 +127,7 @@ export default defineComponent({
         } else if (curIndex < 0) {
           curIndex = nodeLength - 1
         }
-      }, 100000000000)
+      }, 5000)
     }
 
     // 左右箭头
@@ -143,7 +146,11 @@ export default defineComponent({
 
       nodeLength = swipeNode.length
 
-      handleSwipe(0)
+      // 初始化样式
+      swipeNode[getCorrectIndex(-1)].classList.add('c-swipe-link-pre')
+      swipeNode[getCorrectIndex(0)].classList.add('c-swipe-link-cur')
+      swipeNode[getCorrectIndex(1)].classList.add('c-swipe-link-next')
+      paginationNode[getCorrectIndex(0)].classList.add('c-swipe-pagination-inner-active')
 
       timer = setInterval(() => {
         handleSwipe(curIndex + 1)

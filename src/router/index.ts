@@ -8,7 +8,8 @@ const routes: Array<RouteRecordRaw> = [
     component: Layout,
     children: [
       {
-        path: 'discover',
+        path: '',
+        alias: 'discover',
         component: () => import(/* webpackChunkName: "discover" */ '@/views/discover/index.vue'),
         name: 'discover'
       },
