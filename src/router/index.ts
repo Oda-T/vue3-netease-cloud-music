@@ -6,12 +6,6 @@ const routes: Array<RouteRecordRaw> = [
     path: '/',
     redirect: { name: 'discover' },
     component: Layout,
-    meta: {
-      title: '发现音乐',
-      subtitle: '推荐',
-      index: -1,
-      childindex: 0
-    },
     children: [
       {
         path: '',
@@ -21,7 +15,6 @@ const routes: Array<RouteRecordRaw> = [
         meta: {
           title: '发现音乐',
           subtitle: '推荐',
-          index: -1,
           childindex: 0
         }
       },
@@ -32,7 +25,6 @@ const routes: Array<RouteRecordRaw> = [
         meta: {
           title: '发现音乐',
           subtitle: '排行榜',
-          index: -1,
           childindex: 1
         }
       },
@@ -43,7 +35,6 @@ const routes: Array<RouteRecordRaw> = [
         meta: {
           title: '发现音乐',
           subtitle: '歌单',
-          index: -1,
           childindex: 2
         }
       },
@@ -54,7 +45,6 @@ const routes: Array<RouteRecordRaw> = [
         meta: {
           title: '发现音乐',
           subtitle: '主播电台',
-          index: -1,
           childindex: 3
         }
       },
@@ -65,7 +55,6 @@ const routes: Array<RouteRecordRaw> = [
         meta: {
           title: '发现音乐',
           subtitle: '歌手',
-          index: -1,
           childindex: 4
         }
       },
@@ -76,7 +65,6 @@ const routes: Array<RouteRecordRaw> = [
         meta: {
           title: '发现音乐',
           subtitle: '新碟上架',
-          index: -1,
           childindex: 5
         }
       },
@@ -86,9 +74,7 @@ const routes: Array<RouteRecordRaw> = [
         name: 'my',
         meta: {
           title: '我的音乐',
-          subtitle: '',
-          index: 1,
-          childindex: -1
+          index: 1
         }
       },
       {
@@ -97,9 +83,7 @@ const routes: Array<RouteRecordRaw> = [
         name: 'friend',
         meta: {
           title: '朋友',
-          subtitle: '',
-          index: 2,
-          childindex: -1
+          index: 2
         }
       },
       {
@@ -109,9 +93,7 @@ const routes: Array<RouteRecordRaw> = [
         name: 'store',
         meta: {
           title: '商城',
-          subtitle: '',
-          index: 3,
-          childindex: -1
+          index: 3
         }
       },
       {
@@ -121,30 +103,17 @@ const routes: Array<RouteRecordRaw> = [
         meta: {
           title: '商城',
           subtitle: '新碟',
-          index: 3,
-          childindex: -1
+          index: 3
         }
       },
-      {
-        path: 'creator',
-        component: () => import(/* webpackChunkName: "creator" */ '@/views/creator/index.vue'),
-        name: 'creator',
-        meta: {
-          title: '创作者中心',
-          subtitle: '',
-          index: -1,
-          childindex: -1
-        }
-      },
+
       {
         path: 'nmusician',
         component: () => import(/* webpackChunkName: "nmusician" */ '@/views/nmusician/index.vue'),
         name: 'nmusician',
         meta: {
           title: '音乐人',
-          subtitle: '',
-          index: 4,
-          childindex: -1
+          index: 4
         }
       },
       {
@@ -153,9 +122,15 @@ const routes: Array<RouteRecordRaw> = [
         name: 'download',
         meta: {
           title: '下载客户端',
-          subtitle: '',
-          index: 5,
-          childindex: -1
+          index: 5
+        }
+      },
+      {
+        path: 'creator',
+        component: () => import(/* webpackChunkName: "creator" */ '@/views/creator/index.vue'),
+        name: 'creator',
+        meta: {
+          title: '创作者中心'
         }
       },
       {
@@ -163,10 +138,7 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import(/* webpackChunkName: "song" */ '@/views/song/index.vue'),
         name: 'song',
         meta: {
-          title: 'song',
-          subtitle: '',
-          index: -1,
-          childindex: -1
+          title: 'song'
         }
       },
       {
@@ -174,10 +146,7 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import(/* webpackChunkName: "dj" */ '@/views/dj/index.vue'),
         name: 'dj',
         meta: {
-          title: 'DJ',
-          subtitle: '',
-          index: -1,
-          childindex: -1
+          title: 'DJ'
         }
       },
       {
@@ -185,10 +154,7 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import(/* webpackChunkName: "playlist" */ '@/views/playlist/index.vue'),
         name: 'playlist',
         meta: {
-          title: 'playlist',
-          subtitle: '',
-          index: -1,
-          childindex: -1
+          title: 'playlist'
         }
       },
       {
@@ -196,10 +162,7 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import(/* webpackChunkName: "album" */ '@/views/album/index.vue'),
         name: 'album',
         meta: {
-          title: 'album',
-          subtitle: '',
-          index: -1,
-          childindex: -1
+          title: 'album'
         }
       },
       {
@@ -207,10 +170,7 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import(/* webpackChunkName: "album" */ '@/views/m/at.vue'),
         name: 'at',
         meta: {
-          title: 'm/at',
-          subtitle: '',
-          index: -1,
-          childindex: -1
+          title: 'm/at'
         }
       }
     ]

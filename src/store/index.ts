@@ -15,9 +15,13 @@ export default createStore({
       state.toolbarSubTitle = i
     },
     setCurIndex: (state, i) => {
+      i = i === undefined ? -1 : i
+
       state.curIndex = i
     },
     setCurChildIndex: (state, i) => {
+      i = i === undefined ? -1 : i
+
       state.curChildIndex = i
     }
   },
