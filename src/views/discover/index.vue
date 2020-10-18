@@ -103,6 +103,7 @@ export default defineComponent({
         })
       }
     }
+
     // 热门歌单分类
     axios({
       url: 'http://localhost:3000/playlist/hot'

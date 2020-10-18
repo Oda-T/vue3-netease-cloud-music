@@ -4,12 +4,12 @@
     <div class="mdui-appbar mdui-appbar-fixed">
       <div class="mdui-toolbar mdui-color-red-900">
         <span class="mdui-btn mdui-btn-icon mdui-ripple mdui-ripple-white" mdui-drawer="{target:'.g-left-drawer'}"><i class="mdui-icon material-icons">menu</i></span>
-        <a href="/" class="mdui-typo-headline">网易云音乐</a>
-        <a class="mdui-typo-title">{{ title }}</a>
-        <a v-if="sbuTitle" class="type-title-subTitle">{{ sbuTitle }}</a>
+        <router-link to="/" class="mdui-typo-headline">网易云音乐</router-link>
+        <a class="mdui-typo-title">{{ toolbarTitle }}</a>
+        <a v-if="toolbarSubTitle" class="type-title-subTitle">{{ toolbarSubTitle }}</a>
         <div class="mdui-toolbar-spacer"></div>
         <a class="mdui-btn mdui-btn-icon mdui-ripple mdui-ripple-white" mdui-tooltip="{content: '音乐/视频/电台/用户'}"><i class="mdui-icon material-icons">search</i></a>
-        <a class="mdui-btn mdui-btn-icon mdui-ripple mdui-ripple-white" @click="handleTypoTitle('创作者中心', 'creator')" mdui-tooltip="{content: '创作者中心'}">
+        <a class="mdui-btn mdui-btn-icon mdui-ripple mdui-ripple-white" @click="handleTypoTitle('creator')" mdui-tooltip="{content: '创作者中心'}">
           <i class="mdui-icon material-icons">queue</i>
         </a>
         <a class="mdui-btn mdui-btn-icon mdui-ripple mdui-ripple-white" mdui-tooltip="{content: 'Login'}"><i class="mdui-icon material-icons">person</i></a>
@@ -24,12 +24,7 @@
     <div class="mdui-drawer g-left-drawer">
       <ul class="mdui-list" mdui-collapse="{accordion: true}">
         <li v-for="(item, index) in listItem" :key="item.id" class="mdui-collapse-item mdui-collapse-item-open">
-          <div
-            class="left-drawer-list mdui-collapse-item-header mdui-list-item mdui-ripple"
-            :class="{ 'mdui-list-item-active': index === curIndex }"
-            @click.stop="handleTypoTitle(item.content, item.name)"
-            @click=";(curIndex = index), (curChildIndex = -1)"
-          >
+          <div class="mdui-collapse-item-header mdui-list-item mdui-ripple" :class="{ 'mdui-list-item-active': index === curIndex }" @click.stop="handleTypoTitle(item.name)">
             <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-theme-700">{{ item.icon }}</i>
             <div class="mdui-list-item-content">{{ item.content }}</div>
           </div>
@@ -37,10 +32,9 @@
             <li
               v-for="(i, index) in item.children"
               :key="i.id"
-              class="left-drawer-list-child mdui-list-item mdui-ripple"
+              class="mdui-list-item mdui-ripple"
               :class="{ 'mdui-list-item-active': index === curChildIndex }"
-              @click.stop="handleTypoSubTitle(i.content, i.name)"
-              @click=";(curChildIndex = index), (curIndex = -1)"
+              @click.stop="handleTypoSubTitle(i.name)"
             >
               {{ i.content }}
             </li>
@@ -58,8 +52,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue'
+import { defineComponent, onMounted, toRefs } from 'vue'
 import { useRouter } from 'vue-router'
+
+import store from '../store/index'
+
 import mdui from 'mdui'
 
 import Player from '@/components/player.vue'
@@ -112,47 +109,24 @@ export default defineComponent({
       }
     ]
 
-    const title = ref('发现音乐')
-    const sbuTitle = ref('推荐')
-
-    const handleTypoTitle: (ct: string, rt?: string) => void = (content, name) => {
+    const handleTypoTitle: (rt?: string) => void = name => {
       // 路由跳转
       name = name || 'discover'
       router.push({ name: name })
-
-      // title改变
-      title.value = content
-      if (content === '发现音乐') {
-        sbuTitle.value = '推荐'
-      } else {
-        sbuTitle.value = ''
-      }
     }
-    const handleTypoSubTitle: (ct: string, rt?: string) => void = (content, name) => {
+    const handleTypoSubTitle: (rt?: string) => void = name => {
       // 路由跳转
       name = name || 'discover'
       router.push({ name: name })
-
-      // title改变
-      title.value = '发现音乐'
-      sbuTitle.value = content
     }
-
-    const curIndex = ref(-1)
-    const curChildIndex = ref(0)
 
     onMounted(() => {
       mdui.mutation()
-      // curIndex.value = -1
-      // curChildIndex.value = 0
     })
 
     return {
       listItem,
-      title,
-      sbuTitle,
-      curIndex,
-      curChildIndex,
+      ...toRefs(store.state),
       handleTypoTitle,
       handleTypoSubTitle
     }
