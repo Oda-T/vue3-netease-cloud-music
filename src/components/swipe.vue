@@ -67,7 +67,7 @@ export default defineComponent({
     // 根据图片类型不同，路由跳转到不同界面
     const handleHref: (one: string, two: string, three: string) => string = (id, title, url) => {
       if (id == '0') {
-        return url.slice(21)
+        return url.slice(url.indexOf('com/') + 3)
       } else if (title === '新碟首发') {
         return '/album?id=' + id
       } else {

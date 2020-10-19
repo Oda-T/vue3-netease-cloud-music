@@ -29,13 +29,15 @@
 
       <div class="recommend-card">
         <div class="recommend-card-item">
-          <!-- 每日推荐歌曲 -->
-          <div class="mdui-card recommend-card-list mdui-hoverable" v-for="item in cards" :key="item.id">
-            <card :item="item"></card>
-          </div>
-          <!-- 每日推荐 dj -->
-          <div class="mdui-card recommend-card-list mdui-hoverable" v-for="item in cardsDj" :key="item.id">
-            <card :item="item"></card>
+          <div class="recommend-card-item-container">
+            <!-- 每日推荐歌曲 -->
+            <div class="mdui-card recommend-card-list mdui-hoverable" v-for="item in cards" :key="item.id">
+              <card :item="item"></card>
+            </div>
+            <!-- 每日推荐 dj -->
+            <div class="mdui-card recommend-card-list mdui-hoverable" v-for="item in cardsDj" :key="item.id">
+              <card :item="item"></card>
+            </div>
           </div>
         </div>
       </div>
@@ -157,26 +159,26 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
-@media screen and (min-width: 600px) {
-  .recommend-card-list {
-    width: calc(100% / 3 - 30px);
-  }
-}
-@media screen and (min-width: 1023px) {
-  .recommend-card-list {
-    width: calc(100% / 4 - 30px);
-  }
-}
-@media screen and(min-width: 1919px) {
-  .recommend-card-list {
-    width: calc(100% / 6 - 30px);
-  }
-}
-@media screen and(min-width: 2559px) {
-  .recommend-card-list {
-    width: calc(100% / 8 - 30px);
-  }
-}
+// @media screen and (min-width: 600px) {
+//   .recommend-card-list {
+//     width: calc(100% / 3 - 30px);
+//   }
+// }
+// @media screen and (min-width: 1023px) {
+//   .recommend-card-list {
+//     width: calc(100% / 4 - 30px);
+//   }
+// }
+// @media screen and(min-width: 1919px) {
+//   .recommend-card-list {
+//     width: calc(100% / 6 - 30px);
+//   }
+// }
+// @media screen and(min-width: 2559px) {
+//   .recommend-card-list {
+//     width: calc(100% / 8 - 30px);
+//   }
+// }
 
 .g-hot-recommend {
   width: 100%;
@@ -198,14 +200,21 @@ export default defineComponent({
 
     .recommend-card-item {
       width: 85%;
+      height: 500px;
       max-width: 1500px;
       margin: 0 auto;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: flex-start;
-
-      .recommend-card-list {
-        margin: 15px;
+      overflow-x: scroll;
+      overflow-y: hidden;
+      .recommend-card-item-container {
+        height: 360px;
+        margin-left: -15px;
+        width: 1920px;
+        .recommend-card-list {
+          display: inline-block;
+          width: 210px;
+          height: 330px;
+          margin: 15px;
+        }
       }
     }
   }
