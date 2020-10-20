@@ -29,7 +29,7 @@
 
       <div class="recommend-card">
         <div class="recommend-card-item">
-          <div class="recommend-card-item-container">
+          <div class="recommend-card-item-container" :style="{ left: cardItemContainerLeft }">
             <!-- 每日推荐歌曲 -->
             <div class="mdui-card recommend-card-list mdui-hoverable" v-for="item in cards" :key="item.id">
               <card :item="item"></card>
@@ -40,15 +40,19 @@
             </div>
           </div>
         </div>
-        <button class="recommend-card-arrow-left mdui-fab mdui-color-red-900 mdui-ripple"><i class="mdui-icon material-icons">chevron_left</i></button>
-        <button class="recommend-card-arrow-right mdui-fab mdui-color-red-900 mdui-ripple"><i class="mdui-icon material-icons">chevron_right</i></button>
+        <button v-show="arrowleftshow" class="recommend-card-arrow-left mdui-fab mdui-color-red-900 mdui-ripple" @click="handleCardItemContainerLeft">
+          <i class="mdui-icon material-icons">chevron_left</i>
+        </button>
+        <button v-show="arrowrightshow" class="recommend-card-arrow-right mdui-fab mdui-color-red-900 mdui-ripple" @click="handleCardItemContainerRight">
+          <i class="mdui-icon material-icons">chevron_right</i>
+        </button>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, reactive } from 'vue'
+import { defineComponent, onMounted, reactive, ref } from 'vue'
 
 import mdui from 'mdui'
 import axios from 'axios'
@@ -79,6 +83,11 @@ export default defineComponent({
     const playlistHot: Array<string> = reactive([])
     const cards: Array<T> = reactive([])
     const cardsDj: Array<T> = reactive([])
+
+    const cardItemContainerLeft = ref('0px')
+
+    const arrowleftshow = ref(false)
+    const arrowrightshow = ref(true)
 
     const handlePlayCount: (a: number | string) => string = n => {
       // Number(n)
@@ -124,6 +133,27 @@ export default defineComponent({
       }
     }
 
+    const handleCardItemContainerLeft: () => void = () => {
+      if (cardItemContainerLeft.value === '0px') {
+        return
+      }
+      arrowleftshow.value = false
+      arrowrightshow.value = true
+
+      cardItemContainerLeft.value = '0px'
+    }
+
+    const handleCardItemContainerRight: () => void = () => {
+      if (cardItemContainerLeft.value === '-862px') {
+        return
+      }
+
+      arrowleftshow.value = true
+      arrowrightshow.value = false
+
+      cardItemContainerLeft.value = '-862px'
+    }
+
     // 热门歌单分类
     axios({
       url: 'http://localhost:3000/playlist/hot'
@@ -154,7 +184,12 @@ export default defineComponent({
     return {
       playlistHot,
       cards,
-      cardsDj
+      cardsDj,
+      arrowleftshow,
+      arrowrightshow,
+      cardItemContainerLeft,
+      handleCardItemContainerLeft,
+      handleCardItemContainerRight
     }
   }
 })
@@ -193,7 +228,7 @@ export default defineComponent({
         height: 100%;
         margin-left: -30px;
         width: 2304px;
-        transition: all 0.5s;
+        transition: left 0.5s ease-in-out;
         .recommend-card-list {
           display: inline-block;
           width: 258px;

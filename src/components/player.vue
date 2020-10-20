@@ -234,6 +234,7 @@ export default defineComponent({
         border-radius: 0;
         left: 0px;
         top: 0px;
+        background-color: rgba(0, 0, 0, 0.6);
       }
     }
 
@@ -290,7 +291,7 @@ export default defineComponent({
       line-height: 76px;
       top: 0px;
       left: 0px;
-      background-color: rgba(0, 0, 0, 0.2);
+      background-color: rgba(0, 0, 0, 0.4);
 
       .c-player-hide-btn-prev {
         position: absolute;
