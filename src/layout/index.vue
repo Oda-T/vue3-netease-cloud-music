@@ -44,7 +44,7 @@
     </div>
 
     <!-- 底栏播放器 -->
-    <player ids="" />
+    <player ids="678978" />
 
     <!-- 路由 -->
     <router-view />

@@ -40,6 +40,8 @@
             </div>
           </div>
         </div>
+        <button class="recommend-card-arrow-left mdui-fab mdui-color-red-900 mdui-ripple"><i class="mdui-icon material-icons">chevron_left</i></button>
+        <button class="recommend-card-arrow-right mdui-fab mdui-color-red-900 mdui-ripple"><i class="mdui-icon material-icons">chevron_right</i></button>
       </div>
     </div>
   </div>
@@ -159,27 +161,6 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
-// @media screen and (min-width: 600px) {
-//   .recommend-card-list {
-//     width: calc(100% / 3 - 30px);
-//   }
-// }
-// @media screen and (min-width: 1023px) {
-//   .recommend-card-list {
-//     width: calc(100% / 4 - 30px);
-//   }
-// }
-// @media screen and(min-width: 1919px) {
-//   .recommend-card-list {
-//     width: calc(100% / 6 - 30px);
-//   }
-// }
-// @media screen and(min-width: 2559px) {
-//   .recommend-card-list {
-//     width: calc(100% / 8 - 30px);
-//   }
-// }
-
 .g-hot-recommend {
   width: 100%;
   .recommend-playlist {
@@ -197,25 +178,41 @@ export default defineComponent({
   .recommend-card {
     width: 100%;
     height: 100%;
+    position: relative;
 
     .recommend-card-item {
-      width: 85%;
-      height: 500px;
-      max-width: 1500px;
+      position: relative;
+      height: 427px;
+      width: 1412px;
       margin: 0 auto;
-      overflow-x: scroll;
-      overflow-y: hidden;
+      overflow-x: hidden;
       .recommend-card-item-container {
-        height: 360px;
-        margin-left: -15px;
-        width: 1920px;
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        height: 100%;
+        margin-left: -30px;
+        width: 2304px;
+        transition: all 0.5s;
         .recommend-card-list {
           display: inline-block;
-          width: 210px;
-          height: 330px;
-          margin: 15px;
+          width: 258px;
+          height: 382px;
+          margin: 15px 0px 30px 30px;
         }
       }
+    }
+    .recommend-card-arrow-left {
+      position: absolute;
+      left: calc((100% - 1412px) / 2);
+      top: 50%;
+      transform: translate(-50%, -172%);
+    }
+    .recommend-card-arrow-right {
+      position: absolute;
+      right: calc((100% - 1412px) / 2);
+      top: 50%;
+      transform: translate(50%, -172%);
     }
   }
 }
