@@ -150,7 +150,7 @@ export default defineComponent({
 }
 .slide-fade-enter-from,
 .slide-fade-leave-to {
-  transform: translateY(20px);
+  transform: translateX(10px);
   opacity: 0;
 }
 </style>

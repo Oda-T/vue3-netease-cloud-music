@@ -90,7 +90,7 @@ export default defineComponent({
 
     .recommend-card-item {
       position: relative;
-      height: 400px;
+      height: 370px;
       width: 1400px;
       margin: 0 auto;
       overflow-x: hidden;
@@ -106,13 +106,13 @@ export default defineComponent({
       position: absolute;
       left: calc((100% - 1400px) / 2);
       top: 50%;
-      transform: translate(-20%, -172%);
+      transform: translate(-20%, -126%);
     }
     .recommend-card-arrow-right {
       position: absolute;
       right: calc((100% - 1400px) / 2);
       top: 50%;
-      transform: translate(20%, -172%);
+      transform: translate(20%, -126%);
     }
   }
 }

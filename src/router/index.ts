@@ -97,7 +97,7 @@ const routes: Array<RouteRecordRaw> = [
         }
       },
       {
-        path: 'store/newalbum/detail',
+        path: 'store/newalbum/:id',
         component: () => import(/* webpackChunkName: "store" */ '@/views/store/newalbum.vue'),
         name: 'storeNewalbum',
         meta: {
@@ -106,11 +106,19 @@ const routes: Array<RouteRecordRaw> = [
           index: 3
         }
       },
-
       {
         path: 'nmusician',
         component: () => import(/* webpackChunkName: "nmusician" */ '@/views/nmusician/index.vue'),
         name: 'nmusician',
+        meta: {
+          title: '音乐人',
+          index: 4
+        }
+      },
+      {
+        path: 'nmusician/:id',
+        component: () => import(/* webpackChunkName: "nmusician" */ '@/views/nmusician/index.vue'),
+        name: 'nmusicianID',
         meta: {
           title: '音乐人',
           index: 4

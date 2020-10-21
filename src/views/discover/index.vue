@@ -6,13 +6,11 @@
     <recommend>
       <!-- 分类列表 -->
       <template v-slot:playlist>
-        <router-link class="recommend-playlist-hot mdui-chip mdui-color-red-900" to="/discover/playlist">
-          <span class="mdui-chip-title">热门推荐</span>
-        </router-link>
-        <router-link class="recommend-playlist-hot mdui-chip" v-for="item in playlistHot" :key="item.id" :to="'/discover/playlist/?cat=' + item">
+        <router-link class="recommend-title mdui-text-color-red-900" to="/discover/playlist">热门推荐</router-link>
+        <router-link class="recommend-hot-chip mdui-chip" v-for="item in playlistHot" :key="item.id" :to="'/discover/playlist/?cat=' + item">
           <span class="mdui-chip-title">{{ item }}</span>
         </router-link>
-        <router-link class="recommend-playlist-hot mdui-chip" style="float:right" to="/discover/playlist">
+        <router-link class="recommend-hot-chip mdui-chip" style="float:right" to="/discover/playlist">
           <span class="mdui-chip-title">更多</span>
         </router-link>
       </template>
@@ -33,13 +31,11 @@
     <recommend>
       <!-- 分类列表 -->
       <template v-slot:playlist>
-        <router-link class="recommend-playlist-hot mdui-chip mdui-color-red-900" to="/album/newest">
-          <span class="mdui-chip-title">新碟上架</span>
-        </router-link>
-        <router-link class="recommend-playlist-hot mdui-chip" v-for="item in albumListHot" :key="item.id" :to="'/album/new?area=' + item.id">
+        <router-link class="recommend-title mdui-text-color-red-900" to="/album/newest">新碟上架</router-link>
+        <router-link class="recommend-hot-chip mdui-chip" v-for="item in albumListHot" :key="item.id" :to="'/album/new?area=' + item.id">
           <span class="mdui-chip-title">{{ item.name }}</span>
         </router-link>
-        <router-link class="recommend-playlist-hot mdui-chip" style="float:right" to="/album/newest">
+        <router-link class="recommend-hot-chip mdui-chip" style="float:right" to="/album/newest">
           <span class="mdui-chip-title">更多</span>
         </router-link>
       </template>
@@ -51,46 +47,37 @@
         </div>
       </template>
     </recommend>
+
     <!-- 榜单 -->
-    <div class="recommend-playlist">
-      <!-- 分割线 -->
-      <div class="mdui-typo">
-        <hr />
-      </div>
-      <router-link class="recommend-playlist-hot mdui-chip mdui-color-red-900" to="/discover/toplist">
-        <span class="mdui-chip-title">榜单</span>
-      </router-link>
-      <router-link class="recommend-playlist-hot mdui-chip" v-for="item in topList" :key="item.id" :to="'/discover/toplist?id=' + item.id">
-        <span class="mdui-chip-title">{{ item.name }}</span>
-      </router-link>
-      <router-link class="recommend-playlist-hot mdui-chip" style="float:right" to="/discover/toplist">
-        <span class="mdui-chip-title">更多</span>
-      </router-link>
-      <!-- 分割线 -->
-      <div class="mdui-typo">
-        <hr />
-      </div>
-      <div class="recommend-playlist-container">
-        <div class="recommend-playlist-item" v-for="item in topList" :key="item.id">
-          <div class="recommend-playlist-item-title">
-            <img :src="item.coverImgUrl" alt="" />
-          </div>
-          <list :id="item.id"></list>
+    <recommend>
+      <template v-slot:playlist>
+        <router-link class="recommend-title mdui-text-color-red-900" to="/discover/toplist">热门榜单</router-link>
+        <div class="recommend-hot-chip mdui-chip" v-for="item in topList" :class="{ 'mdui-color-red-900': item.id === playListId }" :key="item.id" @click="handleTopList(item.id)">
+          <span class="mdui-chip-title">{{ item.name }}</span>
         </div>
-      </div>
-    </div>
+        <router-link class="recommend-hot-chip mdui-chip" style="float:right" to="/discover/toplist">
+          <span class="mdui-chip-title">更多</span>
+        </router-link>
+      </template>
+      <template v-slot:card>
+        <!-- 排行榜 -->
+        <div class="mdui-card recommend-card-list mdui-hoverable" v-for="item in cardsTopList" :key="item.id">
+          <card :item="item"></card>
+        </div>
+      </template>
+    </recommend>
+    <div class="discover-bottom"></div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, reactive } from 'vue'
+import { defineComponent, onMounted, reactive, ref } from 'vue'
 
 import mdui from 'mdui'
 import axios from 'axios'
 
 import Swipe from '../../components/swipe.vue'
 import Card from '../../components/card.vue'
-import List from '../../components/list.vue'
 import Recommend from '../../components/recommend.vue'
 
 export default defineComponent({
@@ -98,7 +85,6 @@ export default defineComponent({
   components: {
     Swipe,
     Card,
-    List,
     Recommend
   },
   setup() {
@@ -111,12 +97,31 @@ export default defineComponent({
       type: number
     }
 
-    // 热门推荐
+    interface D {
+      id: string
+      name: string
+      artist: string
+      picUrl: string
+    }
+
+    interface L {
+      name: string
+      id: string | number
+    }
+
     const playlistHot: Array<string> = reactive([])
 
     const cards: Array<T> = reactive([])
     const cardsDj: Array<T> = reactive([])
 
+    const albums: Array<D> = reactive([])
+
+    const topList: Array<L> = reactive([])
+    const cardsTopList: Array<D> = reactive([])
+
+    const playListId = ref(0)
+
+    // 热门推荐
     const handlePlayCount: (a: number | string) => string = n => {
       // Number(n)
       let _n = Number(n)
@@ -129,18 +134,7 @@ export default defineComponent({
       }
       return _nS
     }
-
     // 新碟
-
-    interface D {
-      id: string
-      name: string
-      artist: string
-      picUrl: string
-    }
-
-    const albums: Array<D> = reactive([])
-
     const albumListHot = [
       { id: 'ALL', name: '全部' },
       { id: 'ZH', name: '华语' },
@@ -148,14 +142,6 @@ export default defineComponent({
       { id: 'KR', name: '韩国' },
       { id: 'JP', name: '日本' }
     ]
-
-    interface L {
-      name: string
-      id: string | number
-      coverImgUrl: string
-    }
-
-    const topList: Array<L> = reactive([])
 
     // 热门歌单分类
     axios({
@@ -234,49 +220,64 @@ export default defineComponent({
         for (let i = 0; i < 3; i++) {
           topList.push({
             id: _res[i].id,
-            name: _res[i].name,
-            coverImgUrl: _res[i].coverImgUrl + '?param=100y100'
+            name: _res[i].name
           })
         }
       }
     })
 
+    // 切换榜单内容
+    const handleTopList: (n: number) => void = n => {
+      playListId.value = n
+
+      axios({
+        url: `http://localhost:3000/playlist/detail?id=${n}`
+      }).then(res => {
+        if (res.status === 200) {
+          const _res = res.data.playlist.tracks
+
+          for (let i = 0; i < 8; i++) {
+            cardsTopList[i] = {
+              id: _res[i].id.toString(),
+              name: _res[i].name,
+              artist: _res[i].ar[0].name,
+              picUrl: _res[i].al.picUrl
+            }
+          }
+        }
+      })
+    }
+
     onMounted(() => {
       mdui.mutation()
+
+      handleTopList(19723756)
     })
     return {
+      handleTopList,
       playlistHot,
       cards,
       cardsDj,
       albumListHot,
       albums,
-      topList
+      topList,
+      playListId,
+      cardsTopList
     }
   }
 })
 </script>
 
 <style lang="less" scoped>
-.recommend-playlist {
-  width: 1400px;
-  overflow: hidden;
-  margin: 0 auto;
-  .recommend-playlist-hot {
-    margin: 20px 10px 8px;
-  }
-  .recommend-playlist-container {
-    margin-top: 20px;
-    display: flex;
-    justify-content: space-around;
-    .recommend-playlist-item {
-      width: 300px;
-      .recommend-playlist-item-title {
-        text-align: center;
-      }
-    }
-  }
+.recommend-title {
+  font-size: 24px;
+  vertical-align: -4px;
+  margin-left: 10px;
+  margin-right: 20px;
+  font-weight: 600;
+  letter-spacing: 2px;
 }
-.recommend-playlist-hot {
+.recommend-hot-chip {
   margin: 20px 10px 8px;
 }
 
@@ -284,5 +285,10 @@ export default defineComponent({
   display: inline-block;
   width: 240px;
   margin: 15px 20px 0px 20px;
+}
+
+.discover-bottom {
+  width: 100%;
+  height: 100px;
 }
 </style>

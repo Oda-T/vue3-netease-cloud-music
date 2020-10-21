@@ -12,6 +12,7 @@
         <img class="c-swipe-img" :src="itemlink.imgSrc" :alt="itemlink.imgSrc" />
       </router-link>
     </div>
+    <!-- 分页 -->
     <div class="c-swipe-pagination">
       <span
         v-for="(itempag, indexpag) in banners"
@@ -21,10 +22,11 @@
         @click.stop="handleClickSwipe(indexpag)"
       ></span>
     </div>
-    <button class="c-swipe-arrow-left mdui-btn mdui-btn-raised mdui-btn-icon mdui-color-red-900 mdui-ripple" @click.stop="handleClickArrow(-1)">
+    <!-- 左右箭头 -->
+    <button class="c-swipe-arrow-left mdui-fab mdui-color-red-900 mdui-ripple" @click.stop="handleClickArrow(-1)">
       <i class="mdui-icon material-icons">chevron_left</i>
     </button>
-    <button class="c-swipe-arrow-right mdui-btn mdui-btn-raised mdui-btn-icon mdui-color-red-900 mdui-ripple" @click.stop="handleClickArrow(1)">
+    <button class="c-swipe-arrow-right mdui-fab mdui-color-red-900 mdui-ripple" @click.stop="handleClickArrow(1)">
       <i class="mdui-icon material-icons">chevron_right</i>
     </button>
   </div>
@@ -252,16 +254,14 @@ export default defineComponent({
   }
   .c-swipe-arrow-left {
     position: absolute;
-    left: 0px;
-    top: 50%;
-    transform: translateY(-1%);
+    left: -10px;
+    top: 47%;
     z-index: 10;
   }
   .c-swipe-arrow-right {
     position: absolute;
-    right: 0px;
-    top: 50%;
-    transform: translateY(-1%);
+    right: -10px;
+    top: 47%;
     z-index: 10;
   }
 }

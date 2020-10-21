@@ -3,7 +3,7 @@
     <!-- 卡片的媒体内容，可以包含图片、视频等媒体内容，以及标题、副标题 -->
     <div class="mdui-card-media" @mouseenter="btnShow = !btnShow" @mouseleave="btnShow = !btnShow">
       <router-link :to="item.id">
-        <img :src="`${item.picUrl}?param=280y280`" />
+        <img :src="`${item.picUrl}?param=150y150`" />
       </router-link>
 
       <transition name="fade">
@@ -21,7 +21,7 @@
 
     <!-- 卡片的标题和副标题 -->
     <div class="mdui-card-primary">
-      <div class="mdui-card-primary-title recommend-card-list-title">
+      <div class="mdui-card-primary-title mdui-text-truncate recommend-card-list-title">
         <i v-if="item.type === 1" style="border:1px solid red;border-radius:5px;font-size:13px;letter-spacing:-2px;margin-right:8px;padding:2px;">电台节目</i>
         <router-link :to="item.id" class="recommend-card-list-title-inner">{{ item.name }}</router-link>
       </div>
@@ -67,11 +67,7 @@ export default defineComponent({
   margin-top: -10px;
   margin-bottom: 5px;
   line-height: 28px;
-  overflow: hidden;
-  height: 60px;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+  height: 34px;
 
   .recommend-card-list-title-inner {
     text-decoration: none;
