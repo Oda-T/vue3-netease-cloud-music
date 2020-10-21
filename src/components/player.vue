@@ -6,7 +6,7 @@
     <div class="c-player-hide" :style="{ height: cPlayerHideHeight }" @mouseenter="hidebtnshow = !hidebtnshow" @mouseleave="hidebtnshow = !hidebtnshow">
       <img class="c-player-hide-avatar" :src="avatarL" alt="" />
 
-      <transition name="hidebtn">
+      <transition name="fade">
         <div v-show="hidebtnshow" class="c-player-hide-btn">
           <button class="c-player-hide-btn-prev mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon material-icons">fast_rewind</i></button>
           <button class="c-player-hide-btn-play mdui-btn mdui-btn-icon mdui-ripple" @click="handlePlay">
@@ -46,7 +46,7 @@
     <div class="c-player-detail">
       <div class="c-player-detail-avatar" :style="{ width: cDetailAvatarWidth }" @mouseenter="avatarplayshow = !avatarplayshow" @mouseleave="avatarplayshow = !avatarplayshow">
         <img :src="avatarS" />
-        <transition name="avatarplay">
+        <transition name="fade">
           <button v-show="avatarplayshow" class="c-player-detail-avatar-play mdui-btn mdui-btn-icon mdui-ripple" @click="handlePlay">
             <i class="mdui-icon material-icons">{{ circleOutline }}</i>
           </button>
@@ -354,21 +354,12 @@ export default defineComponent({
   }
 }
 
-.avatarplay-enter-active,
-.avatarplay-leave-active {
+.fade-enter-active,
+.fade-leave-active {
   transition: opacity 0.5s ease;
 }
-.avatarplay-enter-from,
-.avatarplay-leave-to {
-  opacity: 0;
-}
-
-.hidebtn-enter-active,
-.hidebtn-leave-active {
-  transition: opacity 0.5s ease;
-}
-.hidebtn-enter-from,
-.hidebtn-leave-to {
+.fade-enter-from,
+.fade-leave-to {
   opacity: 0;
 }
 </style>

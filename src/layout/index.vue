@@ -44,10 +44,14 @@
     </div>
 
     <!-- 底栏播放器 -->
-    <player ids="678978" />
+    <player ids="432423" />
 
-    <!-- 路由 -->
-    <router-view />
+    <!-- 路由 transition -->
+    <router-view v-slot="{ Component }">
+      <transition name="slide-fade" mode="out-in">
+        <component :is="Component" />
+      </transition>
+    </router-view>
   </div>
 </template>
 
@@ -59,7 +63,7 @@ import store from '../store/index'
 
 import mdui from 'mdui'
 
-import Player from '@/components/player.vue'
+import Player from '../components/player.vue'
 
 export default defineComponent({
   components: {
@@ -136,5 +140,17 @@ export default defineComponent({
 <style lang="less" scoped>
 .type-title-subTitle {
   width: 65px;
+}
+
+.slide-fade-enter-active {
+  transition: all 0.3s ease-out;
+}
+.slide-fade-leave-active {
+  transition: all 0.3s ease-in;
+}
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: translateY(20px);
+  opacity: 0;
 }
 </style>
