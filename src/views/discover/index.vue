@@ -111,7 +111,7 @@ export default defineComponent({
           if (res.status === 200) {
             const _res = res.data.playlist.tracks
 
-            for (let i = 0; i < 8; i++) {
+            for (let i = 0; i < 10; i++) {
               cardsTopList[i] = {
                 id: '/song?id=' + _res[i].id.toString(),
                 name: _res[i].name,
@@ -165,7 +165,7 @@ export default defineComponent({
       .then(res => {
         if (res.status === 200) {
           const _res = res.data.result
-          for (let i = 0; i < 4; i++) {
+          for (let i = 0; i < 5; i++) {
             cards.push({
               id: '/playlist?id=' + _res[i].id.toString(),
               name: _res[i].name,
@@ -186,7 +186,7 @@ export default defineComponent({
             if (res.status === 200) {
               const _res = res.data.result
 
-              for (let i = 0; i < 4; i++) {
+              for (let i = 0; i < 5; i++) {
                 cards.push({
                   id: '/dj?id=' + _res[i].id.toString(),
                   name: _res[i].name,
@@ -210,7 +210,7 @@ export default defineComponent({
       .then(res => {
         if (res.status === 200) {
           const _res = res.data.albums
-          for (let i = 0; i < 8; i++) {
+          for (let i = 0; i < 10; i++) {
             albums.push({
               id: '/album?id=' + _res[i].id.toString(),
               name: _res[i].name,

@@ -17,7 +17,7 @@
         <hr />
       </div>
     </div>
-    <div style="width:100%;height:380px">
+    <div style="width:100%;height:350px">
       <transition name="fade" mode="out-in">
         <div v-if="toggleCoverShow" class="recommend-card-cover">
           <div class="recommend-card-inner"></div>
@@ -53,7 +53,6 @@ export default defineComponent({
   props: {
     cardList: Array,
     topList: Array,
-
     topTitle: String,
     activeIndex: {
       type: Number,
@@ -81,12 +80,12 @@ export default defineComponent({
     }
 
     const handleCardItemContainerRight: () => void = () => {
-      if (cardItemContainerLeft.value === '-670px') {
+      if (cardItemContainerLeft.value === '-856px') {
         return
       }
       arrowShow.value = !arrowShow.value
 
-      cardItemContainerLeft.value = '-670px'
+      cardItemContainerLeft.value = '-856px'
     }
 
     const handleListSwitch: (one: object, two: number) => void = (obj, index) => {
@@ -99,6 +98,9 @@ export default defineComponent({
 
       // 抛出点击按钮的歌曲/歌单id
       emit('getid', obj)
+
+      // 切换后，滑动条归左
+      handleCardItemContainerLeft()
     }
 
     watch(
@@ -150,7 +152,7 @@ export default defineComponent({
 
   .recommend-card-cover {
     width: 1400px;
-    height: 380px;
+    height: 350px;
     margin: 0 auto;
     display: flex;
     justify-content: center;
@@ -163,12 +165,12 @@ export default defineComponent({
 
   .recommend-card {
     width: 100%;
-    height: 380px;
+    height: 350px;
     position: relative;
 
     .recommend-card-item {
       position: relative;
-      height: 380px;
+      height: 350px;
       width: 1400px;
       margin: 0 auto;
       overflow-x: hidden;
@@ -180,7 +182,7 @@ export default defineComponent({
         transition: left 0.5s ease-in-out;
         .recommend-card-list {
           display: inline-block;
-          width: 225px;
+          width: 192px;
           margin: 35px 25px 0px 10px;
         }
       }

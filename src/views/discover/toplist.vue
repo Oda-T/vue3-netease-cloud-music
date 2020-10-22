@@ -43,10 +43,17 @@ export default defineComponent({
       })
         .then(res => {
           if (res.status === 200) {
+            // 榜单
             const _res = res.data.playlist.tracks
+            arr[0] = {
+              id: '/discover/toplist?id=' + res.data.playlist.id.toString(),
+              name: res.data.playlist.name,
+              artist: res.data.playlist.description,
+              picUrl: res.data.playlist.coverImgUrl
+            }
 
-            for (let i = 0; i < 8; i++) {
-              arr[i] = {
+            for (let i = 0; i < 9; i++) {
+              arr[i + 1] = {
                 id: '/song?id=' + _res[i].id.toString(),
                 name: _res[i].name,
                 artist: _res[i].ar[0].name,
@@ -124,6 +131,16 @@ export default defineComponent({
       getIdCallBackSpecial,
       getIdCallBackGlobal
     }
+  },
+
+  // navigation guards
+  beforeRouteEnter(to, from, next) {
+    next(() => {
+      console.log(to)
+    })
+  },
+  beforeRouteUpdate(to) {
+    console.log(to.query)
   }
 })
 </script>

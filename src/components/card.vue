@@ -25,8 +25,8 @@
         <i v-if="item.type === 1" style="border:1px solid red;border-radius:5px;font-size:13px;letter-spacing:-2px;margin-right:8px;padding:2px;">电台节目</i>
         <router-link :to="item.id" class="recommend-card-list-title-inner">{{ item.name }}</router-link>
       </div>
-      <div v-if="item.playCount" class="mdui-card-primary-subtitle"><i class="recommend-card-list-title-icon mdui-icon material-icons">headset</i>{{ item.playCount }}</div>
-      <div v-if="item.artist" class="mdui-card-primary-subtitle">{{ item.artist }}</div>
+      <div v-if="item.playCount" class="mdui-card-primary-subtitle mdui-text-truncate"><i class="recommend-card-list-title-icon mdui-icon material-icons">headset</i>{{ item.playCount }}</div>
+      <div v-if="item.artist" class="mdui-card-primary-subtitle mdui-text-truncate">{{ item.artist }}</div>
     </div>
   </div>
 </template>
