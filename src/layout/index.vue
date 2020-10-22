@@ -44,7 +44,7 @@
     </div>
 
     <!-- 底栏播放器 -->
-    <player ids="432423" />
+    <player ids="" />
 
     <!-- 路由 transition -->
     <router-view v-slot="{ Component }">

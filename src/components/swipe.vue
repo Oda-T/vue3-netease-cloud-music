@@ -56,8 +56,6 @@ export default defineComponent({
 
     const banners: Array<B> = reactive([])
 
-    let swipeNode: NodeListOf<HTMLElement>
-
     //初始化index
     const preIndex = ref(0)
     const curIndex = ref(0)
@@ -78,7 +76,9 @@ export default defineComponent({
     }
 
     const handleBannerCallBack: (one: Array<T>) => void = _b => {
-      for (let i = 0, j = _b.length; i < j; i++) {
+      nodeLength = _b.length
+
+      for (let i = 0, j = nodeLength; i < j; i++) {
         banners.push({
           bgSrc: _b[i].imageUrl + '?imageView&blur=40x20',
           imgSrc: _b[i].imageUrl + '?imageView&quality=30',
@@ -140,10 +140,6 @@ export default defineComponent({
 
     // 初始化swipe
     const initSwipe: () => void = () => {
-      swipeNode = document.querySelectorAll('.c-swipe-link')
-
-      nodeLength = swipeNode.length
-
       preIndex.value = getCorrectIndex(-1)
       curIndex.value = getCorrectIndex(0)
       nextIndex.value = getCorrectIndex(1)
