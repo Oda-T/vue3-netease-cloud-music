@@ -2,7 +2,7 @@
   <div class="c-hot-recommend">
     <div class="recommend-playlist">
       <!-- 分割线 -->
-      <div class="mdui-typo">
+      <div class="recommend-typo-top mdui-typo">
         <hr />
       </div>
       <span class="recommend-title mdui-text-color-red-900">{{ topTitle }}</span>
@@ -13,7 +13,7 @@
       <slot></slot>
 
       <!-- 分割线 -->
-      <div class="mdui-typo">
+      <div class="recommend-typo-bottom mdui-typo">
         <hr />
       </div>
     </div>
@@ -43,7 +43,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, watch } from 'vue'
+import { defineComponent, onActivated, onMounted, ref, watch } from 'vue'
 
 import Card from './card.vue'
 
@@ -92,9 +92,14 @@ export default defineComponent({
       if (listIndex.value === index) {
         return
       }
-      toggleCoverShow.value = true
 
-      listIndex.value = index
+      if (props.activeIndex === -1) {
+        listIndex.value = -1
+      } else {
+        toggleCoverShow.value = true
+
+        listIndex.value = index
+      }
 
       // 抛出点击按钮的歌曲/歌单id
       emit('getid', obj)
@@ -116,6 +121,11 @@ export default defineComponent({
     onMounted(() => {
       mdui.mutation()
     })
+
+    onActivated(() => {
+      toggleCoverShow.value = false
+    })
+
     return {
       toggleCoverShow,
       arrowShow,
@@ -134,19 +144,35 @@ export default defineComponent({
   width: 100%;
   .recommend-playlist {
     width: 1400px;
-    min-height: 82px;
+    min-height: 71px;
+    position: relative;
     margin: 0 auto;
+    .recommend-typo-top {
+      position: absolute;
+      left: 0px;
+      top: 0px;
+      height: 11px;
+      width: 100%;
+    }
     .recommend-title {
+      display: inline-block;
       font-size: 24px;
       vertical-align: -4px;
+      margin-top: 31px;
       margin-left: 10px;
       margin-right: 20px;
       font-weight: 600;
       letter-spacing: 2px;
     }
-
     .recommend-hot-chip {
-      margin: 20px 10px 8px;
+      margin: 31px 10px 0px;
+    }
+    .recommend-typo-bottom {
+      position: absolute;
+      left: 0px;
+      bottom: -11px;
+      height: 11px;
+      width: 100%;
     }
   }
 
@@ -203,7 +229,7 @@ export default defineComponent({
 }
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.5s ease;
+  transition: opacity 0.3s ease;
 }
 
 .fade-enter-from,

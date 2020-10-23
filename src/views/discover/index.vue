@@ -4,7 +4,7 @@
 
     <!-- 热门推荐 -->
     <recommend :topTitle="'热门推荐'" :topList="playlistHot" :cardList="cards" :activeIndex="-1" @getid="getIdCallBackHot">
-      <router-link class="mdui-chip" style="float: right;margin: 20px 10px 8px;" to="/discover/playlist">
+      <router-link class="mdui-chip" style="float: right;margin: 30px 10px 0px;" to="/discover/playlist">
         <span class="mdui-chip-title">更多</span>
       </router-link>
     </recommend>
@@ -12,14 +12,14 @@
     <!-- 新碟上架 -->
 
     <recommend :topTitle="'新碟上架'" :topList="albumListHot" :cardList="albums" :activeIndex="-1" @getid="getIdCallBackAlbums">
-      <router-link class="mdui-chip" style="float: right;margin: 20px 10px 8px;" to="/album/newest">
+      <router-link class="mdui-chip" style="float: right;margin: 30px 10px 0px;" to="/album/newest">
         <span class="mdui-chip-title">更多</span>
       </router-link>
     </recommend>
 
     <!-- 榜单 -->
     <recommend :topTitle="'热门榜单'" :topList="topList" :cardList="cardsTopList" @getid="getIdCallBackList">
-      <router-link class="mdui-chip" style="float: right;margin: 20px 10px 8px;" to="/discover/toplist">
+      <router-link class="mdui-chip" style="float: right;margin: 30px 10px 0px;" to="/discover/toplist">
         <span class="mdui-chip-title">更多</span>
       </router-link>
     </recommend>
@@ -31,6 +31,7 @@
 <script lang="ts">
 import { defineComponent, onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 
 import mdui from 'mdui'
 import axios from 'axios'
@@ -67,7 +68,8 @@ export default defineComponent({
     }
 
     const router = useRouter()
-
+    const store = useStore()
+    const { topListFull } = store.state
     const playlistHot: Array<S> = reactive([])
 
     // 新碟
@@ -103,7 +105,7 @@ export default defineComponent({
       return _nS
     }
 
-    const getTopList: (n: number) => void = n => {
+    const getCardTopList: (n: number) => void = n => {
       axios({
         url: `http://localhost:3000/playlist/detail?id=${n}`
       })
@@ -126,6 +128,13 @@ export default defineComponent({
         })
     }
 
+    const getTopList: () => void = () => {
+      for (let i = 0; i < 3; i++) {
+        topList[i] = store.state.topListFull[i]
+      }
+      getCardTopList(topList[0].id)
+    }
+
     const getIdCallBackHot: (n: { id: number; name: string }) => void = n => {
       router.push(`/discover/playlist/?cat=${n.name}`)
     }
@@ -135,7 +144,7 @@ export default defineComponent({
     }
 
     const getIdCallBackList: (n: { id: number; name: string }) => void = n => {
-      getTopList(n.id)
+      getCardTopList(n.id)
     }
 
     // 热门歌单分类
@@ -225,31 +234,21 @@ export default defineComponent({
       })
 
     // 首页榜单
-    axios({
-      url: 'http://localhost:3000/toplist'
-    })
-      .then(res => {
-        if (res.status === 200) {
-          const _res = res.data.list
-          for (let i = 0; i < 3; i++) {
-            topList.push({
-              id: _res[i].id,
-              name: _res[i].name
-            })
-          }
-          return Promise.resolve(topList[0].id)
-        }
+    if (sessionStorage.topListFull) {
+      store.state.topListFull = JSON.parse(sessionStorage.topListFull)
+      getTopList()
+    } else if (topListFull.length) {
+      getTopList()
+    } else {
+      store.dispatch('getTopListFull').then(() => {
+        getTopList()
       })
-      .then(id => {
-        getTopList(Number(id))
-      })
-      .catch(err => {
-        console.log(err)
-      })
+    }
 
     onMounted(() => {
       mdui.mutation()
     })
+
     return {
       getIdCallBackHot,
       getIdCallBackAlbums,

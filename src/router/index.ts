@@ -87,9 +87,8 @@ const routes: Array<RouteRecordRaw> = [
         }
       },
       {
-        path: 'store/product',
-        alias: 'store',
-        component: () => import(/* webpackChunkName: "store" */ '@/views/store/product.vue'),
+        path: 'store',
+        component: () => import(/* webpackChunkName: "store" */ '@/views/store/index.vue'),
         name: 'store',
         meta: {
           title: '商城',
@@ -97,12 +96,11 @@ const routes: Array<RouteRecordRaw> = [
         }
       },
       {
-        path: 'store/newalbum/:id',
-        component: () => import(/* webpackChunkName: "store" */ '@/views/store/newalbum.vue'),
-        name: 'storeNewalbum',
+        path: 'store/:id',
+        component: () => import(/* webpackChunkName: "store" */ '@/views/store/index.vue'),
+        name: 'storeId',
         meta: {
           title: '商城',
-          subtitle: '新碟',
           index: 3
         }
       },
@@ -118,7 +116,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: 'nmusician/:id',
         component: () => import(/* webpackChunkName: "nmusician" */ '@/views/nmusician/index.vue'),
-        name: 'nmusicianID',
+        name: 'nmusicianId',
         meta: {
           title: '音乐人',
           index: 4
@@ -168,7 +166,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: 'album',
         component: () => import(/* webpackChunkName: "album" */ '@/views/album/index.vue'),
-        name: 'albumnew',
+        name: 'albumNew',
         meta: {
           title: 'album'
         }

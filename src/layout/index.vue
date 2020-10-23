@@ -49,7 +49,9 @@
     <!-- 路由 transition -->
     <router-view v-slot="{ Component }">
       <transition name="slide-fade" mode="out-in">
-        <component :is="Component" />
+        <keep-alive include="Discover,TopList">
+          <component :is="Component" />
+        </keep-alive>
       </transition>
     </router-view>
   </div>
@@ -58,8 +60,7 @@
 <script lang="ts">
 import { defineComponent, onMounted, toRefs } from 'vue'
 import { useRouter } from 'vue-router'
-
-import store from '../store/index'
+import { useStore } from 'vuex'
 
 import mdui from 'mdui'
 
@@ -71,6 +72,8 @@ export default defineComponent({
   },
   setup() {
     const router = useRouter()
+    const store = useStore()
+    const { toolbarTitle, toolbarSubTitle, curIndex, curChildIndex } = toRefs(store.state)
 
     const listItem = [
       {
@@ -130,7 +133,10 @@ export default defineComponent({
 
     return {
       listItem,
-      ...toRefs(store.state),
+      toolbarTitle,
+      toolbarSubTitle,
+      curIndex,
+      curChildIndex,
       handleTypoTitle,
       handleTypoSubTitle
     }

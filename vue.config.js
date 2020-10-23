@@ -9,7 +9,7 @@ module.exports = {
   publicPath: process.env.NODE_ENV === 'development' ? '/' : '/',
   lintOnSave: process.env.NODE_ENV === 'development',
 
-  productionSourceMap: false,
+  productionSourceMap: process.env.NODE_ENV === 'development',
 
   devServer: {
     port: 7863,
