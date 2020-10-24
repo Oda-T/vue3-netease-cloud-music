@@ -156,6 +156,14 @@ const routes: Array<RouteRecordRaw> = [
         }
       },
       {
+        path: 'artist',
+        component: () => import(/* webpackChunkName: "artist" */ '@/views/artist/index.vue'),
+        name: 'artist',
+        meta: {
+          title: 'artist'
+        }
+      },
+      {
         path: 'playlist',
         component: () => import(/* webpackChunkName: "playlist" */ '@/views/playlist/index.vue'),
         name: 'playlist',
