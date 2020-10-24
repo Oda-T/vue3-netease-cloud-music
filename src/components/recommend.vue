@@ -165,12 +165,12 @@ export default defineComponent({
       letter-spacing: 2px;
     }
     .recommend-hot-chip {
-      margin: 31px 10px 0px;
+      margin: 0px 10px 24px;
     }
     .recommend-typo-bottom {
       position: absolute;
       left: 0px;
-      bottom: -11px;
+      bottom: 0px;
       height: 11px;
       width: 100%;
     }

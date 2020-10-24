@@ -96,9 +96,9 @@ const routes: Array<RouteRecordRaw> = [
         }
       },
       {
-        path: 'store/:id',
+        path: 'store/newalbum/detail',
         component: () => import(/* webpackChunkName: "store" */ '@/views/store/index.vue'),
-        name: 'storeId',
+        name: 'storeNewalbum',
         meta: {
           title: '商城',
           index: 3

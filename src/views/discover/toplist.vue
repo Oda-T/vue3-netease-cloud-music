@@ -1,35 +1,36 @@
 <template>
   <div>
-    <transition name="fade" mode="out-in">
-      <div v-if="!topListAll">
-        <!-- 特色榜单 -->
-        <keep-alive>
-          <recommend :topTitle="'特色音乐榜'" :topList="specialList" :cardList="specialCardList" @getid="getIdCallBackSpecial"></recommend>
-        </keep-alive>
+    <div v-if="!topListId">
+      <!-- 特色榜单 -->
+      <keep-alive>
+        <recommend :topTitle="'特色音乐榜'" :topList="specialList" :cardList="specialCardList" @getid="getIdCallBackSpecial"></recommend>
+      </keep-alive>
 
-        <!-- 全球媒体榜单 -->
-        <keep-alive>
-          <recommend :topTitle="'全球媒体榜'" :topList="globalList" :cardList="globalCardList" @getid="getIdCallBackGlobal"></recommend>
-        </keep-alive>
-      </div>
-      <div v-else>{{ topListAll }}</div>
-    </transition>
+      <!-- 全球媒体榜单 -->
+      <keep-alive>
+        <recommend :topTitle="'全球媒体榜'" :topList="globalList" :cardList="globalCardList" @getid="getIdCallBackGlobal"></recommend>
+      </keep-alive>
+    </div>
+    <!-- 榜单详情 -->
+    <play-list v-else :listId="topListId"></play-list>
   </div>
 </template>
 <script lang="ts">
 import { defineComponent, onActivated, onMounted, reactive, ref } from 'vue'
 import { useStore } from 'vuex'
+import { useRoute, onBeforeRouteUpdate } from 'vue-router'
 
 import mdui from 'mdui'
 import axios from 'axios'
 
 import Recommend from '../../components/recommend.vue'
-import { onBeforeRouteUpdate } from 'vue-router'
+import PlayList from '../../components/playlist.vue'
 
 export default defineComponent({
   name: 'TopList',
   components: {
-    Recommend
+    Recommend,
+    PlayList
   },
 
   setup() {
@@ -45,6 +46,7 @@ export default defineComponent({
     }
 
     const store = useStore()
+    const route = useRoute()
     const { topListFull } = store.state
 
     const specialList: Array<S> = reactive([])
@@ -53,7 +55,7 @@ export default defineComponent({
     const globalList: Array<S> = reactive([])
     const globalCardList: Array<D> = reactive([])
 
-    const topListAll = ref('')
+    const topListId = ref(0)
 
     const getPlayList: (n: number, arr: Array<D>) => void = (n, arr) => {
       axios({
@@ -110,30 +112,6 @@ export default defineComponent({
       getPlayList(n.id, globalCardList)
     }
 
-    // 获得排行榜歌单详情
-    const getTopListDetail: (n: number) => void = n => {
-      axios({
-        url: `http://localhost:3000/playlist/detail?id=${n}`
-      }).then(res => {
-        if (res.status === 200) {
-          console.log(res.data.playlist)
-        }
-      })
-    }
-
-    // 获取数据
-    onBeforeRouteUpdate(to => {
-      if (!to.query.id) {
-        // query null
-        topListAll.value = ''
-      } else {
-        // query id
-        topListAll.value = to.query.id.toString()
-
-        getTopListDetail(Number(to.query.id))
-      }
-    })
-
     if (topListFull.length) {
       getSpecialList()
       getGlobalList()
@@ -143,12 +121,28 @@ export default defineComponent({
         getGlobalList()
       })
     }
-    onActivated(() => {
-      console.log(11)
+
+    // 获取数据
+    onBeforeRouteUpdate(to => {
+      if (!to.query.id) {
+        // query null
+        topListId.value = 0
+      } else {
+        // query id
+        topListId.value = Number(to.query.id)
+      }
     })
 
     onMounted(() => {
       mdui.mutation()
+    })
+
+    onActivated(() => {
+      if (route.query.id) {
+        topListId.value = Number(route.query.id)
+      } else {
+        topListId.value = 0
+      }
     })
 
     return {
@@ -158,19 +152,8 @@ export default defineComponent({
       globalCardList,
       getIdCallBackSpecial,
       getIdCallBackGlobal,
-      topListAll
+      topListId
     }
   }
 })
 </script>
-<style lang="less" scoped>
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-</style>
