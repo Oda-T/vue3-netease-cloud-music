@@ -19,36 +19,64 @@
     <div class="c-playlist-main mdui-table-fluid">
       <table class="mdui-table mdui-table-hoverable">
         <tbody>
-          <tr v-for="item in playlist" :key="item.id">
-            <td>
-              <router-link :to="item.id"><img class="c-playlist-main-img" :src="item.imgUrl" :alt="item.name"/></router-link>
+          <tr v-for="(item, index) in playlist" :key="item.id" @mouseenter="curIndex = index" @mouseleave="curIndex = -1">
+            <td style="width:123px">
+              <router-link :to="item.id"><img class="c-playlist-main-img" v-lazy="item.imgUrl" :alt="item.name"/></router-link>
             </td>
-            <td>
+            <td style="width:674px;maxWidth:674px" class="mdui-text-truncate">
               <router-link :to="item.id">
                 {{ item.name }}
               </router-link>
             </td>
-            <td>
+            <td style="width:308px;maxWidth:308px" class="mdui-text-truncate">
               <router-link :to="item.artistUrl">
                 {{ item.artist }}
               </router-link>
             </td>
-            <td class="mdui-table-col-numeric">{{ item.time }}</td>
+            <td style="width:184px" class="c-playlist-main-table-btn">
+              <div :class="{ btnShow: curIndex !== index }">
+                <button class="mdui-btn mdui-btn-icon mdui-btn-dense"><i class="mdui-icon material-icons">add</i></button>
+                <button class="mdui-btn mdui-btn-icon mdui-btn-dense"><i class="mdui-icon material-icons">add_to_queue</i></button>
+                <button class="mdui-btn mdui-btn-icon mdui-btn-dense"><i class="mdui-icon material-icons">share</i></button>
+                <button class="mdui-btn mdui-btn-icon mdui-btn-dense"><i class="mdui-icon material-icons">vertical_align_bottom</i></button>
+              </div>
+            </td>
+            <td style="width:111px" class="mdui-table-col-numeric">{{ item.time }}</td>
           </tr>
         </tbody>
       </table>
+    </div>
+    <!-- 评论 -->
+    <div class="c-playlist-comments-title mdui-typo">
+      <h2>评论</h2>
+      <div class="mdui-textfield mdui-textfield-floating-label">
+        <label class="mdui-textfield-label">说点什么</label>
+        <input class="mdui-textfield-input" type="email" />
+      </div>
+    </div>
+    <comments :commentsDetail="commentsDetail" />
+
+    <!-- 分页 -->
+    <div class="c-playlist-comments-pagination">
+      <span class="comments-pagination-item" v-for="item in 8" :key="item.id">{{ item }}</span>
+      <span class="comments-pagination-item">……</span>
+      <span class="comments-pagination-item">{{ pageCount }}</span>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, reactive, onMounted, ref } from 'vue'
+import Comments from './comments.vue'
 
 import mdui from 'mdui'
 import axios from 'axios'
 
 export default defineComponent({
   name: 'PlayList',
+  components: {
+    Comments
+  },
   props: {
     listId: Number
   },
@@ -61,10 +89,25 @@ export default defineComponent({
       imgUrl: string
       time: string
     }
+    interface C {
+      username: string
+      useravatar: string
+      content: string
+      likedcount: number
+      time: string
+      usertype: number
+      replied: {
+        username: string | undefined
+        content: string | undefined
+      }
+    }
 
     const headerDetail = ref({})
+    const commentsDetail: Array<C> = reactive([])
+    const pageCount = ref(0)
 
     const playlist: Array<T> = reactive([])
+    const curIndex = ref(-1)
 
     const handleTime: (d: number) => string = d => {
       const _d = new Date(d)
@@ -118,6 +161,33 @@ export default defineComponent({
         })
     }
 
+    const getComments: (n: number) => void = n => {
+      axios({
+        url: `http://localhost:3000/comment/playlist?id=19723756&limit=20&offset=${n}`
+      }).then(res => {
+        const _com = res.data.comments
+        pageCount.value = Math.ceil(res.data.total / 20)
+
+        for (let i = 0; i < 20; i++) {
+          commentsDetail[i] = {
+            username: _com[i].user.nickname,
+            useravatar: _com[i].user.avatarUrl + '?param=30y30',
+            usertype: _com[i].user.userType,
+            content: _com[i].content,
+            likedcount: _com[i].likedCount,
+            time: handleTime(_com[i].time),
+            replied: {
+              username: _com[i].beReplied.length ? _com[i].beReplied[0].user.nickname : undefined,
+              content: _com[i].beReplied.length ? _com[i].beReplied[0].content : undefined
+            }
+          }
+        }
+      })
+    }
+
+    //首页评论
+    getComments(0)
+
     props.listId && getTopListDetail(props.listId)
 
     onMounted(() => {
@@ -125,8 +195,11 @@ export default defineComponent({
     })
 
     return {
+      curIndex,
       headerDetail,
-      playlist
+      playlist,
+      commentsDetail,
+      pageCount
     }
   }
 })
@@ -134,20 +207,21 @@ export default defineComponent({
 <style lang="less" scoped>
 .c-playlist-header {
   position: relative;
-  width: 100%;
+  width: 1400px;
+  margin: 0 auto;
   height: 360px;
   overflow: hidden;
   .c-playlist-header-img {
     position: absolute;
-    left: 135px;
+    left: 0px;
     top: 50px;
     width: 264px;
     height: 264px;
   }
   .c-playlist-header-text {
     position: absolute;
-    left: 450px;
-    top: 24px;
+    left: 310px;
+    top: 25px;
 
     .c-playlist-header-subscribedCount {
       margin: 0 50px;
@@ -160,5 +234,30 @@ export default defineComponent({
   .c-playlist-main-img {
     vertical-align: middle;
   }
+  .c-playlist-main-table-btn {
+    height: 57px;
+    overflow: hidden;
+    opacity: 0.7;
+  }
+}
+.c-playlist-comments-title {
+  width: 1400px;
+  margin: 100px auto 80px auto;
+}
+
+.c-playlist-comments-pagination {
+  width: 570px;
+  margin: 50px auto;
+  .comments-pagination-item {
+    display: inline-block;
+    padding: 0 10px;
+    margin: 0 10px;
+    cursor: pointer;
+    text-align: center;
+  }
+}
+
+.btnShow {
+  display: none;
 }
 </style>

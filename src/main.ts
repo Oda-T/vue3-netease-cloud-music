@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import VueLazyLoad from 'vue3-lazyload'
 
 import 'mdui/src/index.less' // mdui 自带normalize.css
 
@@ -16,4 +17,5 @@ import './utils/permission.ts'
 createApp(App)
   .use(store)
   .use(router)
+  .use(VueLazyLoad)
   .mount('#app')

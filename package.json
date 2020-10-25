@@ -13,6 +13,7 @@
     "mdui": "^1.0.0",
     "vue": "^3.0.0-0",
     "vue-router": "^4.0.0-0",
+    "vue3-lazyload": "^0.2.1",
     "vuex": "^4.0.0-0"
   },
   "devDependencies": {

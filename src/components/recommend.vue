@@ -50,6 +50,7 @@ import Card from './card.vue'
 import mdui from 'mdui'
 
 export default defineComponent({
+  nam: 'Recommend',
   props: {
     cardList: Array,
     topList: Array,
@@ -70,6 +71,8 @@ export default defineComponent({
 
     const toggleCoverShow = ref(true)
 
+    let n: number
+
     const handleCardItemContainerLeft: () => void = () => {
       if (cardItemContainerLeft.value === '0px') {
         return
@@ -80,12 +83,12 @@ export default defineComponent({
     }
 
     const handleCardItemContainerRight: () => void = () => {
-      if (cardItemContainerLeft.value === '-856px') {
+      if (cardItemContainerLeft.value === `-${856 + n * 227}px`) {
         return
       }
       arrowShow.value = !arrowShow.value
 
-      cardItemContainerLeft.value = '-856px'
+      cardItemContainerLeft.value = `-${856 + n * 227}px`
     }
 
     const handleListSwitch: (one: object, two: number) => void = (obj, index) => {
@@ -112,7 +115,9 @@ export default defineComponent({
       () => {
         return props.cardList
       },
-      () => {
+      val => {
+        n = val ? val.length - 10 : 0
+
         toggleCoverShow.value = false
       },
       { deep: true }

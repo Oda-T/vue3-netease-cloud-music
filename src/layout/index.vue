@@ -45,7 +45,8 @@
 
     <!-- 底栏播放器 -->
     <player ids="" />
-
+    <!-- 返回顶端 -->
+    <back-to-top />
     <!-- 路由 transition -->
     <router-view v-slot="{ Component }">
       <transition name="slide-fade" mode="out-in">
@@ -65,10 +66,12 @@ import { useStore } from 'vuex'
 import mdui from 'mdui'
 
 import Player from '../components/player.vue'
+import BackToTop from '../components/backtotop.vue'
 
 export default defineComponent({
   components: {
-    Player
+    Player,
+    BackToTop
   },
   setup() {
     const router = useRouter()

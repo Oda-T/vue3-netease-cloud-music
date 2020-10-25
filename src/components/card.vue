@@ -3,7 +3,7 @@
     <!-- 卡片的媒体内容，可以包含图片、视频等媒体内容，以及标题、副标题 -->
     <div class="mdui-card-media" @mouseenter="btnShow = !btnShow" @mouseleave="btnShow = !btnShow">
       <router-link :to="item.id">
-        <img :src="`${item.picUrl}?param=150y150`" />
+        <img v-lazy="`${item.picUrl}?param=200y200`" />
       </router-link>
 
       <transition name="fade">

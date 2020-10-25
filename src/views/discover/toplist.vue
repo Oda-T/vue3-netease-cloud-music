@@ -72,7 +72,7 @@ export default defineComponent({
               picUrl: res.data.playlist.coverImgUrl
             }
 
-            for (let i = 0; i < 9; i++) {
+            for (let i = 0; i < 10; i++) {
               arr[i + 1] = {
                 id: '/song?id=' + _res[i].id.toString(),
                 name: _res[i].name,
