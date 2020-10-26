@@ -17,6 +17,7 @@ export default defineComponent({
         behavior: 'smooth'
       })
     }
+    const h = window.outerHeight
 
     let _timer: number
 
@@ -24,7 +25,7 @@ export default defineComponent({
       clearTimeout(_timer)
       _timer = setTimeout(() => {
         const _scrollTop = document.documentElement.scrollTop || document.body.scrollTop
-        _scrollTop > 0 ? (isShow.value = false) : (isShow.value = true)
+        _scrollTop > h / 2 ? (isShow.value = false) : (isShow.value = true)
       }, 20)
     })
 

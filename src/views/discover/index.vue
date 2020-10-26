@@ -1,7 +1,7 @@
 <template>
   <div>
+    <!-- swipe -->
     <swipe />
-
     <!-- 热门推荐 -->
     <recommend :topTitle="'热门推荐'" :topList="playlistHot" :cardList="cards" :activeIndex="-1" @getid="getIdCallBackHot">
       <router-link class="mdui-chip" style="float: right;margin: 30px 10px 0px;" to="/discover/playlist">
@@ -10,7 +10,6 @@
     </recommend>
 
     <!-- 新碟上架 -->
-
     <recommend :topTitle="'新碟上架'" :topList="albumListHot" :cardList="albums" :activeIndex="-1" @getid="getIdCallBackAlbums">
       <router-link class="mdui-chip" style="float: right;margin: 30px 10px 0px;" to="/album/newest">
         <span class="mdui-chip-title">更多</span>
@@ -23,8 +22,6 @@
         <span class="mdui-chip-title">更多</span>
       </router-link>
     </recommend>
-
-    <div class="discover-bottom"></div>
   </div>
 </template>
 
@@ -174,7 +171,7 @@ export default defineComponent({
       .then(res => {
         if (res.status === 200) {
           const _res = res.data.result
-          for (let i = 0; i < 5; i++) {
+          for (let i = 0; i < 7; i++) {
             cards.push({
               id: '/playlist?id=' + _res[i].id.toString(),
               name: _res[i].name,
@@ -195,7 +192,7 @@ export default defineComponent({
             if (res.status === 200) {
               const _res = res.data.result
 
-              for (let i = 0; i < 5; i++) {
+              for (let i = 0; i < 3; i++) {
                 cards.push({
                   id: '/dj?id=' + _res[i].id.toString(),
                   name: _res[i].name,
@@ -264,5 +261,3 @@ export default defineComponent({
   }
 })
 </script>
-
-<style lang="less" scoped></style>

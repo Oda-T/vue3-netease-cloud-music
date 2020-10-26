@@ -15,6 +15,7 @@
         <h5 class="c-playlist-header-description">{{ headerDetail.description }}</h5>
       </div>
     </header>
+
     <!-- 歌曲详情 -->
     <div class="c-playlist-main mdui-table-fluid">
       <table class="mdui-table mdui-table-hoverable">
@@ -46,6 +47,7 @@
         </tbody>
       </table>
     </div>
+
     <!-- 评论 -->
     <div class="c-playlist-comments-title mdui-typo">
       <h2>评论</h2>
@@ -57,17 +59,14 @@
     <comments :commentsDetail="commentsDetail" />
 
     <!-- 分页 -->
-    <div class="c-playlist-comments-pagination">
-      <span class="comments-pagination-item" v-for="item in 8" :key="item.id">{{ item }}</span>
-      <span class="comments-pagination-item">……</span>
-      <span class="comments-pagination-item">{{ pageCount }}</span>
-    </div>
+    <pagination :pageCount="pageCount" @get-age-umber="getPageNumber" />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, reactive, onMounted, ref } from 'vue'
 import Comments from './comments.vue'
+import Pagination from './pagination.vue'
 
 import mdui from 'mdui'
 import axios from 'axios'
@@ -75,7 +74,8 @@ import axios from 'axios'
 export default defineComponent({
   name: 'PlayList',
   components: {
-    Comments
+    Comments,
+    Pagination
   },
   props: {
     listId: Number
@@ -111,7 +111,7 @@ export default defineComponent({
 
     const handleTime: (d: number) => string = d => {
       const _d = new Date(d)
-      return `${_d.getMonth() + 1}月${_d.getDate()}日`
+      return `${_d.getFullYear()}年${_d.getMonth() + 1}月${_d.getDate()}日`
     }
 
     const getDuoNum: (d: number) => string | number = d => {
@@ -144,7 +144,7 @@ export default defineComponent({
               updateTime: handleTime(_res.updateTime)
             }
 
-            for (let i = 0; i < 100; i++) {
+            for (let i = 0; i < _tracks.length; i++) {
               playlist[i] = {
                 name: _tracks[i].name,
                 id: '/song?id=' + _tracks[i].id,
@@ -161,14 +161,16 @@ export default defineComponent({
         })
     }
 
-    const getComments: (n: number) => void = n => {
+    const getComments: (id: number, n: number) => void = (id, n) => {
       axios({
-        url: `http://localhost:3000/comment/playlist?id=19723756&limit=20&offset=${n}`
+        url: `http://localhost:3000/comment/playlist?id=${id}&limit=20&offset=${n}`
       }).then(res => {
         const _com = res.data.comments
         pageCount.value = Math.ceil(res.data.total / 20)
 
-        for (let i = 0; i < 20; i++) {
+        commentsDetail.length = 0
+
+        for (let i = 0; i < _com.length; i++) {
           commentsDetail[i] = {
             username: _com[i].user.nickname,
             useravatar: _com[i].user.avatarUrl + '?param=30y30',
@@ -185,10 +187,14 @@ export default defineComponent({
       })
     }
 
-    //首页评论
-    getComments(0)
+    // 分页
+    const getPageNumber: (n: number) => void = n => {
+      props.listId && getComments(props.listId, 20 * (n - 1))
+    }
 
     props.listId && getTopListDetail(props.listId)
+    //首页评论
+    props.listId && getComments(props.listId, 0)
 
     onMounted(() => {
       mdui.mutation()
@@ -199,7 +205,8 @@ export default defineComponent({
       headerDetail,
       playlist,
       commentsDetail,
-      pageCount
+      pageCount,
+      getPageNumber
     }
   }
 })
@@ -244,19 +251,6 @@ export default defineComponent({
   width: 1400px;
   margin: 100px auto 80px auto;
 }
-
-.c-playlist-comments-pagination {
-  width: 570px;
-  margin: 50px auto;
-  .comments-pagination-item {
-    display: inline-block;
-    padding: 0 10px;
-    margin: 0 10px;
-    cursor: pointer;
-    text-align: center;
-  }
-}
-
 .btnShow {
   display: none;
 }

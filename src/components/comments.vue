@@ -10,8 +10,9 @@
       <p class="comments-item-comments">{{ item.content }}</p>
       <!-- 回复 -->
       <div v-if="item.replied.username" class="comments-item-beforereplay">
-        <p class="beforereplay-user">{{ item.replied.username }}</p>
-        <p class="beforereplay-comments">{{ item.replied.content }}</p>
+        <p v-if="item.replied.content" class="beforereplay-user">{{ item.replied.username }}</p>
+        <p v-if="item.replied.content" class="beforereplay-comments">{{ item.replied.content }}</p>
+        <p v-else class="beforereplay-comments">该评论已删除</p>
       </div>
       <!-- 点赞 -->
       <i class="comments-item-replaybtn mdui-icon material-icons">textsms</i>
@@ -70,7 +71,8 @@ export default defineComponent({
     }
     .comments-item-comments {
       font-size: 15px;
-      margin: 0px 20px 3px 60px;
+      line-height: 30px;
+      margin: 0px 200px 0px 60px;
     }
     .comments-item-replaybtn {
       margin-right: 20px;
@@ -104,8 +106,9 @@ export default defineComponent({
       }
       .beforereplay-comments {
         font-size: 13px;
-        margin: 8px 0px 8px 40px;
+        margin: 5px 0px 5px 8px;
         color: rgba(0, 0, 0, 0.7);
+        line-height: 23px;
       }
     }
   }

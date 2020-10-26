@@ -1,7 +1,5 @@
 <template>
-  <div>
-    <div>{{ count }}</div>
-  </div>
+  <div>{{ count }}</div>
 </template>
 <script lang="ts">
 import { defineComponent, reactive, toRefs, computed } from 'vue'
