@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- 列表 -->
-    <recommend :topTitle="'全部歌单'" :topList="TopList" :activeIndex="-2" @getid="getIdCallBack" />
+    <recommend :topTitle="'全部歌单'" :topList="TopList" @getid="getIdCallBack" />
     <!-- 推荐 -->
     <div class="playlist-card-container">
       <div class="playlist-card-item mdui-card mdui-hoverable" v-for="item in cardList" :key="item.id">
@@ -29,11 +29,6 @@ export default defineComponent({
     Pagination
   },
   setup() {
-    interface S {
-      category: number
-      name: string
-    }
-
     interface D {
       id: string
       name: string
@@ -41,7 +36,7 @@ export default defineComponent({
       picUrl: string
     }
 
-    const TopList: Array<S> = reactive([])
+    const TopList: Array<{ name: string }> = reactive([])
     const cardList: Array<D> = reactive([])
     const totalListCount = ref(0)
 
@@ -55,9 +50,11 @@ export default defineComponent({
         .then(res => {
           if (res.status === 200) {
             const _res = res.data.sub
+            TopList[0] = {
+              name: '全部'
+            }
             for (let i = 0; i < _res.length; i++) {
-              TopList[i] = {
-                category: _res[i].category,
+              TopList[i + 1] = {
                 name: _res[i].name
               }
             }
@@ -107,12 +104,7 @@ export default defineComponent({
 
     getTopList()
 
-    getCardList('全部')
-    axios({
-      url: `http://localhost:3000/top/playlist`
-    }).then(res => {
-      totalListCount.value = Math.ceil(res.data.total / 60)
-    })
+    getIdCallBack({ name: '全部' })
 
     onMounted(() => {
       mdui.mutation()
