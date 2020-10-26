@@ -59,12 +59,13 @@
     <comments :commentsDetail="commentsDetail" />
 
     <!-- 分页 -->
-    <pagination :pageCount="pageCount" @get-age-umber="getPageNumber" />
+    <pagination :pageCount="pageCount" @get-age-number="getPageNumber" />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, reactive, onMounted, ref } from 'vue'
+
 import Comments from './comments.vue'
 import Pagination from './pagination.vue'
 

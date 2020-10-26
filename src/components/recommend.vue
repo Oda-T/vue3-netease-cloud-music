@@ -1,6 +1,6 @@
 <template>
   <div class="c-hot-recommend">
-    <div class="recommend-playlist">
+    <div v-if="topList" class="recommend-playlist">
       <!-- 分割线 -->
       <div class="recommend-typo-top mdui-typo">
         <hr />
@@ -17,7 +17,7 @@
         <hr />
       </div>
     </div>
-    <div style="width:100%;height:350px">
+    <div v-if="cardList" style="width:100%;height:350px">
       <transition name="fade" mode="out-in">
         <div v-if="toggleCoverShow" class="recommend-card-cover">
           <div class="recommend-card-inner"></div>
@@ -77,18 +77,17 @@ export default defineComponent({
       if (cardItemContainerLeft.value === '0px') {
         return
       }
-      arrowShow.value = !arrowShow.value
-
       cardItemContainerLeft.value = '0px'
+      arrowShow.value = !arrowShow.value
     }
 
     const handleCardItemContainerRight: () => void = () => {
       if (cardItemContainerLeft.value === `-${856 + n * 227}px`) {
         return
       }
-      arrowShow.value = !arrowShow.value
-
       cardItemContainerLeft.value = `-${856 + n * 227}px`
+
+      arrowShow.value = !arrowShow.value
     }
 
     const handleListSwitch: (one: object, two: number) => void = (obj, index) => {
@@ -120,7 +119,7 @@ export default defineComponent({
 
         toggleCoverShow.value = false
       },
-      { deep: true }
+      { deep: true, immediate: true }
     )
 
     onMounted(() => {

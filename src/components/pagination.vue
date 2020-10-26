@@ -4,7 +4,7 @@
       class="pagination-item"
       :class="{ 'pagination-item-action': curIndex === item }"
       :style="{ cursor: item !== '......' ? 'pointer' : 'default' }"
-      @click="handlePagItem(item, index)"
+      @click.stop="handlePagItem(item, index)"
       v-for="(item, index) in stack"
       :key="index"
     >
@@ -16,7 +16,7 @@
       class="pagination-item"
       :class="{ 'pagination-item-action': curIndex === item }"
       :style="{ cursor: item !== '......' ? 'pointer' : 'default' }"
-      @click="handlePagItem(item)"
+      @click.stop="handlePagItem(item)"
       v-for="item in pageCount"
       :key="item.id"
       >{{ item }}</span
@@ -73,7 +73,7 @@ export default defineComponent({
       }
     }
 
-    const handlePagItem: (item: number | string, index: number) => void = (item, index) => {
+    const handlePagItem: (item: number | string, index?: number) => void = (item, index) => {
       if (typeof item === 'string' || !prop.pageCount) {
         return false
       }
@@ -83,7 +83,7 @@ export default defineComponent({
       }
 
       if (item === prop.pageCount) {
-        getStack(Number(prop.pageCount - 11))
+        getStack(Number(prop.pageCount) - 11)
       }
 
       // 边界条件
@@ -96,7 +96,7 @@ export default defineComponent({
 
       curIndex.value = item
 
-      emit('get-age-umber', item)
+      emit('get-age-number', item)
     }
     watch(
       () => {
