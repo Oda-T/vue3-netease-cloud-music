@@ -44,7 +44,7 @@
     </div>
 
     <!-- 底栏播放器 -->
-    <player ids="342345" />
+    <player ids="" />
     <!-- 返回顶端 -->
     <back-to-top />
 
