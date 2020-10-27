@@ -2,35 +2,40 @@
   <div>
     <div v-if="!topListId">
       <!-- 特色榜单 -->
-      <keep-alive>
-        <recommend :topTitle="'特色音乐榜'" :topList="specialList" :cardList="specialCardList" @getid="getIdCallBackSpecial"></recommend>
-      </keep-alive>
-
+      <recommend :topTitle="'特色音乐榜'" :activeName="'云音乐飙升榜'" :topList="specialList" :cardList="specialCardList" @getid="getIdCallBackSpecial"></recommend>
       <!-- 全球媒体榜单 -->
-      <keep-alive>
-        <recommend :topTitle="'全球媒体榜'" :topList="globalList" :cardList="globalCardList" @getid="getIdCallBackGlobal"></recommend>
-      </keep-alive>
+      <recommend :topTitle="'全球媒体榜'" :activeName="'云音乐说唱榜'" :topList="globalList" :cardList="globalCardList" @getid="getIdCallBackGlobal"></recommend>
     </div>
     <!-- 榜单详情 -->
-    <play-list v-else :listId="topListId"></play-list>
+    <div v-else>
+      <play-list :headerDetail="headerDetail" :listDetail="listDetail" />
+      <!-- 评论 -->
+      <comments :commentsDetail="commentsDetail" />
+      <!-- 分页 -->
+      <pagination :pageCount="pageCount" @pagenumber="pageNumber" />
+    </div>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, onActivated, onMounted, reactive, ref } from 'vue'
+import { defineComponent, onMounted, reactive, ref, watchEffect } from 'vue'
 import { useStore } from 'vuex'
-import { useRoute, onBeforeRouteUpdate } from 'vue-router'
+import { useRoute } from 'vue-router'
 
 import mdui from 'mdui'
 import axios from 'axios'
 
 import Recommend from '../../components/recommend.vue'
 import PlayList from '../../components/playlist.vue'
+import Comments from '../../components/comments.vue'
+import Pagination from '../../components/pagination.vue'
 
 export default defineComponent({
   name: 'TopList',
   components: {
     Recommend,
-    PlayList
+    PlayList,
+    Comments,
+    Pagination
   },
 
   setup() {
@@ -45,6 +50,28 @@ export default defineComponent({
       picUrl: string
     }
 
+    interface C {
+      username: string
+      useravatar: string
+      content: string
+      likedcount: number
+      time: string
+      usertype: number
+      replied: {
+        username: string | undefined
+        content: string | undefined
+      }
+    }
+
+    interface T {
+      name: string
+      id: string
+      artist: string
+      artistUrl: string
+      imgUrl: string
+      time: string
+    }
+
     const store = useStore()
     const route = useRoute()
     const { topListFull } = store.state
@@ -55,9 +82,20 @@ export default defineComponent({
     const globalList: Array<S> = reactive([])
     const globalCardList: Array<D> = reactive([])
 
+    const pageCount = ref(0)
+
+    const commentsDetail: Array<C> = reactive([])
+
+    const headerDetail = ref({})
+    const listDetail: Array<T> = reactive([])
+
     const topListId = ref(0)
 
-    const getPlayList: (n: number, arr: Array<D>) => void = (n, arr) => {
+    const handleTime: (d: number) => string = d => {
+      const _d = new Date(d)
+      return `${_d.getFullYear()}年${_d.getMonth() + 1}月${_d.getDate()}日`
+    }
+    const getPlayList: (n: number, arr: D[]) => void = (n, arr) => {
       axios({
         url: `http://localhost:3000/playlist/detail?id=${n}`
       })
@@ -100,7 +138,6 @@ export default defineComponent({
       for (let i = 5; i < 35; i++) {
         globalList[i - 5] = store.state.topListFull[i]
       }
-
       getPlayList(globalList[0].id, globalCardList)
     }
 
@@ -112,6 +149,7 @@ export default defineComponent({
       getPlayList(n.id, globalCardList)
     }
 
+    // 获取音乐榜媒体榜缓存
     if (topListFull.length) {
       getSpecialList()
       getGlobalList()
@@ -121,28 +159,102 @@ export default defineComponent({
         getGlobalList()
       })
     }
+    const getDuoNum: (d: number) => string | number = d => {
+      return d >= 10 ? d : `0${d}`
+    }
 
-    // 获取数据
-    onBeforeRouteUpdate(to => {
-      if (!to.query.id) {
-        // query null
-        topListId.value = 0
+    const handleDrTime: (d: number) => string = d => {
+      const _d = Math.floor(d / 1000)
+      return `${Math.floor(_d / 60)}:${getDuoNum(Math.floor(_d % 60))}`
+    }
+
+    const getComments: (id: number, n: number) => void = (id, n) => {
+      commentsDetail.length = 0
+
+      axios({
+        url: `http://localhost:3000/comment/playlist?id=${id}&limit=20&offset=${n}`
+      })
+        .then(res => {
+          const _com = res.data.comments
+          pageCount.value = Math.ceil(res.data.total / 20)
+
+          for (let i = 0; i < _com.length; i++) {
+            commentsDetail[i] = {
+              username: _com[i].user.nickname,
+              useravatar: _com[i].user.avatarUrl + '?param=30y30',
+              usertype: _com[i].user.userType,
+              content: _com[i].content,
+              likedcount: _com[i].likedCount,
+              time: handleTime(_com[i].time),
+              replied: {
+                username: _com[i].beReplied.length ? _com[i].beReplied[0].user.nickname : undefined,
+                content: _com[i].beReplied.length ? _com[i].beReplied[0].content : undefined
+              }
+            }
+          }
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
+
+    const getTopListDetail: (id: number) => void = id => {
+      listDetail.length = 0
+
+      axios({
+        url: `http://localhost:3000/playlist/detail?id=${id}`
+      })
+        .then(res => {
+          if (res.status === 200) {
+            const _res = res.data.playlist
+            const _tracks = res.data.playlist.tracks
+
+            headerDetail.value = {
+              name: _res.name,
+              coverImgUrl: _res.coverImgUrl + '?param=264y264',
+              description: _res.description,
+              trackCount: _res.trackCount,
+              playCount: _res.playCount,
+              shareCount: _res.shareCount,
+              commentCount: _res.commentCount,
+              subscribedCount: _res.subscribedCount,
+              updateTime: handleTime(_res.updateTime)
+            }
+
+            for (let i = 0; i < _tracks.length; i++) {
+              listDetail[i] = {
+                name: _tracks[i].name,
+                id: '/song?id=' + _tracks[i].id,
+                artist: _tracks[i].ar[0].name,
+                artistUrl: '/artist?id' + _tracks[i].ar[0].id,
+                imgUrl: _tracks[i].al.picUrl + '?param=32y32',
+                time: handleDrTime(_tracks[i].dt)
+              }
+            }
+          }
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
+
+    const pageNumber: (n: number) => void = n => {
+      getComments(Number(route.query.id), 20 * (n - 1))
+    }
+
+    // 观测route id
+    watchEffect(() => {
+      if (route.query.id) {
+        topListId.value = Number(route.query.id)
+        getComments(Number(route.query.id), 0)
+        getTopListDetail(Number(route.query.id))
       } else {
-        // query id
-        topListId.value = Number(to.query.id)
+        topListId.value = 0
       }
     })
 
     onMounted(() => {
       mdui.mutation()
-    })
-
-    onActivated(() => {
-      if (route.query.id) {
-        topListId.value = Number(route.query.id)
-      } else {
-        topListId.value = 0
-      }
     })
 
     return {
@@ -152,7 +264,12 @@ export default defineComponent({
       globalCardList,
       getIdCallBackSpecial,
       getIdCallBackGlobal,
-      topListId
+      topListId,
+      commentsDetail,
+      pageCount,
+      pageNumber,
+      listDetail,
+      headerDetail
     }
   }
 })

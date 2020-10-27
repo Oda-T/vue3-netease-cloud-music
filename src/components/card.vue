@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <div class="c-card-item mdui-card mdui-hoverable">
     <!-- 卡片的媒体内容，可以包含图片、视频等媒体内容，以及标题、副标题 -->
     <div class="mdui-card-media" @mouseenter="btnShow = !btnShow" @mouseleave="btnShow = !btnShow">
       <router-link :to="item.id">
-        <img v-lazy="`${item.picUrl}?param=200y200`" />
+        <img v-lazy="`${item.picUrl}?param=150y150`" />
       </router-link>
 
       <transition name="fade">
@@ -21,11 +21,11 @@
 
     <!-- 卡片的标题和副标题 -->
     <div class="mdui-card-primary">
-      <div class="mdui-card-primary-title mdui-text-truncate recommend-card-list-title">
+      <div class="mdui-card-primary-title mdui-text-truncate c-card-list-title">
         <i v-if="item.type === 1" style="border:1px solid red;border-radius:5px;font-size:13px;letter-spacing:-2px;margin-right:8px;padding:2px;">电台节目</i>
-        <router-link :to="item.id" class="recommend-card-list-title-inner">{{ item.name }}</router-link>
+        <router-link :to="item.id" class="c-card-list-title-inner">{{ item.name }}</router-link>
       </div>
-      <div v-if="item.playCount" class="mdui-card-primary-subtitle mdui-text-truncate"><i class="recommend-card-list-title-icon mdui-icon material-icons">headset</i>{{ item.playCount }}</div>
+      <div v-if="item.playCount" class="mdui-card-primary-subtitle mdui-text-truncate"><i class="c-card-list-title-icon mdui-icon material-icons">headset</i>{{ item.playCount }}</div>
       <div v-if="item.artist" class="mdui-card-primary-subtitle mdui-text-truncate">{{ item.artist }}</div>
     </div>
   </div>
@@ -50,6 +50,11 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
+.c-card-item {
+  display: inline-block;
+  width: 192px;
+  margin: 35px 15px 0px 15px;
+}
 .c-card-menu-vert-btn {
   background-color: rgba(0, 0, 0, 0.4);
 }
@@ -62,21 +67,21 @@ export default defineComponent({
     background-color: rgba(0, 0, 0, 0.4);
   }
 }
-.recommend-card-list-title {
+.c-card-list-title {
   font-size: 16px;
   margin-top: -10px;
   margin-bottom: 5px;
   line-height: 28px;
   height: 34px;
 
-  .recommend-card-list-title-inner {
+  .c-card-list-title-inner {
     text-decoration: none;
     &:hover {
       text-decoration: underline;
     }
   }
 }
-.recommend-card-list-title-icon {
+.c-card-list-title-icon {
   font-size: 20px;
   vertical-align: text-top;
 }

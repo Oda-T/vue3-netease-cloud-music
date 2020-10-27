@@ -96,7 +96,7 @@ export default defineComponent({
 
       curIndex.value = item
 
-      emit('get-age-number', item)
+      emit('pagenumber', item)
     }
     watch(
       () => {

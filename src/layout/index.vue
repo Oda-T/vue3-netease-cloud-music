@@ -44,15 +44,14 @@
     </div>
 
     <!-- 底栏播放器 -->
-    <player ids="" />
+    <player ids="342345" />
     <!-- 返回顶端 -->
     <back-to-top />
+
     <!-- 路由 transition -->
     <router-view v-slot="{ Component }">
       <transition name="slide-fade" mode="out-in">
-        <keep-alive include="Discover,TopList">
-          <component :is="Component" />
-        </keep-alive>
+        <component :is="Component" />
       </transition>
     </router-view>
   </div>

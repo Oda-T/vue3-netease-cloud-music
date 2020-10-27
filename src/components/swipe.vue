@@ -33,29 +33,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref, onMounted } from 'vue'
-
-import axios from 'axios'
+import { defineComponent, ref, watchEffect } from 'vue'
 
 export default defineComponent({
   name: 'Swipe',
-
-  setup() {
-    interface T {
-      imageUrl: string
-      encodeId: string
-      typeTitle: string
-      url: string
-    }
-
-    interface B {
-      bgSrc: string
-      imgSrc: string
-      aHref: string
-    }
-
-    const banners: Array<B> = reactive([])
-
+  props: {
+    banners: Object
+  },
+  setup(props) {
     //初始化index
     const preIndex = ref(0)
     const curIndex = ref(0)
@@ -63,29 +48,6 @@ export default defineComponent({
 
     let nodeLength = 0
     let timer = 0
-
-    // 根据图片类型不同，路由跳转到不同界面
-    const handleHref: (one: string, two: string, three: string) => string = (id, title, url) => {
-      if (id == '0') {
-        return url.slice(url.indexOf('com/') + 3)
-      } else if (title === '新碟首发') {
-        return '/album?id=' + id
-      } else {
-        return '/song?id=' + id
-      }
-    }
-
-    const handleBannerCallBack: (one: Array<T>) => void = _b => {
-      nodeLength = _b.length
-
-      for (let i = 0, j = nodeLength; i < j; i++) {
-        banners.push({
-          bgSrc: _b[i].imageUrl + '?imageView&blur=40x20',
-          imgSrc: _b[i].imageUrl + '?imageView&quality=30',
-          aHref: handleHref(_b[i].encodeId, _b[i].typeTitle, _b[i].url)
-        })
-      }
-    }
 
     const getCorrectIndex: (one: number) => number = index => {
       if (index >= nodeLength) {
@@ -140,6 +102,8 @@ export default defineComponent({
 
     // 初始化swipe
     const initSwipe: () => void = () => {
+      clearInterval(timer)
+
       preIndex.value = getCorrectIndex(-1)
       curIndex.value = getCorrectIndex(0)
       nextIndex.value = getCorrectIndex(1)
@@ -147,29 +111,17 @@ export default defineComponent({
       handleInterval()
     }
 
-    onMounted(() => {
-      axios({
-        url: 'http://localhost:3000/banner?type=0',
-        method: 'get'
-      })
-        .then(res => {
-          handleBannerCallBack(res.data.banners) // 初始化banner
-
-          return Promise.resolve()
-        })
-        .then(() => {
-          initSwipe()
-        })
-        .catch(err => {
-          console.error(err)
-        })
+    watchEffect(() => {
+      if (props.banners) {
+        nodeLength = props.banners.length
+        initSwipe()
+      }
     })
 
     return {
       preIndex,
       curIndex,
       nextIndex,
-      banners,
       handleClickSwipe,
       handleClickArrow
     }

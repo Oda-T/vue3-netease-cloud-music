@@ -6,7 +6,7 @@
         <hr />
       </div>
       <span class="recommend-title mdui-text-color-red-900">{{ topTitle }}</span>
-      <div class="recommend-hot-chip mdui-chip" v-for="(item, index) in topList" :class="{ 'mdui-color-red-900': index === listIndex }" :key="item.id" @click="handleListSwitch(item, index)">
+      <div class="recommend-hot-chip mdui-chip" v-for="item in topList" :class="{ 'mdui-color-red-900': item.name === listName }" :key="item.id" @click="handleListSwitch(item)">
         <span class="mdui-chip-title">{{ item.name }}</span>
       </div>
       <!-- 右侧插槽 -->
@@ -25,9 +25,7 @@
         <div v-else class="recommend-card">
           <div class="recommend-card-item">
             <div class="recommend-card-item-container" :style="{ left: cardItemContainerLeft }">
-              <div class="recommend-card-list mdui-card mdui-hoverable" v-for="item in cardList" :key="item.id">
-                <card :item="item"></card>
-              </div>
+              <card v-for="item in cardList" :key="item.id" :item="item"></card>
             </div>
           </div>
           <button v-if="arrowShow" class="recommend-card-arrow-left mdui-fab mdui-color-red-900 mdui-ripple" @click="handleCardItemContainerLeft">
@@ -50,14 +48,14 @@ import Card from './card.vue'
 import mdui from 'mdui'
 
 export default defineComponent({
-  nam: 'Recommend',
+  name: 'Recommend',
   props: {
     cardList: Array,
     topList: Array,
     topTitle: String,
-    activeIndex: {
-      type: Number,
-      default: 0
+    activeName: {
+      type: String,
+      default: ''
     }
   },
   components: {
@@ -67,7 +65,7 @@ export default defineComponent({
     const cardItemContainerLeft = ref('0px')
     const arrowShow = ref(false)
 
-    const listIndex = ref(props.activeIndex)
+    const listName = ref(props.activeName)
 
     const toggleCoverShow = ref(true)
 
@@ -82,27 +80,25 @@ export default defineComponent({
     }
 
     const handleCardItemContainerRight: () => void = () => {
-      if (cardItemContainerLeft.value === `-${856 + n * 227}px`) {
+      if (cardItemContainerLeft.value === `-${826 + n * 222}px`) {
         return
       }
-      cardItemContainerLeft.value = `-${856 + n * 227}px`
+      cardItemContainerLeft.value = `-${826 + n * 222}px`
 
       arrowShow.value = !arrowShow.value
     }
 
-    const handleListSwitch: (one: object, two: number) => void = (obj, index) => {
-      if (listIndex.value === index) {
+    const handleListSwitch: (one: { name: string }) => void = obj => {
+      if (listName.value === obj.name) {
         return
       }
 
-      if (props.activeIndex === -1) {
-        listIndex.value = -1
+      if (props.activeName === '') {
+        listName.value = ''
       } else {
         toggleCoverShow.value = true
-
-        listIndex.value = index
+        listName.value = obj.name
       }
-
       // 抛出点击按钮的歌曲/歌单id
       emit('getid', obj)
 
@@ -136,7 +132,7 @@ export default defineComponent({
       cardItemContainerLeft,
       handleCardItemContainerLeft,
       handleCardItemContainerRight,
-      listIndex,
+      listName,
       handleListSwitch
     }
   }

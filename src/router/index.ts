@@ -97,7 +97,7 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: 'store/newalbum/detail',
-        component: () => import(/* webpackChunkName: "store" */ '@/views/store/index.vue'),
+        component: () => import(/* webpackChunkName: "storeNewalbum" */ '@/views/store/index.vue'),
         name: 'storeNewalbum',
         meta: {
           title: '商城',
@@ -185,6 +185,14 @@ const routes: Array<RouteRecordRaw> = [
         name: 'album',
         meta: {
           title: 'album'
+        }
+      },
+      {
+        path: 'topic',
+        component: () => import(/* webpackChunkName: "topic" */ '@/views/topic/index.vue'),
+        name: 'topic',
+        meta: {
+          title: 'topic'
         }
       },
       {

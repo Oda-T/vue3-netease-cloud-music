@@ -1,27 +1,36 @@
 <template>
-  <div class="c-playlist-comments">
-    <div class="comments-item" v-for="item in commentsDetail" :key="item.id">
+  <div>
+    <div class="c-playlist-comments-title mdui-typo">
+      <h2>评论</h2>
+      <div class="mdui-textfield mdui-textfield-floating-label">
+        <label class="mdui-textfield-label">说点什么</label>
+        <input class="mdui-textfield-input" type="email" />
+      </div>
+    </div>
+    <div class="c-playlist-comments">
+      <div class="comments-item" v-for="item in commentsDetail" :key="item.id">
+        <div class="mdui-typo">
+          <hr />
+        </div>
+        <img class="comments-item-img" v-lazy="item.useravatar" :alt="item.username" />
+        <span class="comments-item-user">{{ item.username }}</span>
+        <span class="comments-item-time">{{ item.time }}</span>
+        <p class="comments-item-comments">{{ item.content }}</p>
+        <!-- 回复 -->
+        <div v-if="item.replied.username" class="comments-item-beforereplay">
+          <p v-if="item.replied.content" class="beforereplay-user">{{ item.replied.username }}</p>
+          <p v-if="item.replied.content" class="beforereplay-comments">{{ item.replied.content }}</p>
+          <p v-else class="beforereplay-comments">该评论已删除</p>
+        </div>
+        <!-- 点赞 -->
+        <i class="comments-item-replaybtn mdui-icon material-icons">textsms</i>
+        <span class="comments-item-likecount">{{ item.likedcount }}</span>
+        <i class="comments-item-like mdui-icon material-icons">thumb_up</i>
+      </div>
+
       <div class="mdui-typo">
         <hr />
       </div>
-      <img class="comments-item-img" v-lazy="item.useravatar" :alt="item.username" />
-      <span class="comments-item-user">{{ item.username }}</span>
-      <span class="comments-item-time">{{ item.time }}</span>
-      <p class="comments-item-comments">{{ item.content }}</p>
-      <!-- 回复 -->
-      <div v-if="item.replied.username" class="comments-item-beforereplay">
-        <p v-if="item.replied.content" class="beforereplay-user">{{ item.replied.username }}</p>
-        <p v-if="item.replied.content" class="beforereplay-comments">{{ item.replied.content }}</p>
-        <p v-else class="beforereplay-comments">该评论已删除</p>
-      </div>
-      <!-- 点赞 -->
-      <i class="comments-item-replaybtn mdui-icon material-icons">textsms</i>
-      <span class="comments-item-likecount">{{ item.likedcount }}</span>
-      <i class="comments-item-like mdui-icon material-icons">thumb_up</i>
-    </div>
-
-    <div class="mdui-typo">
-      <hr />
     </div>
   </div>
 </template>
@@ -41,6 +50,10 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
+.c-playlist-comments-title {
+  width: 1400px;
+  margin: 100px auto 80px auto;
+}
 .c-playlist-comments {
   width: 1100px;
   margin: 50px auto;

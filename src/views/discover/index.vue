@@ -1,23 +1,24 @@
 <template>
   <div>
     <!-- swipe -->
-    <swipe />
+    <swipe :banners="banners" />
     <!-- 热门推荐 -->
-    <recommend :topTitle="'热门推荐'" :topList="playlistHot" :cardList="cards" :activeIndex="-1" @getid="getIdCallBackHot">
+    <recommend :topTitle="'热门推荐'" :topList="playlistHot" :cardList="cards" @getid="getIdCallBackHot">
+      <!-- 右侧'更多'插槽 -->
       <router-link class="mdui-chip" style="float: right;margin: 30px 10px 0px;" to="/discover/playlist">
         <span class="mdui-chip-title">更多</span>
       </router-link>
     </recommend>
 
     <!-- 新碟上架 -->
-    <recommend :topTitle="'新碟上架'" :topList="albumListHot" :cardList="albums" :activeIndex="-1" @getid="getIdCallBackAlbums">
+    <recommend :topTitle="'新碟上架'" :topList="albumListHot" :cardList="albums" @getid="getIdCallBackAlbums">
       <router-link class="mdui-chip" style="float: right;margin: 30px 10px 0px;" to="/album/newest">
         <span class="mdui-chip-title">更多</span>
       </router-link>
     </recommend>
 
     <!-- 榜单 -->
-    <recommend :topTitle="'热门榜单'" :topList="topList" :cardList="cardsTopList" @getid="getIdCallBackList">
+    <recommend :topTitle="'热门榜单'" :topList="topList" :cardList="cardsTopList" :activeName="'云音乐飙升榜'" @getid="getIdCallBackList">
       <router-link class="mdui-chip" style="float: right;margin: 30px 10px 0px;" to="/discover/toplist">
         <span class="mdui-chip-title">更多</span>
       </router-link>
@@ -64,10 +65,19 @@ export default defineComponent({
       name: string
     }
 
+    interface B {
+      bgSrc: string
+      imgSrc: string
+      aHref: string
+    }
+
     const router = useRouter()
     const store = useStore()
     const { topListFull } = store.state
     const playlistHot: Array<S> = reactive([])
+
+    // swipe
+    const banners: Array<B> = reactive([])
 
     // 新碟
     const albumListHot = [
@@ -143,6 +153,37 @@ export default defineComponent({
     const getIdCallBackList: (n: { id: number; name: string }) => void = n => {
       getCardTopList(n.id)
     }
+
+    // 根据图片类型不同，路由跳转到不同界面
+    const handleHref: (one: string, two: string, three: string) => string = (id, title, url) => {
+      if (id == '0') {
+        return url.slice(url.indexOf('com/') + 3)
+      } else if (title === '新碟首发') {
+        return '/album?id=' + id
+      } else {
+        return '/song?id=' + id
+      }
+    }
+
+    // swipe
+    axios({
+      url: 'http://localhost:3000/banner?type=0',
+      method: 'get'
+    })
+      .then(res => {
+        const _b = res.data.banners
+
+        for (let i = 0, j = _b.length; i < j; i++) {
+          banners[i] = {
+            bgSrc: _b[i].imageUrl + '?imageView&blur=40x20',
+            imgSrc: _b[i].imageUrl + '?imageView&quality=30',
+            aHref: handleHref(_b[i].encodeId, _b[i].typeTitle, _b[i].url)
+          }
+        }
+      })
+      .catch(err => {
+        console.error(err)
+      })
 
     // 热门歌单分类
     axios({
@@ -256,7 +297,8 @@ export default defineComponent({
       albums,
       topList,
       playListId,
-      cardsTopList
+      cardsTopList,
+      banners
     }
   }
 })
