@@ -156,6 +156,14 @@ const routes: Array<RouteRecordRaw> = [
         }
       },
       {
+        path: 'djradio',
+        component: () => import(/* webpackChunkName: "djradio" */ '@/views/djradio/index.vue'),
+        name: 'djradio',
+        meta: {
+          title: 'djradio'
+        }
+      },
+      {
         path: 'artist',
         component: () => import(/* webpackChunkName: "artist" */ '@/views/artist/index.vue'),
         name: 'artist',

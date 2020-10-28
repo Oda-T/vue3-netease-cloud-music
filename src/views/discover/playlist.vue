@@ -4,9 +4,7 @@
     <recommend :topTitle="'全部歌单'" :activeName="cat" :topList="TopList" @getid="getUrlCallBack" />
     <!-- 推荐 -->
     <div class="playlist-card-container">
-      <transition-group name="fade">
-        <card v-for="item in cardList" :key="item.id" :item="item" />
-      </transition-group>
+      <card v-for="item in cardList" :key="item.id" :item="item" />
     </div>
     <pagination :pageCount="totalListCount" @pagenumber="pageNumber" :key="forceUpdate" />
   </div>
@@ -147,14 +145,5 @@ export default defineComponent({
   width: 1333px;
   min-height: 300px;
   margin: 0 auto;
-}
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s ease-in-out;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
 }
 </style>
