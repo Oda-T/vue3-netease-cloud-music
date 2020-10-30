@@ -74,13 +74,12 @@ module.exports = {
           libs: {
             name: 'chunk-libs',
             test: /[\\/]node_modules[\\/]/,
-            priority: 10,
-            chunks: 'initial'
+            priority: 10
           },
           mdui: {
             name: 'chunk-mdui',
-            priority: 20,
-            test: /[\\/]node_modules[\\/]_?mdui(.*)/
+            test: /[\\/]node_modules[\\/]_?mdui(.*)/,
+            priority: 20
           },
           commons: {
             name: 'chunk-commons',

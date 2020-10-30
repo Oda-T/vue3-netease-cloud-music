@@ -98,12 +98,11 @@ export default defineComponent({
       } else {
         toggleCoverShow.value = true
         listName.value = obj.name
+        // 切换后，滑动条归左
+        handleCardItemContainerLeft()
       }
       // 抛出点击按钮的歌曲/歌单id
       emit('getid', obj)
-
-      // 切换后，滑动条归左
-      handleCardItemContainerLeft()
     }
 
     watch(
