@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="discoverToplist">
     <div v-if="!topListId">
       <!-- 特色榜单 -->
       <recommend :topTitle="'特色音乐榜'" :activeName="'云音乐飙升榜'" :topList="specialList" :cardList="specialCardList" @getid="getIdCallBackSpecial"></recommend>

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="discoverPlaylist">
     <!-- 列表 -->
     <recommend :topTitle="'全部歌单'" :activeName="cat" :topList="TopList" @getid="getUrlCallBack" />
     <!-- 推荐 -->
@@ -42,7 +42,7 @@ export default defineComponent({
     const cardList: Array<D> = reactive([])
     const totalListCount = ref(0)
 
-    const forceUpdate = ref(0)
+    const forceUpdate = ref('')
 
     const cat = ref('全部')
 
@@ -111,7 +111,7 @@ export default defineComponent({
         })
 
       // 强制更新pagination
-      forceUpdate.value = Math.random()
+      forceUpdate.value = obj
     }
 
     const pageNumber: (n: number) => void = n => {
@@ -143,7 +143,7 @@ export default defineComponent({
 <style lang="less" scoped>
 .playlist-card-container {
   width: 1333px;
-  min-height: 300px;
+  height: 3230px;
   margin: 0 auto;
 }
 </style>

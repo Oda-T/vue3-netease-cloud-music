@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <recommend :topTitle="'主播电台'" :activeName="'网愈云'" :topList="djList" :cardList="djCardList" @getid="getIdCallBackDj" />
+  <div id="discoverDjradio">
+    <recommend :topTitle="'主播电台'" :activeName="activeName" :topList="djList" :cardList="djCardList" @getid="getIdCallBackDj" />
     <div class="dj-card-container">
       <!-- 热门电台 -->
       <h1 class="mdui-typo-title mdui-text-color-red-900">热门电台Top15</h1>
@@ -40,7 +40,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, reactive, onMounted } from 'vue'
+import { defineComponent, ref, reactive, onMounted } from 'vue'
 
 import Recommend from '../../components/recommend.vue'
 
@@ -80,6 +80,8 @@ export default defineComponent({
     const djHotPanelList: Array<T> = reactive([])
     const djNewPanelList: Array<T> = reactive([])
 
+    const activeName = ref('')
+
     const handleTime: (d: number) => string = d => {
       const _d = new Date(d)
       return `${_d.getFullYear()}年${_d.getMonth() + 1}月${_d.getDate()}日`
@@ -98,6 +100,7 @@ export default defineComponent({
                 name: _res[i].categoryName
               }
             }
+            activeName.value = djList[0].name
           }
         })
         .catch(err => {
@@ -163,7 +166,7 @@ export default defineComponent({
     // 获取特色dj列表
     getTopList()
     // 获取推荐目录 wangyuyun
-    getPlayList(3)
+    getPlayList(1)
     // hot dj
     getDjPanelList('hot', djHotPanelList)
     // new dj
@@ -174,6 +177,7 @@ export default defineComponent({
     })
 
     return {
+      activeName,
       djList,
       djCardList,
       getIdCallBackDj,

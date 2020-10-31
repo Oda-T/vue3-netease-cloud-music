@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <div id="discoverAlbum">
     <!-- 列表 -->
     <recommend :topTitle="'全部新碟'" :activeName="'全部'" :topList="TopList" @getid="getIdCallBack" />
     <!-- 推荐 -->
-    <div class="playlist-card-container">
+    <div class="album-card-container">
       <card v-for="item in cardList" :key="item.id" :item="item" />
     </div>
     <pagination :pageCount="totalListCount" @pagenumber="pageNumber" :key="forceUpdate" />
@@ -37,7 +37,7 @@ export default defineComponent({
     const cardList: Array<D> = reactive([])
     const totalListCount = ref(0)
 
-    const forceUpdate = ref(0)
+    const forceUpdate = ref('')
 
     let cat = { id: 'ALL', name: '全部' }
 
@@ -87,7 +87,7 @@ export default defineComponent({
         })
 
       // 强制更新pagination
-      forceUpdate.value = Math.random()
+      forceUpdate.value = obj.id
     }
 
     const pageNumber: (n: number) => void = n => {
@@ -111,9 +111,9 @@ export default defineComponent({
 })
 </script>
 <style lang="less" scoped>
-.playlist-card-container {
+.album-card-container {
   width: 1333px;
-  min-height: 300px;
+  height: 3230px;
   margin: 0 auto;
 }
 </style>

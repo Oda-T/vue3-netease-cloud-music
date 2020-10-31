@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="discoverIndex">
     <!-- swipe -->
     <swipe :banners="banners" />
     <!-- 热门推荐 -->
@@ -33,9 +33,12 @@ import { useStore } from 'vuex'
 
 import mdui from 'mdui'
 import axios from 'axios'
+import { returnDataType } from '../../type/http-request.type'
 
 import Swipe from '../../components/swipe.vue'
 import Recommend from '../../components/recommend.vue'
+
+import request from '../../api/index'
 
 export default defineComponent({
   name: 'Discover',
@@ -97,6 +100,10 @@ export default defineComponent({
     const cardsTopList: Array<D> = reactive([])
 
     const playListId = ref(0)
+
+    request['httpGET']('GET_PLAYLIST_HOT', {}).then((res: returnDataType) => {
+      console.log(res)
+    })
 
     // 热门推荐
     const handlePlayCount: (a: number | string) => string = n => {
