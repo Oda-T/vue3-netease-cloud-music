@@ -32,9 +32,9 @@ class HttpRequest {
     const response: returnDataType = await this.axiosIns.post(url, data)
     this.codeType(response, callback)
   }
-  //
+  // 200 or another
   private codeType(response: Array<returnDataType> | returnDataType, callback: Function) {
-    let code: number = 0
+    let code = 0
     if (Array.isArray(response)) {
       code = response[0].code
     } else {

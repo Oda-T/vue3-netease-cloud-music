@@ -23,5 +23,6 @@ class RequestData {
     })
   }
 }
+const request = new RequestData()
 
-export default new RequestData()
+export default request
