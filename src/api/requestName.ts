@@ -5,6 +5,8 @@ import * as DISCOVER_DJRADIO_REQUEST from './discover/djradio'
 import * as DISCOVER_PLAYLIST_REQUEST from './discover/playlist'
 import * as DISCOVER_TOPLIST_REQUEST from './discover/toplist'
 
+import * as PLAYLIST_INDEX from './playlist/index'
+
 type REQUEST_NAME = {
   [key: string]: string
 }
@@ -15,7 +17,8 @@ const REQUEST_NAME: REQUEST_NAME = {
   ...DISCOVER_ARTIST_REQUEST,
   ...DISCOVER_DJRADIO_REQUEST,
   ...DISCOVER_PLAYLIST_REQUEST,
-  ...DISCOVER_TOPLIST_REQUEST
+  ...DISCOVER_TOPLIST_REQUEST,
+  ...PLAYLIST_INDEX
 }
 
 export default REQUEST_NAME

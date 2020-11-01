@@ -1,27 +1,19 @@
 <template>
-  <div>
-    <div>{{ count }}</div>
-  </div>
+  <div id="store">no API {{ query }}</div>
 </template>
 <script lang="ts">
-import { defineComponent, reactive, toRefs, computed } from 'vue'
+import { defineComponent } from 'vue'
 import { useRoute } from 'vue-router'
 
 export default defineComponent({
-  name: 'StoreProduct',
+  name: 'Store',
   setup() {
     const route = useRoute()
-
-    const state = reactive({
-      count: computed(() => {
-        return route.path
-      })
-    })
-
+    const query = route.query.id
     return {
-      ...toRefs(state)
+      query
     }
   }
 })
 </script>
-<style lang="stylus" scoped></style>
+<style lang="less" scoped></style>

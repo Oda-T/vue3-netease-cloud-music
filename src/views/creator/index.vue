@@ -1,27 +1,25 @@
 <template>
-  <div>
-    <div>{{ count }}</div>
+  <div id="creator">
+    <button class="creator mdui-btn mdui-btn-block mdui-btn-raised mdui-ripple mdui-color-red-900">登录</button>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, reactive, toRefs, computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { defineComponent, onMounted } from 'vue'
+import mdui from 'mdui'
 
 export default defineComponent({
   name: 'Creator',
   setup() {
-    const route = useRoute()
-
-    const state = reactive({
-      count: computed(() => {
-        return route.path
-      })
+    onMounted(() => {
+      mdui.mutation()
     })
-
-    return {
-      ...toRefs(state)
-    }
+    return {}
   }
 })
 </script>
-<style lang="stylus" scoped></style>
+<style lang="less" scoped>
+.creator {
+  width: 200px;
+  margin: 200px auto 0px auto;
+}
+</style>

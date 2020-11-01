@@ -6,3 +6,16 @@ export type playListInt = {
   imgUrl: string
   time: string
 }
+
+export type headerDetailInt = {
+  name: string
+  coverImgUrl: string
+  description: string
+  trackCount: number
+  playCount: number
+  shareCount: number
+  commentCount: number
+  subscribedCount: number
+  updateTime: string
+  tags?: Array<string>
+}

@@ -30,7 +30,7 @@ import Pagination from '../../components/pagination.vue'
 
 import { topListInt, cardListInt } from '../../type/recommend.type'
 import { commentsInt } from '../../type/comments.type'
-import { playListInt } from '../../type/playList.type'
+import { playListInt, headerDetailInt } from '../../type/playList.type'
 
 import request from '../../api/index'
 
@@ -48,6 +48,18 @@ export default defineComponent({
     const route = useRoute()
     const { topListFull } = store.state
 
+    type headerDetailInt = {
+      name: string
+      coverImgUrl: string
+      description: string
+      trackCount: number
+      playCount: number
+      shareCount: number
+      commentCount: number
+      subscribedCount: number
+      updateTime: string
+    }
+
     const specialList: Array<topListInt> = reactive([])
     const specialCardList: Array<cardListInt> = reactive([])
 
@@ -58,7 +70,8 @@ export default defineComponent({
 
     const commentsDetail: Array<commentsInt> = reactive([])
 
-    const headerDetail = ref({})
+    const headerDetail = ref({} as headerDetailInt)
+
     const listDetail: Array<playListInt> = reactive([])
 
     const topListId = ref(0)
@@ -67,6 +80,18 @@ export default defineComponent({
       const _d = new Date(d)
       return `${_d.getFullYear()}年${_d.getMonth() + 1}月${_d.getDate()}日`
     }
+
+    const handleArtistName: (arr: Array<{ name: string }>) => string = arr => {
+      if (arr.length === 1) {
+        return arr[0].name
+      }
+      const _arr: Array<string> = []
+      for (let i = 0; i < arr.length; i++) {
+        _arr.push(arr[i].name)
+      }
+      return _arr.join('/')
+    }
+
     const getPlayList: (n: number, arr: cardListInt[]) => void = async (n, arr) => {
       const { playlist } = await request['httpGET']('GET_PLAYLIST_DETAIL', { 'id': n })
 
@@ -174,7 +199,7 @@ export default defineComponent({
         listDetail[i] = {
           name: playlist.tracks[i].name,
           id: '/song?id=' + playlist.tracks[i].id,
-          artist: playlist.tracks[i].ar[0].name,
+          artist: handleArtistName(playlist.tracks[i].ar),
           artistUrl: '/artist?id' + playlist.tracks[i].ar[0].id,
           imgUrl: playlist.tracks[i].al.picUrl + '?param=32y32',
           time: handleDrTime(playlist.tracks[i].dt)
