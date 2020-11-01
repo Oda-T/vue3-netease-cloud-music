@@ -44,8 +44,12 @@ import { defineComponent, ref, reactive, onMounted } from 'vue'
 
 import Recommend from '../../components/recommend.vue'
 
-import axios from 'axios'
+import { topListInt, cardListInt } from '../../type/recommend.type'
+import { panelInt } from '../../type/panel'
+
 import mdui from 'mdui'
+
+import request from '../../api/index'
 
 export default defineComponent({
   name: 'Djradio',
@@ -53,32 +57,11 @@ export default defineComponent({
     Recommend
   },
   setup() {
-    interface S {
-      id: number
-      name: string
-    }
-    interface D {
-      id: string
-      name: string
-      artist: string
-      picUrl: string
-    }
+    const djList: Array<topListInt> = reactive([])
+    const djCardList: Array<cardListInt> = reactive([])
 
-    interface T {
-      id: string
-      name: string
-      artist: string
-      createTime: string
-      signature: string
-      playCount: number
-      rcmdtext: number
-    }
-
-    const djList: Array<S> = reactive([])
-    const djCardList: Array<D> = reactive([])
-
-    const djHotPanelList: Array<T> = reactive([])
-    const djNewPanelList: Array<T> = reactive([])
+    const djHotPanelList: Array<panelInt> = reactive([])
+    const djNewPanelList: Array<panelInt> = reactive([])
 
     const activeName = ref('')
 
@@ -87,76 +70,46 @@ export default defineComponent({
       return `${_d.getFullYear()}年${_d.getMonth() + 1}月${_d.getDate()}日`
     }
 
-    const getTopList: () => void = () => {
-      axios({
-        url: `http://localhost:3000/dj/category/recommend`
-      })
-        .then(res => {
-          if (res.status === 200) {
-            const _res = res.data.data
-            for (let i = 0; i < _res.length; i++) {
-              djList[i] = {
-                id: _res[i].categoryId,
-                name: _res[i].categoryName
-              }
-            }
-            activeName.value = djList[0].name
-          }
-        })
-        .catch(err => {
-          console.log(err)
-        })
+    const getTopList: () => void = async () => {
+      const { data } = await request['httpGET']('GET_DJ_CATEGORY_RECOMMEND')
+
+      for (let i = 0; i < data.length; i++) {
+        djList[i] = {
+          id: data[i].categoryId,
+          name: data[i].categoryName
+        }
+      }
+      activeName.value = djList[0].name
     }
 
     // hot new dj
-    const getDjPanelList: (s: string, arr: T[]) => void = (s, arr) => {
-      axios({
-        url: `http://localhost:3000/dj/toplist?type=${s}`
-      })
-        .then(res => {
-          if (res.status === 200) {
-            // 榜单
-            const _res = res.data.toplist
+    const getDjPanelList: (s: string, arr: panelInt[]) => void = async (s, arr) => {
+      const { toplist } = await request['httpGET']('GET_DJ_TOPLIST')
 
-            for (let i = 0; i < 15; i++) {
-              arr[i] = {
-                id: '/djradio?id=' + _res[i].id.toString(),
-                name: _res[i].name,
-                artist: _res[i].creatorName,
-                signature: _res[i].dj.signature,
-                createTime: handleTime(_res[i].createTime),
-                playCount: _res[i].playCount,
-                rcmdtext: _res[i].rcmdtext
-              }
-            }
-          }
-        })
-        .catch(err => {
-          console.log(err)
-        })
+      for (let i = 0; i < 15; i++) {
+        arr[i] = {
+          id: '/djradio?id=' + toplist[i].id.toString(),
+          name: toplist[i].name,
+          artist: toplist[i].creatorName,
+          signature: toplist[i].dj.signature,
+          createTime: handleTime(toplist[i].createTime),
+          playCount: toplist[i].playCount,
+          rcmdtext: toplist[i].rcmdtext
+        }
+      }
     }
 
-    const getPlayList: (n: number) => void = n => {
-      axios({
-        url: `http://localhost:3000/dj/radio/hot?cateId=${n}`
-      })
-        .then(res => {
-          if (res.status === 200) {
-            // 榜单
-            const _res = res.data.djRadios
-            for (let i = 0; i < 10; i++) {
-              djCardList[i] = {
-                id: '/djradio?id=' + _res[i].id.toString(),
-                name: _res[i].name,
-                artist: _res[i].dj.nickname,
-                picUrl: _res[i].picUrl
-              }
-            }
-          }
-        })
-        .catch(err => {
-          console.log(err)
-        })
+    const getPlayList: (n: number) => void = async n => {
+      const { djRadios } = await request['httpGET']('GET_DJ_RADIO_HOT', { 'cateId': n })
+
+      for (let i = 0; i < 10; i++) {
+        djCardList[i] = {
+          id: '/djradio?id=' + djRadios[i].id.toString(),
+          name: djRadios[i].name,
+          artist: djRadios[i].dj.nickname,
+          picUrl: djRadios[i].picUrl
+        }
+      }
     }
 
     const getIdCallBackDj: (n: { id: number; name: string }) => void = n => {

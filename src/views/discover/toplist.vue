@@ -22,12 +22,17 @@ import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
 
 import mdui from 'mdui'
-import axios from 'axios'
 
 import Recommend from '../../components/recommend.vue'
 import PlayList from '../../components/playlist.vue'
 import Comments from '../../components/comments.vue'
 import Pagination from '../../components/pagination.vue'
+
+import { topListInt, cardListInt } from '../../type/recommend.type'
+import { commentsInt } from '../../type/comments.type'
+import { playListInt } from '../../type/playList.type'
+
+import request from '../../api/index'
 
 export default defineComponent({
   name: 'TopList',
@@ -39,55 +44,22 @@ export default defineComponent({
   },
 
   setup() {
-    interface S {
-      id: number
-      name: string
-    }
-    interface D {
-      id: string
-      name: string
-      artist: string
-      picUrl: string
-    }
-
-    interface C {
-      username: string
-      useravatar: string
-      content: string
-      likedcount: number
-      time: string
-      usertype: number
-      replied: {
-        username: string | undefined
-        content: string | undefined
-      }
-    }
-
-    interface T {
-      name: string
-      id: string
-      artist: string
-      artistUrl: string
-      imgUrl: string
-      time: string
-    }
-
     const store = useStore()
     const route = useRoute()
     const { topListFull } = store.state
 
-    const specialList: Array<S> = reactive([])
-    const specialCardList: Array<D> = reactive([])
+    const specialList: Array<topListInt> = reactive([])
+    const specialCardList: Array<cardListInt> = reactive([])
 
-    const globalList: Array<S> = reactive([])
-    const globalCardList: Array<D> = reactive([])
+    const globalList: Array<topListInt> = reactive([])
+    const globalCardList: Array<cardListInt> = reactive([])
 
     const pageCount = ref(0)
 
-    const commentsDetail: Array<C> = reactive([])
+    const commentsDetail: Array<commentsInt> = reactive([])
 
     const headerDetail = ref({})
-    const listDetail: Array<T> = reactive([])
+    const listDetail: Array<playListInt> = reactive([])
 
     const topListId = ref(0)
 
@@ -95,34 +67,24 @@ export default defineComponent({
       const _d = new Date(d)
       return `${_d.getFullYear()}年${_d.getMonth() + 1}月${_d.getDate()}日`
     }
-    const getPlayList: (n: number, arr: D[]) => void = (n, arr) => {
-      axios({
-        url: `http://localhost:3000/playlist/detail?id=${n}`
-      })
-        .then(res => {
-          if (res.status === 200) {
-            // 榜单
-            const _res = res.data.playlist.tracks
-            arr[0] = {
-              id: '/discover/toplist?id=' + res.data.playlist.id.toString(),
-              name: res.data.playlist.name,
-              artist: res.data.playlist.description,
-              picUrl: res.data.playlist.coverImgUrl
-            }
+    const getPlayList: (n: number, arr: cardListInt[]) => void = async (n, arr) => {
+      const { playlist } = await request['httpGET']('GET_PLAYLIST_DETAIL', { 'id': n })
 
-            for (let i = 0; i < 10; i++) {
-              arr[i + 1] = {
-                id: '/song?id=' + _res[i].id.toString(),
-                name: _res[i].name,
-                artist: _res[i].ar[0].name,
-                picUrl: _res[i].al.picUrl
-              }
-            }
-          }
-        })
-        .catch(err => {
-          console.log(err)
-        })
+      arr[0] = {
+        id: '/discover/toplist?id=' + playlist.id.toString(),
+        name: playlist.name,
+        artist: playlist.description,
+        picUrl: playlist.coverImgUrl
+      }
+
+      for (let i = 0; i < 10; i++) {
+        arr[i + 1] = {
+          id: '/song?id=' + playlist.tracks[i].id.toString(),
+          name: playlist.tracks[i].name,
+          artist: playlist.tracks[i].ar[0].name,
+          picUrl: playlist.tracks[i].al.picUrl
+        }
+      }
     }
 
     // getSpecialList
@@ -168,74 +130,56 @@ export default defineComponent({
       return `${Math.floor(_d / 60)}:${getDuoNum(Math.floor(_d % 60))}`
     }
 
-    const getComments: (id: number, n: number) => void = (id, n) => {
+    const getComments: (id: number, n: number) => void = async (id, n) => {
       commentsDetail.length = 0
 
-      axios({
-        url: `http://localhost:3000/comment/playlist?id=${id}&limit=20&offset=${n}`
-      })
-        .then(res => {
-          const _com = res.data.comments
-          pageCount.value = Math.ceil(res.data.total / 20)
+      const { total, comments } = await request['httpGET']('GET_COMMENT_PLAYLIST', { 'id': id, 'limit': 20, 'offset': n })
 
-          for (let i = 0; i < _com.length; i++) {
-            commentsDetail[i] = {
-              username: _com[i].user.nickname,
-              useravatar: _com[i].user.avatarUrl + '?param=30y30',
-              usertype: _com[i].user.userType,
-              content: _com[i].content,
-              likedcount: _com[i].likedCount,
-              time: handleTime(_com[i].time),
-              replied: {
-                username: _com[i].beReplied.length ? _com[i].beReplied[0].user.nickname : undefined,
-                content: _com[i].beReplied.length ? _com[i].beReplied[0].content : undefined
-              }
-            }
+      pageCount.value = Math.ceil(total / 20)
+
+      for (let i = 0; i < comments.length; i++) {
+        commentsDetail[i] = {
+          username: comments[i].user.nickname,
+          useravatar: comments[i].user.avatarUrl + '?param=30y30',
+          usertype: comments[i].user.userType,
+          content: comments[i].content,
+          likedcount: comments[i].likedCount,
+          time: handleTime(comments[i].time),
+          replied: {
+            username: comments[i].beReplied.length ? comments[i].beReplied[0].user.nickname : undefined,
+            content: comments[i].beReplied.length ? comments[i].beReplied[0].content : undefined
           }
-        })
-        .catch(err => {
-          console.log(err)
-        })
+        }
+      }
     }
 
-    const getTopListDetail: (id: number) => void = id => {
+    const getTopListDetail: (id: number) => void = async id => {
       listDetail.length = 0
 
-      axios({
-        url: `http://localhost:3000/playlist/detail?id=${id}`
-      })
-        .then(res => {
-          if (res.status === 200) {
-            const _res = res.data.playlist
-            const _tracks = res.data.playlist.tracks
+      const { playlist } = await request['httpGET']('GET_PLAYLIST_DETAIL', { 'id': id })
 
-            headerDetail.value = {
-              name: _res.name,
-              coverImgUrl: _res.coverImgUrl + '?param=264y264',
-              description: _res.description,
-              trackCount: _res.trackCount,
-              playCount: _res.playCount,
-              shareCount: _res.shareCount,
-              commentCount: _res.commentCount,
-              subscribedCount: _res.subscribedCount,
-              updateTime: handleTime(_res.updateTime)
-            }
+      headerDetail.value = {
+        name: playlist.name,
+        coverImgUrl: playlist.coverImgUrl + '?param=264y264',
+        description: playlist.description,
+        trackCount: playlist.trackCount,
+        playCount: playlist.playCount,
+        shareCount: playlist.shareCount,
+        commentCount: playlist.commentCount,
+        subscribedCount: playlist.subscribedCount,
+        updateTime: handleTime(playlist.updateTime)
+      }
 
-            for (let i = 0; i < _tracks.length; i++) {
-              listDetail[i] = {
-                name: _tracks[i].name,
-                id: '/song?id=' + _tracks[i].id,
-                artist: _tracks[i].ar[0].name,
-                artistUrl: '/artist?id' + _tracks[i].ar[0].id,
-                imgUrl: _tracks[i].al.picUrl + '?param=32y32',
-                time: handleDrTime(_tracks[i].dt)
-              }
-            }
-          }
-        })
-        .catch(err => {
-          console.log(err)
-        })
+      for (let i = 0; i < playlist.tracks.length; i++) {
+        listDetail[i] = {
+          name: playlist.tracks[i].name,
+          id: '/song?id=' + playlist.tracks[i].id,
+          artist: playlist.tracks[i].ar[0].name,
+          artistUrl: '/artist?id' + playlist.tracks[i].ar[0].id,
+          imgUrl: playlist.tracks[i].al.picUrl + '?param=32y32',
+          time: handleDrTime(playlist.tracks[i].dt)
+        }
+      }
     }
 
     const pageNumber: (n: number) => void = n => {

@@ -31,7 +31,10 @@ import { defineComponent, ref, reactive, onMounted } from 'vue'
 import Card from '../../components/card.vue'
 
 import mdui from 'mdui'
-import axios from 'axios'
+
+import { cardInt } from '../../type/card.type'
+
+import request from '../../api/index'
 
 export default defineComponent({
   name: 'artist',
@@ -39,37 +42,22 @@ export default defineComponent({
     Card
   },
   setup() {
-    interface D {
-      id: string
-      name: string
-      artist: string
-      picUrl: string
-    }
     const artistAreaVal = ref(-1)
     const artistTypeVal = ref(-1)
 
-    const cardList: Array<D> = reactive([])
+    const cardList: Array<cardInt> = reactive([])
 
-    const getArtist: () => void = () => {
-      axios({
-        url: `http://localhost:3000/artist/list?type=${artistTypeVal.value}&area=${artistAreaVal.value}&initial=-1&limit=60`
-      })
-        .then(res => {
-          if (res.status === 200) {
-            const _res = res.data.artists
-            for (let i = 0; i < _res.length; i++) {
-              cardList[i] = {
-                id: '/artist?id=' + _res[i].id,
-                name: _res[i].name,
-                artist: 'albumSize' + _res[i].albumSize,
-                picUrl: _res[i].picUrl
-              }
-            }
-          }
-        })
-        .catch(err => {
-          console.log(err)
-        })
+    const getArtist: () => void = async () => {
+      const { artists } = await request['httpGET']('GET_ARTIST_LIST', { 'type': artistTypeVal.value, 'area': artistAreaVal.value, 'initial': -1, 'limit': 60 })
+
+      for (let i = 0; i < artists.length; i++) {
+        cardList[i] = {
+          id: '/artist?id=' + artists[i].id,
+          name: artists[i].name,
+          artist: 'albumSize' + artists[i].albumSize,
+          picUrl: artists[i].picUrl
+        }
+      }
     }
 
     const handleArtistAreaChange: () => void = () => {
