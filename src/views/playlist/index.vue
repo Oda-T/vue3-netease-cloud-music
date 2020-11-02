@@ -40,30 +40,6 @@ export default defineComponent({
 
     const commentsDetail: Array<commentsInt> = reactive([])
 
-    const handleTime: (d: number) => string = d => {
-      const _d = new Date(d)
-      return `${_d.getFullYear()}年${_d.getMonth() + 1}月${_d.getDate()}日`
-    }
-    const getDuoNum: (d: number) => string | number = d => {
-      return d >= 10 ? d : `0${d}`
-    }
-
-    const handleDrTime: (d: number) => string = d => {
-      const _d = Math.floor(d / 1000)
-      return `${Math.floor(_d / 60)}:${getDuoNum(Math.floor(_d % 60))}`
-    }
-
-    const handleArtistName: (arr: Array<{ name: string }>) => string = arr => {
-      if (arr.length === 1) {
-        return arr[0].name
-      }
-      const _arr: Array<string> = []
-      for (let i = 0; i < arr.length; i++) {
-        _arr.push(arr[i].name)
-      }
-      return _arr.join('/')
-    }
-
     // 获得歌单
     const getPlayList: (n: number) => void = async n => {
       const { playlist } = await request['httpGET']('GET_PLAYLIST_DETAIL', { 'id': n })
@@ -79,7 +55,7 @@ export default defineComponent({
         shareCount: playlist.shareCount,
         commentCount: playlist.commentCount,
         subscribedCount: playlist.subscribedCount,
-        updateTime: handleTime(playlist.updateTime),
+        updateTime: playlist.updateTime,
         tags: playlist.tags
       }
 
@@ -87,10 +63,10 @@ export default defineComponent({
         listDetail[i] = {
           name: tracks[i].name,
           id: '/song?id=' + tracks[i].id,
-          artist: handleArtistName(tracks[i].ar),
+          artist: tracks[i].ar,
           artistUrl: '/artist?id' + tracks[i].ar[0].id,
           imgUrl: tracks[i].al.picUrl + '?param=32y32',
-          time: handleDrTime(tracks[i].dt)
+          time: tracks[i].dt
         }
       }
     }
@@ -108,7 +84,7 @@ export default defineComponent({
           usertype: comments[i].user.userType,
           content: comments[i].content,
           likedcount: comments[i].likedCount,
-          time: handleTime(comments[i].time),
+          time: comments[i].time,
           replied: {
             username: comments[i].beReplied.length ? comments[i].beReplied[0].user.nickname : undefined,
             content: comments[i].beReplied.length ? comments[i].beReplied[0].content : undefined

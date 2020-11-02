@@ -20,7 +20,7 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: 'discover/toplist',
-        component: () => import(/* webpackChunkName: "toplist" */ '@/views/discover/toplist.vue'),
+        component: () => import(/* webpackChunkName: "discoverToplist" */ '@/views/discover/toplist.vue'),
         name: 'discoverToplist',
         meta: {
           title: '发现音乐',
@@ -30,7 +30,7 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: 'discover/playlist',
-        component: () => import(/* webpackChunkName: "playlist" */ '@/views/discover/playlist.vue'),
+        component: () => import(/* webpackChunkName: "discoverPlaylist" */ '@/views/discover/playlist.vue'),
         name: 'discoverPlaylist',
         meta: {
           title: '发现音乐',
@@ -40,7 +40,7 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: 'discover/djradio',
-        component: () => import(/* webpackChunkName: "djradio" */ '@/views/discover/djradio.vue'),
+        component: () => import(/* webpackChunkName: "discoverDjradio" */ '@/views/discover/djradio.vue'),
         name: 'discoverDjradio',
         meta: {
           title: '发现音乐',
@@ -50,7 +50,7 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: 'discover/artist',
-        component: () => import(/* webpackChunkName: "artist" */ '@/views/discover/artist.vue'),
+        component: () => import(/* webpackChunkName: "discoverArtist" */ '@/views/discover/artist.vue'),
         name: 'discoverArtist',
         meta: {
           title: '发现音乐',
@@ -60,7 +60,7 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: 'discover/album',
-        component: () => import(/* webpackChunkName: "album" */ '@/views/discover/album.vue'),
+        component: () => import(/* webpackChunkName: "discoverAlbum" */ '@/views/discover/album.vue'),
         name: 'discoverAlbum',
         meta: {
           title: '发现音乐',
@@ -97,18 +97,9 @@ const routes: Array<RouteRecordRaw> = [
         }
       },
       {
-        path: 'nmusician',
+        path: 'nmusician/:id?',
         component: () => import(/* webpackChunkName: "nmusician" */ '@/views/nmusician/index.vue'),
         name: 'nmusician',
-        meta: {
-          title: '音乐人',
-          index: 4
-        }
-      },
-      {
-        path: 'nmusician/:id',
-        component: () => import(/* webpackChunkName: "nmusician" */ '@/views/nmusician/index.vue'),
-        name: 'nmusicianId',
         meta: {
           title: '音乐人',
           index: 4
@@ -172,19 +163,11 @@ const routes: Array<RouteRecordRaw> = [
         }
       },
       {
-        path: 'album',
-        component: () => import(/* webpackChunkName: "album" */ '@/views/album/index.vue'),
-        name: 'albumNew',
-        meta: {
-          title: 'album'
-        }
-      },
-      {
-        path: 'album/:id',
+        path: 'album/:id?',
         component: () => import(/* webpackChunkName: "album" */ '@/views/album/index.vue'),
         name: 'album',
         meta: {
-          title: 'album'
+          title: '专辑'
         }
       },
       {
@@ -212,8 +195,8 @@ const routes: Array<RouteRecordRaw> = [
         }
       },
       {
-        path: 'm/at/:id',
-        component: () => import(/* webpackChunkName: "album" */ '@/views/m/at.vue'),
+        path: 'm/at/:id?',
+        component: () => import(/* webpackChunkName: "mat" */ '@/views/m/at.vue'),
         name: 'at',
         meta: {
           title: 'm/at'
@@ -237,7 +220,15 @@ const routes: Array<RouteRecordRaw> = [
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
-  routes
+  routes,
+  scrollBehavior(to, from, savedPosition) {
+    // always scroll to top
+    if (savedPosition) {
+      return savedPosition
+    } else {
+      return { top: 0 }
+    }
+  }
 })
 
 export default router

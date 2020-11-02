@@ -1,10 +1,12 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios'
+
 import { returnDataType } from '../type/http-request.type'
+import mdui from 'mdui'
 
 class HttpRequest {
   private axiosIns: AxiosInstance = axios.create({
     baseURL: 'http://localhost:3000',
-    timeout: 5000
+    timeout: 50000
   })
 
   constructor() {
@@ -12,40 +14,46 @@ class HttpRequest {
     this.axiosIns.interceptors.request.use((config: AxiosRequestConfig) => {
       return config
     })
-    this.axiosIns.interceptors.response.use(({ data }: AxiosResponse) => {
-      try {
+    this.axiosIns.interceptors.response.use(
+      ({ data }: AxiosResponse) => {
         return Promise.resolve(data)
-      } catch (err) {
+      },
+      (err: AxiosError) => {
+        mdui.snackbar({
+          message: err.message,
+          position: 'right-bottom',
+          buttonText: '返回'
+        })
         return Promise.reject(err)
       }
-    })
+    )
   }
   // get
-  public get = async <T>(url: string, data: T, callback: Function) => {
+  public get = async <T>(url: string, data: T, callback: Function): Promise<void> => {
     const response: returnDataType = await this.axiosIns.get(url, {
       params: data
     })
     this.codeType(response, callback)
   }
   // post
-  public post = async <T>(url: string, data: T, callback: Function) => {
+  public post = async <T>(url: string, data: T, callback: Function): Promise<void> => {
     const response: returnDataType = await this.axiosIns.post(url, data)
     this.codeType(response, callback)
   }
   // 200 or another
-  private codeType(response: Array<returnDataType> | returnDataType, callback: Function) {
-    let code = 0
-    if (Array.isArray(response)) {
-      code = response[0].code
-    } else {
-      code = response.code
-    }
+  private codeType = (response: returnDataType, callback: Function): void => {
+    const code = response.code
+
     switch (code) {
       case 200:
         callback(response)
         break
       default:
-        console.log(response)
+        mdui.snackbar({
+          message: `${code}`,
+          position: 'right-bottom'
+        })
+        console.error(response)
     }
   }
 }

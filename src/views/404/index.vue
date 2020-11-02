@@ -1,26 +1,30 @@
 <template>
   <div>
-    <div>{{ count }}</div>
+    <div></div>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, reactive, toRefs, computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { defineComponent, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import mdui from 'mdui'
 
 export default defineComponent({
   name: '404',
   setup() {
-    const route = useRoute()
-
-    const state = reactive({
-      count: computed(() => {
-        return route.path
+    const router = useRouter()
+    onMounted(() => {
+      mdui.mutation()
+      mdui.snackbar({
+        message: '404',
+        position: 'right-bottom',
+        buttonText: '返回',
+        buttonColor: 'red',
+        onButtonClick: function() {
+          router.back()
+        }
       })
     })
-
-    return {
-      ...toRefs(state)
-    }
+    return {}
   }
 })
 </script>

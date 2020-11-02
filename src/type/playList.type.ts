@@ -12,10 +12,12 @@ export type headerDetailInt = {
   coverImgUrl: string
   description: string
   trackCount: number
-  playCount: number
   shareCount: number
   commentCount: number
   subscribedCount: number
   updateTime: string
+  playCount?: number
+  artistName?: string
+  artistId?: number
   tags?: Array<string>
 }

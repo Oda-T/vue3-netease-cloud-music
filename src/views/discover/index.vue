@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, reactive, ref } from 'vue'
+import { defineComponent, onMounted, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 
@@ -72,8 +72,6 @@ export default defineComponent({
     const topList: Array<topListInt> = reactive([])
 
     const cardsTopList: Array<cardListInt> = reactive([])
-
-    const playListId = ref(0)
 
     const handlePlayCount: (a: number | string) => string = n => {
       // Number(n)
@@ -207,6 +205,7 @@ export default defineComponent({
       }
     }
 
+    // 调用
     swipe()
     getPlaylistHot()
     getPersonalized()
@@ -237,7 +236,6 @@ export default defineComponent({
       albumListHot,
       album,
       topList,
-      playListId,
       cardsTopList,
       banner
     }

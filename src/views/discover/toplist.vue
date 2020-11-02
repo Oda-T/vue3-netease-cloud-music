@@ -76,22 +76,6 @@ export default defineComponent({
 
     const topListId = ref(0)
 
-    const handleTime: (d: number) => string = d => {
-      const _d = new Date(d)
-      return `${_d.getFullYear()}年${_d.getMonth() + 1}月${_d.getDate()}日`
-    }
-
-    const handleArtistName: (arr: Array<{ name: string }>) => string = arr => {
-      if (arr.length === 1) {
-        return arr[0].name
-      }
-      const _arr: Array<string> = []
-      for (let i = 0; i < arr.length; i++) {
-        _arr.push(arr[i].name)
-      }
-      return _arr.join('/')
-    }
-
     const getPlayList: (n: number, arr: cardListInt[]) => void = async (n, arr) => {
       const { playlist } = await request['httpGET']('GET_PLAYLIST_DETAIL', { 'id': n })
 
@@ -146,14 +130,6 @@ export default defineComponent({
         getGlobalList()
       })
     }
-    const getDuoNum: (d: number) => string | number = d => {
-      return d >= 10 ? d : `0${d}`
-    }
-
-    const handleDrTime: (d: number) => string = d => {
-      const _d = Math.floor(d / 1000)
-      return `${Math.floor(_d / 60)}:${getDuoNum(Math.floor(_d % 60))}`
-    }
 
     const getComments: (id: number, n: number) => void = async (id, n) => {
       commentsDetail.length = 0
@@ -169,7 +145,7 @@ export default defineComponent({
           usertype: comments[i].user.userType,
           content: comments[i].content,
           likedcount: comments[i].likedCount,
-          time: handleTime(comments[i].time),
+          time: comments[i].time,
           replied: {
             username: comments[i].beReplied.length ? comments[i].beReplied[0].user.nickname : undefined,
             content: comments[i].beReplied.length ? comments[i].beReplied[0].content : undefined
@@ -192,17 +168,17 @@ export default defineComponent({
         shareCount: playlist.shareCount,
         commentCount: playlist.commentCount,
         subscribedCount: playlist.subscribedCount,
-        updateTime: handleTime(playlist.updateTime)
+        updateTime: playlist.updateTime
       }
 
       for (let i = 0; i < playlist.tracks.length; i++) {
         listDetail[i] = {
           name: playlist.tracks[i].name,
           id: '/song?id=' + playlist.tracks[i].id,
-          artist: handleArtistName(playlist.tracks[i].ar),
+          artist: playlist.tracks[i].ar,
           artistUrl: '/artist?id' + playlist.tracks[i].ar[0].id,
           imgUrl: playlist.tracks[i].al.picUrl + '?param=32y32',
-          time: handleDrTime(playlist.tracks[i].dt)
+          time: playlist.tracks[i].dt
         }
       }
     }

@@ -5,8 +5,13 @@
       <img class="c-playlist-header-img" :src="headerDetail.coverImgUrl" :alt="headerDetail.description" />
       <div class="c-playlist-header-text">
         <h1>{{ headerDetail.name }}</h1>
-        <p>最近更新：{{ headerDetail.updateTime }}</p>
-        <p>{{ headerDetail.playCount }}次播放</p>
+        <p>最近更新：{{ handleTime(headerDetail.updateTime) }}</p>
+        <p v-if="headerDetail.playCount">{{ headerDetail.playCount }}次播放</p>
+        <p v-if="headerDetail.artistName">
+          <router-link :to="`/artist/?id=${headerDetail.artistId}`">
+            {{ headerDetail.artistName }}
+          </router-link>
+        </p>
         <button class="mdui-btn mdui-color-red-900 mdui-ripple"><i class="mdui-icon mdui-icon-left material-icons">add_to_queue</i>{{ headerDetail.shareCount }}</button>
         <button class="c-playlist-header-subscribedCount mdui-btn mdui-color-red-900 mdui-ripple">
           <i class="mdui-icon mdui-icon-left material-icons">share</i>{{ headerDetail.subscribedCount }}
@@ -36,7 +41,7 @@
             </td>
             <td style="width:308px;maxWidth:308px" class="mdui-text-truncate">
               <router-link :to="item.artistUrl">
-                {{ item.artist }}
+                {{ handleArtistName(item.artist) }}
               </router-link>
             </td>
             <td style="width:184px" class="c-playlist-main-table-btn">
@@ -47,7 +52,7 @@
                 <button class="mdui-btn mdui-btn-icon mdui-btn-dense"><i class="mdui-icon material-icons">vertical_align_bottom</i></button>
               </div>
             </td>
-            <td style="width:111px" class="mdui-table-col-numeric">{{ item.time }}</td>
+            <td style="width:111px" class="mdui-table-col-numeric">{{ handleDrTime(item.time) }}</td>
           </tr>
         </tbody>
       </table>
@@ -68,13 +73,40 @@ export default defineComponent({
   },
   setup() {
     const curIndex = ref(-1)
+    const handleTime: (d: number) => string = d => {
+      const _d = new Date(d)
+      return `${_d.getFullYear()}年${_d.getMonth() + 1}月${_d.getDate()}日`
+    }
+    const getDuoNum: (d: number) => string | number = d => {
+      return d >= 10 ? d : `0${d}`
+    }
+
+    const handleDrTime: (d: number) => string = d => {
+      const _d = Math.floor(d / 1000)
+      return `${Math.floor(_d / 60)}:${getDuoNum(Math.floor(_d % 60))}`
+    }
+
+    const handleArtistName: (arr: Array<{ name: string }>) => string = arr => {
+      if (arr.length === 1) {
+        return arr[0].name
+      }
+      const _arr: Array<string> = []
+      for (let i = 0; i < arr.length; i++) {
+        _arr.push(arr[i].name)
+      }
+      return _arr.join('/')
+    }
 
     onMounted(() => {
       mdui.mutation()
     })
 
     return {
-      curIndex
+      curIndex,
+      handleTime,
+      getDuoNum,
+      handleDrTime,
+      handleArtistName
     }
   }
 })

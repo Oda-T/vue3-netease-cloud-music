@@ -7,6 +7,34 @@
         <input class="mdui-textfield-input" type="email" />
       </div>
     </div>
+    <!-- 热门 -->
+    <div class="c-playlist-hot" v-if="hotCommentsDetail.length !== 0">热门评论</div>
+    <div class="c-playlist-comments" v-if="hotCommentsDetail.length !== 0">
+      <div class="comments-item" v-for="item in hotCommentsDetail" :key="item.id">
+        <div class="mdui-typo">
+          <hr />
+        </div>
+        <img class="comments-item-img" v-lazy="item.useravatar" :alt="item.username" />
+        <span class="comments-item-user">{{ item.username }}</span>
+        <span class="comments-item-time">{{ handleTime(item.time) }}</span>
+        <p class="comments-item-comments">{{ item.content }}</p>
+        <!-- 回复 -->
+        <div v-if="item.replied.username" class="comments-item-beforereplay">
+          <p v-if="item.replied.content" class="beforereplay-user">{{ item.replied.username }}</p>
+          <p v-if="item.replied.content" class="beforereplay-comments">{{ item.replied.content }}</p>
+          <p v-else class="beforereplay-comments">该评论已删除</p>
+        </div>
+        <!-- 点赞 -->
+        <i class="comments-item-replaybtn mdui-icon material-icons">textsms</i>
+        <span class="comments-item-likecount">{{ item.likedcount }}</span>
+        <i class="comments-item-like mdui-icon material-icons">thumb_up</i>
+      </div>
+      <div class="mdui-typo">
+        <hr />
+      </div>
+    </div>
+    <!-- 最新 -->
+    <div class="c-playlist-new">最新评论</div>
     <div class="c-playlist-comments">
       <div class="comments-item" v-for="item in commentsDetail" :key="item.id">
         <div class="mdui-typo">
@@ -14,7 +42,7 @@
         </div>
         <img class="comments-item-img" v-lazy="item.useravatar" :alt="item.username" />
         <span class="comments-item-user">{{ item.username }}</span>
-        <span class="comments-item-time">{{ item.time }}</span>
+        <span class="comments-item-time">{{ handleTime(item.time) }}</span>
         <p class="comments-item-comments">{{ item.content }}</p>
         <!-- 回复 -->
         <div v-if="item.replied.username" class="comments-item-beforereplay">
@@ -41,10 +69,17 @@ import { defineComponent } from 'vue'
 export default defineComponent({
   name: 'Comments',
   props: {
-    commentsDetail: Object
+    commentsDetail: Object,
+    hotCommentsDetail: Object
   },
   setup() {
-    return {}
+    const handleTime: (d: number) => string = d => {
+      const _d = new Date(d)
+      return `${_d.getFullYear()}年${_d.getMonth() + 1}月${_d.getDate()}日`
+    }
+    return {
+      handleTime
+    }
   }
 })
 </script>
@@ -54,6 +89,16 @@ export default defineComponent({
   width: 1400px;
   margin: 100px auto 80px auto;
 }
+.c-playlist-hot {
+  width: 1100px;
+  margin: 50px auto;
+}
+
+.c-playlist-new {
+  width: 1100px;
+  margin: 50px auto;
+}
+
 .c-playlist-comments {
   width: 1100px;
   margin: 50px auto;
