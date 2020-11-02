@@ -8,7 +8,7 @@
         <p>最近更新：{{ handleTime(headerDetail.updateTime) }}</p>
         <p v-if="headerDetail.playCount">{{ headerDetail.playCount }}次播放</p>
         <p v-if="headerDetail.artistName">
-          <router-link :to="`/artist/?id=${headerDetail.artistId}`">
+          <router-link :to="`/artist?id=${headerDetail.artistId}`">
             {{ headerDetail.artistName }}
           </router-link>
         </p>

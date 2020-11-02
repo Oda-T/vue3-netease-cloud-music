@@ -2,7 +2,7 @@ export type commentsInt = {
   username: string
   useravatar: string
   content: string
-  linked: boolean
+  liked: boolean
   likedcount: number
   time: string
   usertype: number

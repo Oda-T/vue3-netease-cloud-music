@@ -8,7 +8,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, onMounted, reactive, ref, watchEffect } from 'vue'
+import { defineComponent, onMounted, reactive, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 import mdui from 'mdui'
@@ -71,7 +71,7 @@ export default defineComponent({
     const getComments: (id: number, n?: number) => void = async (id, n = 0) => {
       commentsDetail.length = 0
       const { total, comments, hotComments } = await request['httpGET']('GET_COMMENT_ALBUM', { 'id': id, 'limit': 20, 'offset': n })
-      console.log(hotComments)
+
       pageCount.value = Math.ceil(total / 20)
       // 热门评论
       if (n === 0) {
@@ -81,7 +81,7 @@ export default defineComponent({
             useravatar: hotComments[i].user.avatarUrl + '?param=30y30',
             usertype: hotComments[i].user.userType,
             content: hotComments[i].content,
-            linked: hotComments[i].linked,
+            liked: hotComments[i].liked,
             likedcount: hotComments[i].likedCount,
             time: hotComments[i].time,
             replied: {
@@ -101,7 +101,7 @@ export default defineComponent({
           useravatar: comments[i].user.avatarUrl + '?param=30y30',
           usertype: comments[i].user.userType,
           content: comments[i].content,
-          linked: comments[i].linked,
+          liked: comments[i].liked,
           likedcount: comments[i].likedCount,
           time: comments[i].time,
           replied: {
@@ -115,10 +115,9 @@ export default defineComponent({
     const pageNumber: (n: number) => void = n => {
       getComments(Number(route.query.id), 20 * (n - 1))
     }
+    // 单碟 album?id=n
+    route.query.id && (getPlayList(Number(route.query.id)), getComments(Number(route.query.id)))
 
-    watchEffect(() => {
-      route.query.id && (getPlayList(Number(route.query.id)), getComments(Number(route.query.id)))
-    })
     onMounted(() => {
       mdui.mutation()
     })

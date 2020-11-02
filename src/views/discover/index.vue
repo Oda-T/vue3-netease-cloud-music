@@ -114,7 +114,7 @@ export default defineComponent({
     }
 
     const getIdCallBackAlbums: (n: { id: number; name: string }) => void = n => {
-      router.push(`/album/new?area=${n.id}`)
+      router.push(`/discover/album?area=${n.id}`)
     }
 
     const getIdCallBackList: (n: { id: number; name: string }) => void = n => {

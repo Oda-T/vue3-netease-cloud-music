@@ -2,13 +2,13 @@
   <div id="playlist">
     <play-list :headerDetail="headerDetail" :listDetail="listDetail" />
     <!-- 评论 -->
-    <comments :commentsDetail="commentsDetail" />
+    <comments :commentsDetail="commentsDetail" :hotCommentsDetail="hotCommentsDetail" />
     <!-- 分页 -->
     <pagination :pageCount="pageCount" @pagenumber="pageNumber" />
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, onMounted, reactive, ref, watchEffect } from 'vue'
+import { defineComponent, onMounted, reactive, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 import mdui from 'mdui'
@@ -39,6 +39,8 @@ export default defineComponent({
     const pageCount = ref(0)
 
     const commentsDetail: Array<commentsInt> = reactive([])
+
+    const hotCommentsDetail: Array<commentsInt> = reactive([])
 
     // 获得歌单
     const getPlayList: (n: number) => void = async n => {
@@ -83,6 +85,7 @@ export default defineComponent({
           useravatar: comments[i].user.avatarUrl + '?param=30y30',
           usertype: comments[i].user.userType,
           content: comments[i].content,
+          liked: comments[i].liked,
           likedcount: comments[i].likedCount,
           time: comments[i].time,
           replied: {
@@ -97,18 +100,19 @@ export default defineComponent({
       getComments(Number(route.query.id), 20 * (n - 1))
     }
 
-    watchEffect(() => {
-      route.query.id && (getPlayList(Number(route.query.id)), getComments(Number(route.query.id), 0))
-    })
+    route.query.id && (getPlayList(Number(route.query.id)), getComments(Number(route.query.id), 0))
+
     onMounted(() => {
       mdui.mutation()
     })
     return {
+      route,
       headerDetail,
       listDetail,
       commentsDetail,
       pageCount,
-      pageNumber
+      pageNumber,
+      hotCommentsDetail
     }
   }
 })

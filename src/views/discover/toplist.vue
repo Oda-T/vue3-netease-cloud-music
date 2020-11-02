@@ -10,7 +10,7 @@
     <div v-else>
       <play-list :headerDetail="headerDetail" :listDetail="listDetail" />
       <!-- 评论 -->
-      <comments :commentsDetail="commentsDetail" />
+      <comments :commentsDetail="commentsDetail" :hotCommentsDetail="hotCommentsDetail" />
       <!-- 分页 -->
       <pagination :pageCount="pageCount" @pagenumber="pageNumber" />
     </div>
@@ -48,18 +48,6 @@ export default defineComponent({
     const route = useRoute()
     const { topListFull } = store.state
 
-    type headerDetailInt = {
-      name: string
-      coverImgUrl: string
-      description: string
-      trackCount: number
-      playCount: number
-      shareCount: number
-      commentCount: number
-      subscribedCount: number
-      updateTime: string
-    }
-
     const specialList: Array<topListInt> = reactive([])
     const specialCardList: Array<cardListInt> = reactive([])
 
@@ -69,6 +57,7 @@ export default defineComponent({
     const pageCount = ref(0)
 
     const commentsDetail: Array<commentsInt> = reactive([])
+    const hotCommentsDetail: Array<commentsInt> = reactive([])
 
     const headerDetail = ref({} as headerDetailInt)
 
@@ -144,6 +133,7 @@ export default defineComponent({
           useravatar: comments[i].user.avatarUrl + '?param=30y30',
           usertype: comments[i].user.userType,
           content: comments[i].content,
+          liked: comments[i].liked,
           likedcount: comments[i].likedCount,
           time: comments[i].time,
           replied: {
@@ -214,7 +204,8 @@ export default defineComponent({
       pageCount,
       pageNumber,
       listDetail,
-      headerDetail
+      headerDetail,
+      hotCommentsDetail
     }
   }
 })

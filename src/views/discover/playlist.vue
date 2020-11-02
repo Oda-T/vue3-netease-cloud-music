@@ -10,8 +10,8 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, reactive, ref, onMounted, watchEffect } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { defineComponent, reactive, ref, onMounted } from 'vue'
+import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
 
 import Recommend from '../../components/recommend.vue'
 import Card from '../../components/card.vue'
@@ -95,7 +95,9 @@ export default defineComponent({
     getTopList()
 
     // watch route id
-    watchEffect(() => {
+    typeof route.query.cat === 'string' ? ((cat.value = route.query.cat), getIdCallBack(cat.value)) : ((cat.value = '全部'), getIdCallBack(cat.value))
+
+    onBeforeRouteUpdate(() => {
       typeof route.query.cat === 'string' ? ((cat.value = route.query.cat), getIdCallBack(cat.value)) : ((cat.value = '全部'), getIdCallBack(cat.value))
     })
 
