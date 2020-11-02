@@ -12,6 +12,11 @@
           <i class="mdui-icon mdui-icon-left material-icons">share</i>{{ headerDetail.subscribedCount }}
         </button>
         <button class="mdui-btn mdui-color-red-900 mdui-ripple"><i class="mdui-icon mdui-icon-left material-icons">sms</i>{{ headerDetail.commentCount }} </button>
+
+        <router-link class="c-playlist-header-tags mdui-chip" v-for="item in headerDetail.tags" :key="item.id" :to="`/discover/playlist/?cat=${item}`">
+          <span class="mdui-chip-title">{{ item }}</span>
+        </router-link>
+
         <h5 class="c-playlist-header-description">{{ headerDetail.description }}</h5>
       </div>
     </header>
@@ -96,6 +101,15 @@ export default defineComponent({
     .c-playlist-header-subscribedCount {
       margin: 0 50px;
     }
+  }
+  .c-playlist-header-tags {
+    margin-left: 50px;
+  }
+  .c-playlist-header-description {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
   }
 }
 .c-playlist-main {

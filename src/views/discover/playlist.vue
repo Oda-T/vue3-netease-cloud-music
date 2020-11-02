@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="discoverPlaylist">
     <!-- 列表 -->
     <recommend :topTitle="'全部歌单'" :activeName="cat" :topList="TopList" @getid="getUrlCallBack" />
     <!-- 推荐 -->
@@ -17,8 +17,12 @@ import Recommend from '../../components/recommend.vue'
 import Card from '../../components/card.vue'
 import Pagination from '../../components/pagination.vue'
 
+import { topListInt } from '../../type/recommend.type'
+import { cardInt } from '../../type/card.type'
+
 import mdui from 'mdui'
-import axios from 'axios'
+
+import request from '../../api/index'
 
 export default defineComponent({
   name: 'Playlist',
@@ -28,101 +32,71 @@ export default defineComponent({
     Pagination
   },
   setup() {
-    interface D {
-      id: string
-      name: string
-      artist: string
-      picUrl: string
-    }
-
     const route = useRoute()
     const router = useRouter()
 
-    const TopList: Array<{ name: string }> = reactive([])
-    const cardList: Array<D> = reactive([])
+    const TopList: Array<topListInt> = reactive([])
+    const cardList: Array<cardInt> = reactive([])
     const totalListCount = ref(0)
 
-    const forceUpdate = ref(0)
+    const forceUpdate = ref('')
 
     const cat = ref('全部')
 
-    const getTopList: () => void = () => {
-      axios({
-        url: `http://localhost:3000/playlist/catlist`
-      })
-        .then(res => {
-          if (res.status === 200) {
-            const _res = res.data.sub
-            TopList[0] = {
-              name: '全部'
-            }
-            for (let i = 0; i < _res.length; i++) {
-              TopList[i + 1] = {
-                name: _res[i].name
-              }
-            }
-          }
-        })
-        .catch(err => {
-          console.log(err)
-        })
+    const getTopList: () => void = async () => {
+      const { sub } = await request['httpGET']('GET_PLAYLIST_CATLIST')
+
+      TopList[0] = {
+        id: -1,
+        name: '全部'
+      }
+      for (let i = 0; i < sub.length; i++) {
+        TopList[i + 1] = {
+          id: sub[i].id,
+          name: sub[i].name
+        }
+      }
     }
 
-    const getCardList: (obj: string, offset?: number) => void = (obj, number = 1) => {
+    const getCardList: (obj: string, offset?: number) => void = async (obj, number = 1) => {
       cardList.length = 0
 
-      axios({
-        url: `http://localhost:3000/top/playlist?cat=${obj}&limit=60&order=hot&offset=${(number - 1) * 60}`
-      })
-        .then(res => {
-          const _res = res.data.playlists
+      const { playlists } = await request['httpGET']('GET_TOP_PLAYLIST', { 'cat': obj, 'limit': 60, 'order': 'hot', 'offset': (number - 1) * 60 })
 
-          for (let i = 0; i < _res.length; i++) {
-            cardList[i] = {
-              id: '/playlist?id=' + _res[i].id,
-              name: _res[i].name,
-              artist: _res[i].creator.nickname,
-              picUrl: _res[i].coverImgUrl
-            }
-          }
-        })
-        .catch(err => {
-          console.log(err)
-        })
+      for (let i = 0; i < playlists.length; i++) {
+        cardList[i] = {
+          id: '/playlist?id=' + playlists[i].id,
+          name: playlists[i].name,
+          artist: playlists[i].creator.nickname,
+          picUrl: playlists[i].coverImgUrl
+        }
+      }
     }
 
     const getUrlCallBack: (obj: { name: string }) => void = obj => {
       router.push(`/discover/playlist/?cat=${encodeURIComponent(obj.name)}`)
     }
 
-    const getIdCallBack: (name: string) => void = obj => {
-      // 转义
-
+    const getIdCallBack: (name: string) => void = async obj => {
       getCardList(obj)
 
-      axios({
-        url: `http://localhost:3000/top/playlist?cat=${obj}`
-      })
-        .then(res => {
-          totalListCount.value = Math.ceil(res.data.total / 60)
-        })
-        .catch(err => {
-          console.log(err)
-        })
+      const { total } = await request['httpGET']('GET_TOP_PLAYLIST', { 'cat': obj })
+
+      totalListCount.value = Math.ceil(total / 60)
 
       // 强制更新pagination
-      forceUpdate.value = Math.random()
+      forceUpdate.value = obj
     }
 
     const pageNumber: (n: number) => void = n => {
-      getCardList(encodeURIComponent(cat.value), n)
+      getCardList(cat.value, n)
     }
 
     getTopList()
 
     // watch route id
     watchEffect(() => {
-      typeof route.query.cat === 'string' ? ((cat.value = route.query.cat), getIdCallBack(encodeURIComponent(cat.value))) : ((cat.value = '全部'), getIdCallBack(encodeURIComponent(cat.value)))
+      typeof route.query.cat === 'string' ? ((cat.value = route.query.cat), getIdCallBack(cat.value)) : ((cat.value = '全部'), getIdCallBack(cat.value))
     })
 
     onMounted(() => {
@@ -143,7 +117,7 @@ export default defineComponent({
 <style lang="less" scoped>
 .playlist-card-container {
   width: 1333px;
-  min-height: 300px;
+  height: 3230px;
   margin: 0 auto;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div id="discoverIndex">
     <!-- swipe -->
-    <swipe :banners="banners" />
+    <swipe :banners="banner" />
     <!-- 热门推荐 -->
     <recommend :topTitle="'热门推荐'" :topList="playlistHot" :cardList="cards" @getid="getIdCallBackHot">
       <!-- 右侧'更多'插槽 -->
@@ -11,7 +11,7 @@
     </recommend>
 
     <!-- 新碟上架 -->
-    <recommend :topTitle="'新碟上架'" :topList="albumListHot" :cardList="albums" @getid="getIdCallBackAlbums">
+    <recommend :topTitle="'新碟上架'" :topList="albumListHot" :cardList="album" @getid="getIdCallBackAlbums">
       <router-link class="mdui-chip" style="float: right;margin: 30px 10px 0px;" to="/album/newest">
         <span class="mdui-chip-title">更多</span>
       </router-link>
@@ -32,10 +32,14 @@ import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 
 import mdui from 'mdui'
-import axios from 'axios'
+
+import { topListInt, cardListInt } from '../../type/recommend.type'
+import { swipeInt } from '../../type/swipe.type'
 
 import Swipe from '../../components/swipe.vue'
 import Recommend from '../../components/recommend.vue'
+
+import request from '../../api/index'
 
 export default defineComponent({
   name: 'Discover',
@@ -44,40 +48,13 @@ export default defineComponent({
     Recommend
   },
   setup() {
-    interface T {
-      id: string
-      name: string
-      playCount: string
-      copywriter: string
-      picUrl: string
-      type: number
-    }
-
-    interface D {
-      id: string
-      name: string
-      artist: string
-      picUrl: string
-    }
-
-    interface S {
-      id: number
-      name: string
-    }
-
-    interface B {
-      bgSrc: string
-      imgSrc: string
-      aHref: string
-    }
-
     const router = useRouter()
     const store = useStore()
     const { topListFull } = store.state
-    const playlistHot: Array<S> = reactive([])
+    const playlistHot: topListInt[] = reactive([])
 
     // swipe
-    const banners: Array<B> = reactive([])
+    const banner: Array<swipeInt> = reactive([])
 
     // 新碟
     const albumListHot = [
@@ -88,17 +65,16 @@ export default defineComponent({
       { id: 'JP', name: '日本' }
     ]
 
-    const cards: Array<T> = reactive([])
+    const cards: Array<cardListInt> = reactive([])
 
-    const albums: Array<D> = reactive([])
+    const album: Array<cardListInt> = reactive([])
 
-    const topList: Array<S> = reactive([])
+    const topList: Array<topListInt> = reactive([])
 
-    const cardsTopList: Array<D> = reactive([])
+    const cardsTopList: Array<cardListInt> = reactive([])
 
     const playListId = ref(0)
 
-    // 热门推荐
     const handlePlayCount: (a: number | string) => string = n => {
       // Number(n)
       let _n = Number(n)
@@ -112,27 +88,20 @@ export default defineComponent({
       return _nS
     }
 
-    const getCardTopList: (n: number) => void = n => {
-      axios({
-        url: `http://localhost:3000/playlist/detail?id=${n}`
-      })
-        .then(res => {
-          if (res.status === 200) {
-            const _res = res.data.playlist.tracks
+    // 热门推荐
+    const getCardTopList: (n: number) => void = async n => {
+      const { playlist } = await request['httpGET']('GET_PLAYLIST_DETAIL', { 'id': n })
 
-            for (let i = 0; i < 10; i++) {
-              cardsTopList[i] = {
-                id: '/song?id=' + _res[i].id.toString(),
-                name: _res[i].name,
-                artist: _res[i].ar[0].name,
-                picUrl: _res[i].al.picUrl
-              }
-            }
-          }
-        })
-        .catch(err => {
-          console.log(err)
-        })
+      const _res = playlist.tracks
+
+      for (let i = 0; i < 10; i++) {
+        cardsTopList[i] = {
+          id: '/song?id=' + _res[i].id.toString(),
+          name: _res[i].name,
+          artist: _res[i].ar[0].name,
+          picUrl: _res[i].al.picUrl
+        }
+      }
     }
 
     const getTopList: () => void = () => {
@@ -155,121 +124,93 @@ export default defineComponent({
     }
 
     // 根据图片类型不同，路由跳转到不同界面
-    const handleHref: (one: string, two: string, three: string) => string = (id, title, url) => {
-      if (id == '0') {
-        return url.slice(url.indexOf('com/') + 3)
-      } else if (title === '新碟首发') {
-        return '/album?id=' + id
-      } else {
-        return '/song?id=' + id
+    const handleHref: (one: string, two: number, three: string) => string = (id, type, url) => {
+      switch (type) {
+        case 3000:
+          return url.slice(url.indexOf('com/') + 3)
+        case 1004:
+          return '/mv?id=' + id
+        case 10:
+          return '/album?id=' + id
+        case 1:
+          return '/song?id=' + id
+        default:
+          return url.slice(url.indexOf('com/') + 3)
       }
     }
 
     // swipe
-    axios({
-      url: 'http://localhost:3000/banner?type=0',
-      method: 'get'
-    })
-      .then(res => {
-        const _b = res.data.banners
+    const swipe: () => void = async () => {
+      const { banners } = await request['httpGET']('GET_BANNER', { 'type': 0 })
 
-        for (let i = 0, j = _b.length; i < j; i++) {
-          banners[i] = {
-            bgSrc: _b[i].imageUrl + '?imageView&blur=40x20',
-            imgSrc: _b[i].imageUrl + '?imageView&quality=30',
-            aHref: handleHref(_b[i].encodeId, _b[i].typeTitle, _b[i].url)
-          }
+      for (let i = 0, j = banners.length; i < j; i++) {
+        banner[i] = {
+          bgSrc: banners[i].imageUrl + '?imageView&blur=40x20',
+          imgSrc: banners[i].imageUrl + '?imageView&quality=30',
+          aHref: handleHref(banners[i].encodeId, banners[i].targetType, banners[i].url)
         }
-      })
-      .catch(err => {
-        console.error(err)
-      })
+      }
+    }
 
     // 热门歌单分类
-    axios({
-      url: 'http://localhost:3000/playlist/hot'
-    })
-      .then(res => {
-        if (res.status === 200) {
-          const _res = res.data.tags
+    const getPlaylistHot: () => void = async () => {
+      const { tags } = await request['httpGET']('GET_PLAYLIST_HOT')
 
-          for (let i = 0, j = _res.length; i < j; i++) {
-            playlistHot.push({
-              id: _res[i].id,
-              name: _res[i].name
-            })
-          }
-        }
-      })
-      .catch(err => {
-        console.log(err)
-      })
+      for (let i = 0, j = tags.length; i < j; i++) {
+        playlistHot.push({
+          id: tags[i].id,
+          name: tags[i].name
+        })
+      }
+    }
 
     // 首页推荐歌单
-    axios({
-      url: 'http://localhost:3000/personalized'
-    }) //歌单
-      .then(res => {
-        if (res.status === 200) {
-          const _res = res.data.result
-          for (let i = 0; i < 7; i++) {
-            cards.push({
-              id: '/playlist?id=' + _res[i].id.toString(),
-              name: _res[i].name,
-              playCount: handlePlayCount(_res[i].playCount),
-              copywriter: _res[i].copywriter,
-              picUrl: _res[i].picUrl,
-              type: _res[i].type
-            })
-          }
-          return Promise.resolve()
-        }
-      })
-      .then(() => {
-        axios({
-          url: 'http://localhost:3000/personalized/djprogram'
-        }) // 电台
-          .then(res => {
-            if (res.status === 200) {
-              const _res = res.data.result
+    const getPersonalized: () => void = async () => {
+      // 歌单
+      const { result } = await request['httpGET']('GET_PERSONALIZED')
+      for (let i = 0; i < 7; i++) {
+        cards.push({
+          id: '/playlist?id=' + result[i].id.toString(),
+          name: result[i].name,
+          playCount: handlePlayCount(result[i].playCount),
+          copywriter: result[i].copywriter,
+          picUrl: result[i].picUrl,
+          type: result[i].type
+        })
+      }
+      // 电台
+      const data = await request['httpGET']('GET_PERSONALIZED_DJ')
 
-              for (let i = 0; i < 3; i++) {
-                cards.push({
-                  id: '/dj?id=' + _res[i].id.toString(),
-                  name: _res[i].name,
-                  playCount: handlePlayCount(_res[i].program.listenerCount),
-                  copywriter: _res[i].copywriter,
-                  picUrl: _res[i].picUrl,
-                  type: _res[i].type
-                })
-              }
-            }
-          })
-      })
-      .catch(err => {
-        console.log(err)
-      })
+      for (let i = 0; i < 3; i++) {
+        cards.push({
+          id: '/dj?id=' + data.result[i].id.toString(),
+          name: data.result[i].name,
+          playCount: handlePlayCount(data.result[i].program.listenerCount),
+          copywriter: data.result[i].copywriter,
+          picUrl: data.result[i].picUrl,
+          type: data.result[i].type
+        })
+      }
+    }
 
     // 首页新碟上架
-    axios({
-      url: 'http://localhost:3000/album/newest'
-    })
-      .then(res => {
-        if (res.status === 200) {
-          const _res = res.data.albums
-          for (let i = 0; i < 10; i++) {
-            albums.push({
-              id: '/album?id=' + _res[i].id.toString(),
-              name: _res[i].name,
-              artist: _res[i].artist.name,
-              picUrl: _res[i].picUrl
-            })
-          }
-        }
-      })
-      .catch(err => {
-        console.log(err)
-      })
+    const getAlbumNewest: () => void = async () => {
+      const { albums } = await request['httpGET']('GET_ALBUM_NEWEST')
+
+      for (let i = 0; i < 10; i++) {
+        album.push({
+          id: '/album?id=' + albums[i].id.toString(),
+          name: albums[i].name,
+          artist: albums[i].artist.name,
+          picUrl: albums[i].picUrl
+        })
+      }
+    }
+
+    swipe()
+    getPlaylistHot()
+    getPersonalized()
+    getAlbumNewest()
 
     // 首页榜单
     if (sessionStorage.topListFull) {
@@ -294,11 +235,11 @@ export default defineComponent({
       playlistHot,
       cards,
       albumListHot,
-      albums,
+      album,
       topList,
       playListId,
       cardsTopList,
-      banners
+      banner
     }
   }
 })

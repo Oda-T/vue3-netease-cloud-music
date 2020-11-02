@@ -1,6 +1,7 @@
 import { createStore } from 'vuex'
 
-import axios from 'axios'
+import { topListInt } from '../type/recommend.type'
+import request from '../api/index'
 
 export default createStore({
   state: {
@@ -32,26 +33,18 @@ export default createStore({
   },
   actions: {
     getTopListFull: async ({ commit }) => {
-      interface S {
-        id: number
-        name: string
-      }
-      const _list: Array<S> = []
+      const _list: Array<topListInt> = []
 
-      await axios({
-        url: 'http://localhost:3000/toplist'
-      }).then(res => {
-        if (res.status === 200) {
-          const _res = res.data.list
-          for (let i = 0; i < _res.length; i++) {
-            _list.push({
-              id: _res[i].id,
-              name: _res[i].name
-            })
-          }
-          commit('setTopListFull', _list)
-        }
-      })
+      const { list } = await request['httpGET']('GET_TOPLIST')
+
+      for (let i = 0; i < list.length; i++) {
+        _list.push({
+          id: list[i].id,
+          name: list[i].name
+        })
+      }
+      commit('setTopListFull', _list)
+
       return Promise.resolve()
     }
   },

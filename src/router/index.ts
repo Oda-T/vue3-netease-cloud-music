@@ -87,18 +87,10 @@ const routes: Array<RouteRecordRaw> = [
         }
       },
       {
-        path: 'store',
+        path: 'store/product',
+        alias: 'store/newalbum/detail',
         component: () => import(/* webpackChunkName: "store" */ '@/views/store/index.vue'),
         name: 'store',
-        meta: {
-          title: '商城',
-          index: 3
-        }
-      },
-      {
-        path: 'store/newalbum/detail',
-        component: () => import(/* webpackChunkName: "storeNewalbum" */ '@/views/store/index.vue'),
-        name: 'storeNewalbum',
         meta: {
           title: '商城',
           index: 3
@@ -176,7 +168,7 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import(/* webpackChunkName: "playlist" */ '@/views/playlist/index.vue'),
         name: 'playlist',
         meta: {
-          title: 'playlist'
+          title: '播放列表'
         }
       },
       {
@@ -204,18 +196,42 @@ const routes: Array<RouteRecordRaw> = [
         }
       },
       {
+        path: 'live',
+        component: () => import(/* webpackChunkName: "live" */ '@/views/live/index.vue'),
+        name: 'live',
+        meta: {
+          title: 'live'
+        }
+      },
+      {
+        path: 'mv',
+        component: () => import(/* webpackChunkName: "mv" */ '@/views/mv/index.vue'),
+        name: 'mv',
+        meta: {
+          title: 'mv'
+        }
+      },
+      {
         path: 'm/at/:id',
         component: () => import(/* webpackChunkName: "album" */ '@/views/m/at.vue'),
         name: 'at',
         meta: {
           title: 'm/at'
         }
+      },
+      {
+        path: '404',
+        component: () => import(/* webpackChunkName: "404" */ '@/views/404/index.vue'),
+        name: '404',
+        meta: {
+          title: '404'
+        }
       }
     ]
   },
   {
     path: '/:pathMatch(.*)*',
-    redirect: { name: 'discover' }
+    redirect: { name: '404' }
   }
 ]
 

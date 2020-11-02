@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <div id="discoverAlbum">
     <!-- 列表 -->
     <recommend :topTitle="'全部新碟'" :activeName="'全部'" :topList="TopList" @getid="getIdCallBack" />
     <!-- 推荐 -->
-    <div class="playlist-card-container">
+    <div class="album-card-container">
       <card v-for="item in cardList" :key="item.id" :item="item" />
     </div>
     <pagination :pageCount="totalListCount" @pagenumber="pageNumber" :key="forceUpdate" />
@@ -16,8 +16,11 @@ import Recommend from '../../components/recommend.vue'
 import Card from '../../components/card.vue'
 import Pagination from '../../components/pagination.vue'
 
+import { cardInt } from '../../type/card.type'
+
 import mdui from 'mdui'
-import axios from 'axios'
+
+import request from '../../api/index'
 
 export default defineComponent({
   name: 'Playlist',
@@ -27,17 +30,10 @@ export default defineComponent({
     Pagination
   },
   setup() {
-    interface D {
-      id: string
-      name: string
-      artist: string
-      picUrl: string
-    }
-
-    const cardList: Array<D> = reactive([])
+    const cardList: Array<cardInt> = reactive([])
     const totalListCount = ref(0)
 
-    const forceUpdate = ref(0)
+    const forceUpdate = ref('')
 
     let cat = { id: 'ALL', name: '全部' }
 
@@ -49,45 +45,32 @@ export default defineComponent({
       { id: 'JP', name: '日本' }
     ]
 
-    const getCardList: (obj: string, offset?: number) => void = (id, number = 1) => {
+    const getCardList: (obj: string, offset?: number) => void = async (id, offset = 1) => {
       cardList.length = 0
 
-      axios({
-        url: `http://localhost:3000/album/new?area=${id}&limit=60&offset=${(number - 1) * 60}`
-      })
-        .then(res => {
-          const _res = res.data.albums
+      const { albums } = await request['httpGET']('GET_ALBUM_NEW', { 'area': id, 'limit': 60, 'offset': (offset - 1) * 60 })
 
-          for (let i = 0; i < _res.length; i++) {
-            cardList[i] = {
-              id: '/album?id=' + _res[i].id,
-              name: _res[i].name,
-              artist: _res[i].artists[0].name,
-              picUrl: _res[i].picUrl
-            }
-          }
-        })
-        .catch(err => {
-          console.log(err)
-        })
+      for (let i = 0; i < albums.length; i++) {
+        cardList[i] = {
+          id: '/album?id=' + albums[i].id,
+          name: albums[i].name,
+          artist: albums[i].artists[0].name,
+          picUrl: albums[i].picUrl
+        }
+      }
     }
 
-    const getIdCallBack: (obj: { id: string; name: string }) => void = obj => {
+    const getIdCallBack: (obj: { id: string; name: string }) => void = async obj => {
       getCardList(obj.id)
-      cat = obj
 
-      axios({
-        url: `http://localhost:3000/album/new?area=${obj.id}`
-      })
-        .then(res => {
-          totalListCount.value = Math.ceil(res.data.total / 60)
-        })
-        .catch(err => {
-          console.log(err)
-        })
+      cat = obj
+      // 获得总页数
+      const { total } = await request['httpGET']('GET_ALBUM_NEW', { 'area': obj.id })
+
+      totalListCount.value = Math.ceil(total / 60)
 
       // 强制更新pagination
-      forceUpdate.value = Math.random()
+      forceUpdate.value = obj.id
     }
 
     const pageNumber: (n: number) => void = n => {
@@ -111,9 +94,9 @@ export default defineComponent({
 })
 </script>
 <style lang="less" scoped>
-.playlist-card-container {
+.album-card-container {
   width: 1333px;
-  min-height: 300px;
+  height: 3230px;
   margin: 0 auto;
 }
 </style>
