@@ -9,6 +9,8 @@ import * as PLAYLIST_INDEX from './playlist/index'
 
 import * as ALBUM_INDEX from './album/index'
 
+import * as ARTIST_INDEX from './artist/index'
+
 type REQUEST_NAME = {
   [key: string]: string
 }
@@ -21,7 +23,8 @@ const REQUEST_NAME: REQUEST_NAME = {
   ...DISCOVER_PLAYLIST_REQUEST,
   ...DISCOVER_TOPLIST_REQUEST,
   ...PLAYLIST_INDEX,
-  ...ALBUM_INDEX
+  ...ALBUM_INDEX,
+  ...ARTIST_INDEX
 }
 
 export default REQUEST_NAME

@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- 概览 -->
-    <header class="c-playlist-header mdui-typo">
+    <header v-if="headerDetail.name" class="c-playlist-header mdui-typo">
       <img class="c-playlist-header-img" :src="headerDetail.coverImgUrl" :alt="headerDetail.description" />
       <div class="c-playlist-header-text">
         <h1>{{ headerDetail.name }}</h1>

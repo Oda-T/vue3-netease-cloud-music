@@ -151,7 +151,7 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import(/* webpackChunkName: "artist" */ '@/views/artist/index.vue'),
         name: 'artist',
         meta: {
-          title: 'artist'
+          title: '歌手'
         }
       },
       {

@@ -2,9 +2,9 @@
   <div id="discoverToplist">
     <div v-if="!topListId">
       <!-- 特色榜单 -->
-      <recommend :topTitle="'特色音乐榜'" :activeName="'云音乐飙升榜'" :topList="specialList" :cardList="specialCardList" @getid="getIdCallBackSpecial"></recommend>
+      <recommend :topTitle="'特色音乐榜'" :activeName="specialActiveName" :topList="specialList" :cardList="specialCardList" @getid="getIdCallBackSpecial"></recommend>
       <!-- 全球媒体榜单 -->
-      <recommend :topTitle="'全球媒体榜'" :activeName="'云音乐说唱榜'" :topList="globalList" :cardList="globalCardList" @getid="getIdCallBackGlobal"></recommend>
+      <recommend :topTitle="'全球媒体榜'" :activeName="globalActiveName" :topList="globalList" :cardList="globalCardList" @getid="getIdCallBackGlobal"></recommend>
     </div>
     <!-- 榜单详情 -->
     <div v-else>
@@ -17,9 +17,9 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, onMounted, reactive, ref, watchEffect } from 'vue'
+import { defineComponent, onMounted, reactive, ref } from 'vue'
 import { useStore } from 'vuex'
-import { useRoute } from 'vue-router'
+import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 
 import mdui from 'mdui'
 
@@ -50,9 +50,11 @@ export default defineComponent({
 
     const specialList: Array<topListInt> = reactive([])
     const specialCardList: Array<cardListInt> = reactive([])
+    const specialActiveName = ref('云音乐飙升榜')
 
     const globalList: Array<topListInt> = reactive([])
     const globalCardList: Array<cardListInt> = reactive([])
+    const globalActiveName = ref('云音乐说唱榜')
 
     const pageCount = ref(0)
 
@@ -102,10 +104,14 @@ export default defineComponent({
     }
 
     const getIdCallBackSpecial: (n: { id: number; name: string }) => void = n => {
+      specialActiveName.value = n.name
+
       getPlayList(n.id, specialCardList)
     }
 
     const getIdCallBackGlobal: (n: { id: number; name: string }) => void = n => {
+      globalActiveName.value = n.name
+
       getPlayList(n.id, globalCardList)
     }
 
@@ -166,7 +172,7 @@ export default defineComponent({
           name: playlist.tracks[i].name,
           id: '/song?id=' + playlist.tracks[i].id,
           artist: playlist.tracks[i].ar,
-          artistUrl: '/artist?id' + playlist.tracks[i].ar[0].id,
+          artistUrl: '/artist?id=' + playlist.tracks[i].ar[0].id,
           imgUrl: playlist.tracks[i].al.picUrl + '?param=32y32',
           time: playlist.tracks[i].dt
         }
@@ -178,14 +184,25 @@ export default defineComponent({
     }
 
     // 观测route id
-    watchEffect(() => {
-      if (route.query.id) {
-        topListId.value = Number(route.query.id)
-        getComments(Number(route.query.id), 0)
-        getTopListDetail(Number(route.query.id))
-      } else {
-        topListId.value = 0
-      }
+    if (route.query.id) {
+      topListId.value = Number(route.query.id)
+      getComments(Number(route.query.id), 0)
+      getTopListDetail(Number(route.query.id))
+    } else {
+      topListId.value = 0
+    }
+
+    // 异步获取query
+    onBeforeRouteUpdate(() => {
+      setTimeout(() => {
+        if (route.query.id) {
+          topListId.value = Number(route.query.id)
+          getComments(Number(route.query.id), 0)
+          getTopListDetail(Number(route.query.id))
+        } else {
+          topListId.value = 0
+        }
+      }, 10)
     })
 
     onMounted(() => {
@@ -195,8 +212,10 @@ export default defineComponent({
     return {
       specialList,
       specialCardList,
+      specialActiveName,
       globalList,
       globalCardList,
+      globalActiveName,
       getIdCallBackSpecial,
       getIdCallBackGlobal,
       topListId,

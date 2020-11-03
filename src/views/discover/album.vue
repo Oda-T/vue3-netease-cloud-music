@@ -11,7 +11,7 @@
 </template>
 <script lang="ts">
 import { defineComponent, reactive, ref, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router'
 
 import Recommend from '../../components/recommend.vue'
 import Card from '../../components/card.vue'
@@ -40,6 +40,8 @@ export default defineComponent({
 
     let cat = { id: 'ALL', name: '全部' }
 
+    const _name = ref('全部')
+
     const TopList = [
       { id: 'ALL', name: '全部' },
       { id: 'ZH', name: '华语' },
@@ -50,10 +52,27 @@ export default defineComponent({
 
     const activeName = ref('全部')
 
-    const getCardList: (obj: string, offset?: number) => void = async (id, offset = 1) => {
+    const getNameById: (id: string) => string = id => {
+      for (let i = 0; i < TopList.length; i++) {
+        if (TopList[i].id === id) {
+          _name.value = TopList[i].name
+        }
+      }
+      return _name.value
+    }
+
+    const getCardList: (id: string, offset?: number) => void = async (id, offset = 1) => {
       cardList.length = 0
 
-      const { albums } = await request['httpGET']('GET_ALBUM_NEW', { 'area': id, 'limit': 60, 'offset': (offset - 1) * 60 })
+      const { albums, total } = await request['httpGET']('GET_ALBUM_NEW', { 'area': id, 'limit': 60, 'offset': (offset - 1) * 60 })
+
+      // 分页
+      if (offset === 1) {
+        totalListCount.value = Math.ceil(total / 60)
+
+        // 强制更新pagination
+        forceUpdate.value = id
+      }
 
       for (let i = 0; i < albums.length; i++) {
         cardList[i] = {
@@ -64,41 +83,20 @@ export default defineComponent({
         }
       }
     }
-
-    const getIdCallBack: (obj: { id: string; name: string }) => void = async obj => {
-      activeName.value = obj.name
-
-      getCardList(obj.id)
-
+    const getIdCallBack: (obj: { id: string; name: string }) => void = obj => {
       cat = obj
       router.push(`/discover/album?area=${obj.id}`)
-
-      // 获得总页数
-      const { total } = await request['httpGET']('GET_ALBUM_NEW', { 'area': obj.id })
-      totalListCount.value = Math.ceil(total / 60)
-
-      // 强制更新pagination
-      forceUpdate.value = obj.id
     }
 
     const pageNumber: (n: number) => void = n => {
       getCardList(cat.id, n)
     }
 
-    if (route.query.area) {
-      const _id = route.query.area.toString()
-      let _name: string
+    typeof route.query.area === 'string' ? ((activeName.value = getNameById(route.query.area)), getCardList(route.query.area)) : getCardList('ALL')
 
-      for (let i = 0; i < TopList.length; i++) {
-        if (TopList[i].id === _id) {
-          _name = TopList[i].name
-          getIdCallBack({ id: _id, name: _name })
-          return
-        }
-      }
-    } else {
-      getIdCallBack({ id: 'ALL', name: '全部' })
-    }
+    onBeforeRouteUpdate(() => {
+      getCardList(cat.id)
+    })
 
     onMounted(() => {
       mdui.mutation()

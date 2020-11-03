@@ -66,7 +66,7 @@ export default defineComponent({
           name: tracks[i].name,
           id: '/song?id=' + tracks[i].id,
           artist: tracks[i].ar,
-          artistUrl: '/artist?id' + tracks[i].ar[0].id,
+          artistUrl: '/artist?id=' + tracks[i].ar[0].id,
           imgUrl: tracks[i].al.picUrl + '?param=32y32',
           time: tracks[i].dt
         }

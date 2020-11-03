@@ -1,7 +1,7 @@
 <template>
   <div id="discoverPlaylist">
     <!-- 列表 -->
-    <recommend :topTitle="'全部歌单'" :activeName="cat" :topList="TopList" @getid="getUrlCallBack" />
+    <recommend :topTitle="'全部歌单'" :activeName="cat" :topList="TopList" @getid="getIdCallBack" />
     <!-- 推荐 -->
     <div class="playlist-card-container">
       <card v-for="item in cardList" :key="item.id" :item="item" />
@@ -58,10 +58,17 @@ export default defineComponent({
       }
     }
 
-    const getCardList: (obj: string, offset?: number) => void = async (obj, number = 1) => {
+    const getCardList: (name: string, offset?: number) => void = async (name, offset = 1) => {
       cardList.length = 0
+      const { playlists, total } = await request['httpGET']('GET_TOP_PLAYLIST', { 'cat': name, 'limit': 60, 'order': 'hot', 'offset': (offset - 1) * 60 })
 
-      const { playlists } = await request['httpGET']('GET_TOP_PLAYLIST', { 'cat': obj, 'limit': 60, 'order': 'hot', 'offset': (number - 1) * 60 })
+      // 更新分页
+      if (offset === 1) {
+        totalListCount.value = Math.ceil(total / 60)
+
+        // 强制更新pagination
+        forceUpdate.value = name
+      }
 
       for (let i = 0; i < playlists.length; i++) {
         cardList[i] = {
@@ -73,19 +80,8 @@ export default defineComponent({
       }
     }
 
-    const getUrlCallBack: (obj: { name: string }) => void = obj => {
+    const getIdCallBack: (obj: { name: string }) => void = obj => {
       router.push(`/discover/playlist/?cat=${encodeURIComponent(obj.name)}`)
-    }
-
-    const getIdCallBack: (name: string) => void = async obj => {
-      getCardList(obj)
-
-      const { total } = await request['httpGET']('GET_TOP_PLAYLIST', { 'cat': obj })
-
-      totalListCount.value = Math.ceil(total / 60)
-
-      // 强制更新pagination
-      forceUpdate.value = obj
     }
 
     const pageNumber: (n: number) => void = n => {
@@ -95,10 +91,13 @@ export default defineComponent({
     getTopList()
 
     // watch route id
-    typeof route.query.cat === 'string' ? ((cat.value = route.query.cat), getIdCallBack(cat.value)) : ((cat.value = '全部'), getIdCallBack(cat.value))
+    typeof route.query.cat === 'string' ? ((cat.value = route.query.cat), getCardList(route.query.cat)) : ((cat.value = '全部'), getCardList('全部'))
 
     onBeforeRouteUpdate(() => {
-      typeof route.query.cat === 'string' ? ((cat.value = route.query.cat), getIdCallBack(cat.value)) : ((cat.value = '全部'), getIdCallBack(cat.value))
+      // 异步获取query
+      setTimeout(() => {
+        route.query.cat && getCardList(route.query.cat.toString())
+      }, 10)
     })
 
     onMounted(() => {
@@ -111,7 +110,7 @@ export default defineComponent({
       pageNumber,
       forceUpdate,
       cat,
-      getUrlCallBack
+      getIdCallBack
     }
   }
 })
