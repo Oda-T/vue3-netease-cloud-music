@@ -12,16 +12,25 @@
     <div class="c-artist-body">
       <div class="mdui-tab mdui-tab-full-width" mdui-tab>
         <a href="#artist-tab1" class="mdui-ripple mdui-tab-active">热门作品</a>
-        <a href="#artist-tab2" class="mdui-ripple">所有专辑</a>
-        <a href="#artist-tab3" class="mdui-ripple">相关MV</a>
-        <a href="#artist-tab4" class="mdui-ripple">艺人介绍</a>
+        <a href="#artist-tab2" class="mdui-ripple" @click="getArtistAlbum(id)">热门专辑</a>
+        <a href="#artist-tab3" class="mdui-ripple" @click="getArtistMv(id)">相关MV</a>
+        <a href="#artist-tab4" class="mdui-ripple" @click="getArtistDesc(id)">艺人介绍</a>
       </div>
       <div id="artist-tab1" class="mdui-p-a-2">
         <play-list :headerDetail="headerDetail" :listDetail="listDetail" />
       </div>
-      <div id="artist-tab2" class="mdui-p-a-2">shopping content</div>
-      <div id="artist-tab3" class="mdui-p-a-2">images content</div>
-      <div id="artist-tab4" class="mdui-p-a-2">images content</div>
+      <div id="artist-tab2" class="mdui-p-a-2">
+        <card v-for="item in cardList" :key="item.id" :item="item" />
+      </div>
+      <div id="artist-tab3" class="mdui-p-a-2">
+        <card v-for="item in mvCardList" :key="item.id" :item="item" />
+      </div>
+      <div id="artist-tab4" class="mdui-p-a-2">
+        <div class="mdui-typo" v-for="item in description" :key="item.id" :item="item">
+          <h3>{{ item.ti }}</h3>
+          <p>{{ item.txt }}</p>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -31,25 +40,35 @@ import { useRoute } from 'vue-router'
 
 import mdui from 'mdui'
 
+import Card from '../../components/card.vue'
 import PlayList from '../../components/playlist.vue'
 
 import { artistDetailInt } from '../../type/artist.type'
 import { playListInt, headerDetailInt } from '../../type/playList.type'
+import { cardInt } from '../../type/card.type'
 
 import request from '../../api/index'
 
 export default defineComponent({
   name: 'Artist',
   components: {
-    PlayList
+    PlayList,
+    Card
   },
   setup() {
     const route = useRoute()
+    const id = ref(0)
+
     const artistDetail = ref({} as artistDetailInt)
     const headerDetail = ref({} as headerDetailInt)
 
-    const listDetail: Array<playListInt> = reactive([])
+    const cardList: Array<cardInt> = reactive([])
+    const mvCardList: Array<cardInt> = reactive([])
 
+    const description: Array<{ ti: string; txt: string }> = reactive([])
+
+    const listDetail: Array<playListInt> = reactive([])
+    // 获取详情以及热门曲目
     const getArtistDetail: (n: number) => void = async n => {
       const { artist, hotSongs } = await request['httpGET']('GET_ARTIST', { 'id': n })
 
@@ -71,7 +90,56 @@ export default defineComponent({
       }
     }
 
-    route.query.id && getArtistDetail(Number(route.query.id))
+    // 获取歌手专辑
+    const getArtistAlbum: (id: number, limit?: number) => void = async (id, limit = 30) => {
+      // 已经获取过，不再重复获取
+      if (cardList.length) {
+        return
+      }
+      const { hotAlbums } = await request['httpGET']('GET_ARTIST_ALBUM', { 'id': id, 'limit': limit })
+      for (let i = 0; i < hotAlbums.length; i++) {
+        cardList[i] = {
+          id: '/album?id=' + hotAlbums[i].id,
+          name: hotAlbums[i].name,
+          artist: hotAlbums[i].artists[0].name,
+          picUrl: hotAlbums[i].picUrl
+        }
+      }
+    }
+    // 获得歌手mv
+    const getArtistMv: (id: number) => void = async id => {
+      // 已经获取过，不再重复获取
+      if (mvCardList.length) {
+        return
+      }
+      const { mvs } = await request['httpGET']('GET_ARTIST_MV', { 'id': id })
+      for (let i = 0; i < mvs.length; i++) {
+        mvCardList[i] = {
+          id: '/mv?id=' + mvs[i].id,
+          name: mvs[i].name,
+          artist: mvs[i].artist.name,
+          picUrl: mvs[i].imgurl
+        }
+      }
+    }
+
+    // 获得详情
+    const getArtistDesc: (id: number) => void = async id => {
+      // 已经获取过，不再重复获取
+      if (description.length) {
+        return
+      }
+      const { introduction } = await request['httpGET']('GET_ARTIST_DESC', { 'id': id })
+
+      for (let i = 0; i < introduction.length; i++) {
+        description[i] = {
+          ti: introduction[i].ti,
+          txt: introduction[i].txt
+        }
+      }
+    }
+
+    route.query.id && ((id.value = Number(route.query.id)), getArtistDetail(id.value))
 
     onMounted(() => {
       mdui.mutation()
@@ -79,7 +147,14 @@ export default defineComponent({
     return {
       artistDetail,
       listDetail,
-      headerDetail
+      headerDetail,
+      cardList,
+      mvCardList,
+      getArtistAlbum,
+      getArtistMv,
+      getArtistDesc,
+      id,
+      description
     }
   }
 })

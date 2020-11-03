@@ -53,7 +53,7 @@ export default defineComponent({
 .c-card-item {
   display: inline-block;
   width: 192px;
-  margin: 35px 15px 0px 15px;
+  margin: 25px 15px 10px 15px;
 }
 .c-card-menu-vert-btn {
   background-color: rgba(0, 0, 0, 0.4);

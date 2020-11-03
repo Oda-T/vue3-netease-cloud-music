@@ -203,8 +203,9 @@ export default defineComponent({
         position: absolute;
         top: 0px;
         height: 100%;
-        width: 9999px;
         transition: left 0.5s ease-in-out;
+        display: flex;
+        flex-wrap: nowrap;
         .recommend-card-list {
           display: inline-block;
           width: 192px;

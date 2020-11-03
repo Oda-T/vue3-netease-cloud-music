@@ -221,13 +221,10 @@ const routes: Array<RouteRecordRaw> = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
-  scrollBehavior(to, from, savedPosition) {
-    // always scroll to top
-    if (savedPosition) {
-      return savedPosition
-    } else {
+  scrollBehavior() {
+    setTimeout(() => {
       return { top: 0 }
-    }
+    }, 20)
   }
 })
 
