@@ -4,14 +4,12 @@
     <!-- 评论 -->
     <comments :commentsDetail="commentsDetail" :hotCommentsDetail="hotCommentsDetail" />
     <!-- 分页 -->
-    <pagination :pageCount="pageCount" @pagenumber="pageNumber" />
+    <pagination :pageCount="pageCount" @page-number="pageNumber" />
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, onMounted, reactive, ref } from 'vue'
+import { defineComponent, reactive, ref } from 'vue'
 import { useRoute } from 'vue-router'
-
-import mdui from 'mdui'
 
 import PlayList from '../../components/playlist.vue'
 import Comments from '../../components/comments.vue'
@@ -39,10 +37,9 @@ export default defineComponent({
 
     const getPlayList: (n: number) => void = async n => {
       const { album, songs } = await request['httpGET']('GET_ALBUM', { 'id': n })
-
       headerDetail.value = {
         name: album.name,
-        coverImgUrl: album.picUrl + '?param=264y264',
+        coverImgUrl: album.picUrl,
         description: album.description,
         trackCount: album.trackCount,
         playCount: album.playCount,
@@ -61,7 +58,7 @@ export default defineComponent({
           id: '/song?id=' + songs[i].id,
           artist: songs[i].ar,
           artistUrl: '/artist?id=' + songs[i].ar[0].id,
-          imgUrl: songs[i].al.picUrl + '?param=32y32',
+          imgUrl: songs[i].al.picUrl,
           time: songs[i].dt
         }
       }
@@ -72,13 +69,13 @@ export default defineComponent({
       commentsDetail.length = 0
       const { total, comments, hotComments } = await request['httpGET']('GET_COMMENT_ALBUM', { 'id': id, 'limit': 20, 'offset': n })
 
-      pageCount.value = Math.ceil(total / 20)
       // 热门评论
       if (n === 0) {
+        pageCount.value = Math.ceil(total / 20)
         for (let i = 0; i < hotComments.length; i++) {
           hotCommentsDetail[i] = {
             username: hotComments[i].user.nickname,
-            useravatar: hotComments[i].user.avatarUrl + '?param=30y30',
+            useravatar: hotComments[i].user.avatarUrl,
             usertype: hotComments[i].user.userType,
             content: hotComments[i].content,
             liked: hotComments[i].liked,
@@ -98,7 +95,7 @@ export default defineComponent({
       for (let i = 0; i < comments.length; i++) {
         commentsDetail[i] = {
           username: comments[i].user.nickname,
-          useravatar: comments[i].user.avatarUrl + '?param=30y30',
+          useravatar: comments[i].user.avatarUrl,
           usertype: comments[i].user.userType,
           content: comments[i].content,
           liked: comments[i].liked,
@@ -115,12 +112,10 @@ export default defineComponent({
     const pageNumber: (n: number) => void = n => {
       getComments(Number(route.query.id), 20 * (n - 1))
     }
+
     // 单碟 album?id=n
     route.query.id && (getPlayList(Number(route.query.id)), getComments(Number(route.query.id)))
 
-    onMounted(() => {
-      mdui.mutation()
-    })
     return {
       headerDetail,
       listDetail,

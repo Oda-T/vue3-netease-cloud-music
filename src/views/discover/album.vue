@@ -6,11 +6,11 @@
     <div class="album-card-container">
       <card v-for="item in cardList" :key="item.id" :item="item" />
     </div>
-    <pagination :pageCount="totalListCount" @pagenumber="pageNumber" :key="forceUpdate" />
+    <pagination :pageCount="totalListCount" @page-number="pageNumber" :key="forceUpdate" />
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, reactive, ref, onMounted } from 'vue'
+import { defineComponent, reactive, ref } from 'vue'
 import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router'
 
 import Recommend from '../../components/recommend.vue'
@@ -19,12 +19,10 @@ import Pagination from '../../components/pagination.vue'
 
 import { cardInt } from '../../type/card.type'
 
-import mdui from 'mdui'
-
 import request from '../../api/index'
 
 export default defineComponent({
-  name: 'Playlist',
+  name: 'discoverAlbum',
   components: {
     Recommend,
     Card,
@@ -98,9 +96,6 @@ export default defineComponent({
       getCardList(cat.id)
     })
 
-    onMounted(() => {
-      mdui.mutation()
-    })
     return {
       activeName,
       TopList,

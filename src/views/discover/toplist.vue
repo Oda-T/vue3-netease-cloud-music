@@ -12,16 +12,14 @@
       <!-- 评论 -->
       <comments :commentsDetail="commentsDetail" :hotCommentsDetail="hotCommentsDetail" />
       <!-- 分页 -->
-      <pagination :pageCount="pageCount" @pagenumber="pageNumber" />
+      <pagination :pageCount="pageCount" @page-number="pageNumber" />
     </div>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, onMounted, reactive, ref } from 'vue'
+import { defineComponent, reactive, ref } from 'vue'
 import { useStore } from 'vuex'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
-
-import mdui from 'mdui'
 
 import Recommend from '../../components/recommend.vue'
 import PlayList from '../../components/playlist.vue'
@@ -35,7 +33,7 @@ import { playListInt, headerDetailInt } from '../../type/playList.type'
 import request from '../../api/index'
 
 export default defineComponent({
-  name: 'TopList',
+  name: 'discoverTopList',
   components: {
     Recommend,
     PlayList,
@@ -136,7 +134,7 @@ export default defineComponent({
       for (let i = 0; i < comments.length; i++) {
         commentsDetail[i] = {
           username: comments[i].user.nickname,
-          useravatar: comments[i].user.avatarUrl + '?param=30y30',
+          useravatar: comments[i].user.avatarUrl,
           usertype: comments[i].user.userType,
           content: comments[i].content,
           liked: comments[i].liked,
@@ -157,7 +155,7 @@ export default defineComponent({
 
       headerDetail.value = {
         name: playlist.name,
-        coverImgUrl: playlist.coverImgUrl + '?param=264y264',
+        coverImgUrl: playlist.coverImgUrl,
         description: playlist.description,
         trackCount: playlist.trackCount,
         playCount: playlist.playCount,
@@ -173,7 +171,7 @@ export default defineComponent({
           id: '/song?id=' + playlist.tracks[i].id,
           artist: playlist.tracks[i].ar,
           artistUrl: '/artist?id=' + playlist.tracks[i].ar[0].id,
-          imgUrl: playlist.tracks[i].al.picUrl + '?param=32y32',
+          imgUrl: playlist.tracks[i].al.picUrl,
           time: playlist.tracks[i].dt
         }
       }
@@ -188,8 +186,10 @@ export default defineComponent({
       topListId.value = Number(route.query.id)
       getComments(Number(route.query.id), 0)
       getTopListDetail(Number(route.query.id))
+      window.scrollTo({ top: 0 })
     } else {
       topListId.value = 0
+      window.scrollTo({ top: 0 })
     }
 
     // 异步获取query
@@ -199,14 +199,12 @@ export default defineComponent({
           topListId.value = Number(route.query.id)
           getComments(Number(route.query.id), 0)
           getTopListDetail(Number(route.query.id))
+          window.scrollTo({ top: 0 })
         } else {
           topListId.value = 0
+          window.scrollTo({ top: 0 })
         }
       }, 10)
-    })
-
-    onMounted(() => {
-      mdui.mutation()
     })
 
     return {

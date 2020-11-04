@@ -8,13 +8,13 @@
       </div>
     </div>
     <!-- 热门 -->
-    <div class="c-playlist-hot" v-if="hotCommentsDetail.length !== 0">热门评论</div>
+    <div class="c-playlist-hot mdui-text-color-red-900" v-if="hotCommentsDetail.length !== 0">热门评论</div>
     <div class="c-playlist-comments" v-if="hotCommentsDetail.length !== 0">
       <div class="comments-item" v-for="item in hotCommentsDetail" :key="item.id">
         <div class="mdui-typo">
           <hr />
         </div>
-        <img class="comments-item-img" v-lazy="item.useravatar" :alt="item.username" />
+        <img class="comments-item-img" v-lazy="`${item.useravatar}?param=10y10&quality=70`" :alt="item.username" />
         <span class="comments-item-user">{{ item.username }}</span>
         <span class="comments-item-time">{{ handleTime(item.time) }}</span>
         <p class="comments-item-comments">{{ item.content }}</p>
@@ -34,8 +34,8 @@
       </div>
     </div>
     <!-- 最新 -->
-    <div class="c-playlist-new">最新评论</div>
-    <div class="c-playlist-comments">
+    <div v-if="commentsDetail.length !== 0" class="c-playlist-new mdui-text-color-red-900">最新评论</div>
+    <div v-if="commentsDetail.length !== 0" class="c-playlist-comments">
       <div class="comments-item" v-for="item in commentsDetail" :key="item.id">
         <div class="mdui-typo">
           <hr />

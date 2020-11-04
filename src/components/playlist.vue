@@ -2,37 +2,44 @@
   <div>
     <!-- 概览 -->
     <header v-if="headerDetail.name" class="c-playlist-header mdui-typo">
-      <img class="c-playlist-header-img" :src="headerDetail.coverImgUrl" :alt="headerDetail.description" />
+      <img class="c-playlist-header-img" :src="`${headerDetail.coverImgUrl}?param=264y264&quality=70`" :alt="headerDetail.name" />
       <div class="c-playlist-header-text">
         <h1>{{ headerDetail.name }}</h1>
-        <p>最近更新：{{ handleTime(headerDetail.updateTime) }}</p>
+        <p v-if="headerDetail.album">{{ headerDetail.album }}</p>
+        <p v-if="headerDetail.updateTime">最近更新：{{ handleTime(headerDetail.updateTime) }}</p>
         <p v-if="headerDetail.playCount">{{ headerDetail.playCount }}次播放</p>
         <p v-if="headerDetail.artistName">
           <router-link :to="`/artist?id=${headerDetail.artistId}`">
             {{ headerDetail.artistName }}
           </router-link>
         </p>
-        <button class="mdui-btn mdui-color-red-900 mdui-ripple"><i class="mdui-icon mdui-icon-left material-icons">add_to_queue</i>{{ headerDetail.shareCount }}</button>
-        <button class="c-playlist-header-subscribedCount mdui-btn mdui-color-red-900 mdui-ripple">
-          <i class="mdui-icon mdui-icon-left material-icons">share</i>{{ headerDetail.subscribedCount }}
+        <button class="c-playlist-header-play mdui-btn mdui-color-red-900 mdui-btn-raised mdui-ripple" @click.stop="handlePlay"
+          ><i class="mdui-icon mdui-icon-left material-icons">play_arrow</i>播放</button
+        >
+        <button class="mdui-btn mdui-color-red-400 mdui-ripple">
+          <i class="mdui-icon  material-icons" :class="{ 'mdui-icon-left': headerDetail.shareCount }">add_to_queue</i>{{ headerDetail.shareCount }}
         </button>
-        <button class="mdui-btn mdui-color-red-900 mdui-ripple"><i class="mdui-icon mdui-icon-left material-icons">sms</i>{{ headerDetail.commentCount }} </button>
+        <button class="c-playlist-header-subscribedCount mdui-btn mdui-color-red-400 mdui-ripple">
+          <i class="mdui-icon material-icons" :class="{ 'mdui-icon-left': headerDetail.subscribedCount }">share</i>{{ headerDetail.subscribedCount }}
+        </button>
+        <button class="mdui-btn mdui-color-red-400 mdui-ripple">
+          <i class="mdui-icon material-icons" :class="{ 'mdui-icon-left': headerDetail.commentCount }">sms</i>{{ headerDetail.commentCount }}
+        </button>
 
         <router-link class="c-playlist-header-tags mdui-chip" v-for="item in headerDetail.tags" :key="item.id" :to="`/discover/playlist/?cat=${item}`">
           <span class="mdui-chip-title">{{ item }}</span>
         </router-link>
 
-        <h5 class="c-playlist-header-description">{{ headerDetail.description }}</h5>
+        <h5 v-if="headerDetail.description" class="c-playlist-header-description">{{ headerDetail.description }}</h5>
       </div>
     </header>
-
     <!-- 歌曲详情 -->
-    <div class="c-playlist-main mdui-table-fluid">
+    <div v-if="listDetail.length" class="c-playlist-main mdui-table-fluid">
       <table class="mdui-table mdui-table-hoverable">
         <tbody>
           <tr v-for="(item, index) in listDetail" :key="item.id" @mouseenter="curIndex = index" @mouseleave="curIndex = -1">
             <td style="width:123px">
-              <router-link :to="item.id"><img class="c-playlist-main-img" v-lazy="item.imgUrl" :alt="item.name"/></router-link>
+              <router-link :to="item.id"><img class="c-playlist-main-img" v-lazy="`${item.imgUrl}?param=32y32&quality=30`" :alt="item.name"/></router-link>
             </td>
             <td style="width:674px;maxWidth:674px" class="mdui-text-truncate">
               <router-link :to="item.id">
@@ -61,9 +68,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue'
-
-import mdui from 'mdui'
+import { defineComponent, ref } from 'vue'
 
 export default defineComponent({
   name: 'PlayList',
@@ -71,7 +76,7 @@ export default defineComponent({
     headerDetail: Object,
     listDetail: Object
   },
-  setup() {
+  setup(prop, { emit }) {
     const curIndex = ref(-1)
     const handleTime: (d: number) => string = d => {
       const _d = new Date(d)
@@ -96,17 +101,17 @@ export default defineComponent({
       }
       return _arr.join('/')
     }
-
-    onMounted(() => {
-      mdui.mutation()
-    })
+    const handlePlay: () => void = () => {
+      emit('handle-play')
+    }
 
     return {
       curIndex,
       handleTime,
       getDuoNum,
       handleDrTime,
-      handleArtistName
+      handleArtistName,
+      handlePlay
     }
   }
 })
@@ -129,6 +134,10 @@ export default defineComponent({
     position: absolute;
     left: 310px;
     top: 25px;
+
+    .c-playlist-header-play {
+      margin-right: 50px;
+    }
 
     .c-playlist-header-subscribedCount {
       margin: 0 50px;

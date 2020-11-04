@@ -13,7 +13,7 @@
           <i class="mdui-icon material-icons">queue</i>
         </a>
         <a class="mdui-btn mdui-btn-icon mdui-ripple mdui-ripple-white" mdui-tooltip="{content: 'Login'}"><i class="mdui-icon material-icons">person</i></a>
-        <a href="https://github.com/Oda-T/vue3-netease-cloud-music" target="_blank" class="mdui-btn mdui-btn-icon mdui-ripple mdui-ripple-white" mdui-tooltip="{content: 'Github'}">
+        <a href="https://github.com/OdaNeo/vue3-netease-cloud-music" target="_blank" class="mdui-btn mdui-btn-icon mdui-ripple mdui-ripple-white" mdui-tooltip="{content: 'Github'}">
           <svg class="mdui-icon">
             <use xlink:href="#icon-github"></use>
           </svg>
@@ -44,32 +44,29 @@
     </div>
 
     <!-- 底栏播放器 -->
-    <player ids="" />
     <!-- 返回顶端 -->
     <back-to-top />
 
     <!-- 路由 transition -->
     <router-view v-slot="{ Component }">
-      <transition name="slide-fade" mode="out-in">
-        <component :is="Component" />
+      <transition name="slide-fade">
+        <keep-alive exclude="Artist,Playlist,Song,Topic,Album,Creator,Dj,Djradio,Mv,Nmusician">
+          <component :is="Component" />
+        </keep-alive>
       </transition>
     </router-view>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, toRefs } from 'vue'
+import { defineComponent, toRefs } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 
-import mdui from 'mdui'
-
-import Player from '../components/player.vue'
 import BackToTop from '../components/backtotop.vue'
 
 export default defineComponent({
   components: {
-    Player,
     BackToTop
   },
   setup() {
@@ -129,10 +126,6 @@ export default defineComponent({
       router.push({ name: name })
     }
 
-    onMounted(() => {
-      mdui.mutation()
-    })
-
     return {
       listItem,
       toolbarTitle,
@@ -151,11 +144,9 @@ export default defineComponent({
 }
 
 .slide-fade-enter-active {
-  transition: all 0.3s ease-out;
+  transition: all 0.15s ease;
 }
-.slide-fade-leave-active {
-  transition: all 0.3s ease-in;
-}
+
 .slide-fade-enter-from,
 .slide-fade-leave-to {
   transform: translateX(10px);

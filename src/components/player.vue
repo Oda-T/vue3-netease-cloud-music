@@ -4,7 +4,7 @@
     <!-- 显示隐藏内容 -->
 
     <div class="c-player-hide" :style="{ height: cPlayerHideHeight }" @mouseenter="hidebtnshow = !hidebtnshow" @mouseleave="hidebtnshow = !hidebtnshow">
-      <img class="c-player-hide-avatar" :src="avatarL" alt="" />
+      <img class="c-player-hide-avatar" v-lazy="avatarL" alt="" />
 
       <transition name="fade">
         <div v-show="hidebtnshow" class="c-player-hide-btn">
@@ -45,7 +45,7 @@
     <!-- 头部，包含头像、标题、作者 -->
     <div class="c-player-detail">
       <div class="c-player-detail-avatar" :style="{ width: cDetailAvatarWidth }" @mouseenter="avatarplayshow = !avatarplayshow" @mouseleave="avatarplayshow = !avatarplayshow">
-        <img :src="avatarS" />
+        <img v-lazy="avatarS" />
         <transition name="fade">
           <button v-show="avatarplayshow" class="c-player-detail-avatar-play mdui-btn mdui-btn-icon mdui-ripple" @click="handlePlay">
             <i class="mdui-icon material-icons">{{ circleOutline }}</i>

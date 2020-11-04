@@ -12,7 +12,7 @@
 
     <!-- 新碟上架 -->
     <recommend :topTitle="'新碟上架'" :topList="albumListHot" :cardList="album" @getid="getIdCallBackAlbums">
-      <router-link class="mdui-chip" style="float: right;margin: 30px 10px 0px;" to="/album/newest">
+      <router-link class="mdui-chip" style="float: right;margin: 30px 10px 0px;" to="/discover/album">
         <span class="mdui-chip-title">更多</span>
       </router-link>
     </recommend>
@@ -27,11 +27,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, reactive } from 'vue'
+import { defineComponent, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
-
-import mdui from 'mdui'
 
 import { topListInt, cardListInt } from '../../type/recommend.type'
 import { swipeInt } from '../../type/swipe.type'
@@ -148,6 +146,7 @@ export default defineComponent({
           aHref: handleHref(banners[i].encodeId, banners[i].targetType, banners[i].url)
         }
       }
+      console.log(banners)
     }
 
     // 热门歌单分类
@@ -222,10 +221,6 @@ export default defineComponent({
         getTopList()
       })
     }
-
-    onMounted(() => {
-      mdui.mutation()
-    })
 
     return {
       getIdCallBackHot,

@@ -4,14 +4,12 @@
     <!-- 评论 -->
     <comments :commentsDetail="commentsDetail" :hotCommentsDetail="hotCommentsDetail" />
     <!-- 分页 -->
-    <pagination :pageCount="pageCount" @pagenumber="pageNumber" />
+    <pagination :pageCount="pageCount" @page-number="pageNumber" />
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, onMounted, reactive, ref } from 'vue'
+import { defineComponent, reactive, ref } from 'vue'
 import { useRoute } from 'vue-router'
-
-import mdui from 'mdui'
 
 import PlayList from '../../components/playlist.vue'
 import Comments from '../../components/comments.vue'
@@ -31,15 +29,10 @@ export default defineComponent({
   },
   setup() {
     const route = useRoute()
-
     const headerDetail = ref({} as headerDetailInt)
-
     const listDetail: Array<playListInt> = reactive([])
-
     const pageCount = ref(0)
-
     const commentsDetail: Array<commentsInt> = reactive([])
-
     const hotCommentsDetail: Array<commentsInt> = reactive([])
 
     // 获得歌单
@@ -50,7 +43,7 @@ export default defineComponent({
 
       headerDetail.value = {
         name: playlist.name,
-        coverImgUrl: playlist.coverImgUrl + '?param=264y264',
+        coverImgUrl: playlist.coverImgUrl,
         description: playlist.description,
         trackCount: playlist.trackCount,
         playCount: playlist.playCount,
@@ -67,7 +60,7 @@ export default defineComponent({
           id: '/song?id=' + tracks[i].id,
           artist: tracks[i].ar,
           artistUrl: '/artist?id=' + tracks[i].ar[0].id,
-          imgUrl: tracks[i].al.picUrl + '?param=32y32',
+          imgUrl: tracks[i].al.picUrl,
           time: tracks[i].dt
         }
       }
@@ -82,7 +75,7 @@ export default defineComponent({
       for (let i = 0; i < comments.length; i++) {
         commentsDetail[i] = {
           username: comments[i].user.nickname,
-          useravatar: comments[i].user.avatarUrl + '?param=30y30',
+          useravatar: comments[i].user.avatarUrl,
           usertype: comments[i].user.userType,
           content: comments[i].content,
           liked: comments[i].liked,
@@ -102,9 +95,6 @@ export default defineComponent({
 
     route.query.id && (getPlayList(Number(route.query.id)), getComments(Number(route.query.id), 0))
 
-    onMounted(() => {
-      mdui.mutation()
-    })
     return {
       route,
       headerDetail,

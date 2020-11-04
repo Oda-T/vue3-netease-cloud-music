@@ -127,7 +127,7 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import(/* webpackChunkName: "song" */ '@/views/song/index.vue'),
         name: 'song',
         meta: {
-          title: 'song'
+          title: '歌曲'
         }
       },
       {
@@ -143,7 +143,7 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import(/* webpackChunkName: "djradio" */ '@/views/djradio/index.vue'),
         name: 'djradio',
         meta: {
-          title: 'djradio'
+          title: '电台'
         }
       },
       {
@@ -175,7 +175,7 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import(/* webpackChunkName: "topic" */ '@/views/topic/index.vue'),
         name: 'topic',
         meta: {
-          title: 'topic'
+          title: '话题'
         }
       },
       {
@@ -183,7 +183,7 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import(/* webpackChunkName: "live" */ '@/views/live/index.vue'),
         name: 'live',
         meta: {
-          title: 'live'
+          title: '直播'
         }
       },
       {
@@ -191,7 +191,7 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import(/* webpackChunkName: "mv" */ '@/views/mv/index.vue'),
         name: 'mv',
         meta: {
-          title: 'mv'
+          title: 'MV'
         }
       },
       {
@@ -222,9 +222,7 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
   scrollBehavior() {
-    setTimeout(() => {
-      return { top: 0 }
-    }, 20)
+    return { top: 0 }
   }
 })
 

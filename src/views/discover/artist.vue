@@ -37,7 +37,7 @@ import { cardInt } from '../../type/card.type'
 import request from '../../api/index'
 
 export default defineComponent({
-  name: 'artist',
+  name: 'discoverArtist',
   components: {
     Card
   },

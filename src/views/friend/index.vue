@@ -4,15 +4,11 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, onMounted } from 'vue'
-import mdui from 'mdui'
+import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'Friend',
   setup() {
-    onMounted(() => {
-      mdui.mutation()
-    })
     return {}
   }
 })

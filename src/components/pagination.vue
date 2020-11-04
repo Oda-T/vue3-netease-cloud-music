@@ -96,7 +96,7 @@ export default defineComponent({
 
       curIndex.value = item
 
-      emit('pagenumber', item)
+      emit('page-number', item)
     }
     watch(
       () => {
@@ -122,6 +122,8 @@ export default defineComponent({
 .c-playlist-pagination {
   width: 840px;
   margin: 60px auto;
+  display: flex;
+  justify-content: center;
   .pagination-item {
     display: inline-block;
     width: 50px;

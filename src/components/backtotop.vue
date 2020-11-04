@@ -3,9 +3,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue'
-
-import mdui from 'mdui'
+import { defineComponent, ref } from 'vue'
 
 export default defineComponent({
   name: 'BackToTop',
@@ -29,9 +27,6 @@ export default defineComponent({
       }, 20)
     })
 
-    onMounted(() => {
-      mdui.mutation()
-    })
     return {
       isShow,
       backToTop

@@ -41,11 +41,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onActivated, onMounted, ref, watch } from 'vue'
+import { defineComponent, onActivated, ref, watch } from 'vue'
 
 import Card from './card.vue'
-
-import mdui from 'mdui'
 
 export default defineComponent({
   name: 'Recommend',
@@ -116,10 +114,6 @@ export default defineComponent({
       },
       { deep: true, immediate: true }
     )
-
-    onMounted(() => {
-      mdui.mutation()
-    })
 
     onActivated(() => {
       toggleCoverShow.value = false
@@ -229,7 +223,7 @@ export default defineComponent({
 }
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.3s ease;
+  transition: opacity 0.1s ease;
 }
 
 .fade-enter-from,

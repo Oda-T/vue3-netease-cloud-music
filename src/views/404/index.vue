@@ -1,7 +1,5 @@
 <template>
-  <div>
-    <div></div>
-  </div>
+  <div>404</div>
 </template>
 <script lang="ts">
 import { defineComponent, onMounted } from 'vue'
@@ -13,7 +11,6 @@ export default defineComponent({
   setup() {
     const router = useRouter()
     onMounted(() => {
-      mdui.mutation()
       mdui.snackbar({
         message: '404',
         position: 'right-bottom',

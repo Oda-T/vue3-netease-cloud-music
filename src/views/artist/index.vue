@@ -36,7 +36,7 @@
 </template>
 <script lang="ts">
 import { defineComponent, ref, onMounted, reactive } from 'vue'
-import { useRoute } from 'vue-router'
+import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 
 import mdui from 'mdui'
 
@@ -70,6 +70,12 @@ export default defineComponent({
     const listDetail: Array<playListInt> = reactive([])
     // 获取详情以及热门曲目
     const getArtistDetail: (n: number) => void = async n => {
+      artistDetail.value = {
+        coverImgUrl: '',
+        description: '',
+        name: ''
+      }
+
       const { artist, hotSongs } = await request['httpGET']('GET_ARTIST', { 'id': n })
 
       artistDetail.value = {
@@ -78,13 +84,15 @@ export default defineComponent({
         name: artist.name
       }
 
+      listDetail.length = 0
+
       for (let i = 0; i < hotSongs.length; i++) {
         listDetail[i] = {
           name: hotSongs[i].name,
           id: '/song?id=' + hotSongs[i].id,
           artist: hotSongs[i].ar,
           artistUrl: '/artist?id=' + hotSongs[i].ar[0].id,
-          imgUrl: hotSongs[i].al.picUrl + '?param=32y32',
+          imgUrl: hotSongs[i].al.picUrl,
           time: hotSongs[i].dt
         }
       }
@@ -96,6 +104,7 @@ export default defineComponent({
       if (cardList.length) {
         return
       }
+
       const { hotAlbums } = await request['httpGET']('GET_ARTIST_ALBUM', { 'id': id, 'limit': limit })
       for (let i = 0; i < hotAlbums.length; i++) {
         cardList[i] = {
@@ -141,6 +150,12 @@ export default defineComponent({
 
     route.query.id && ((id.value = Number(route.query.id)), getArtistDetail(id.value))
 
+    onBeforeRouteUpdate(() => {
+      setTimeout(() => {
+        route.query.id && ((id.value = Number(route.query.id)), getArtistDetail(id.value))
+      }, 20)
+    })
+
     onMounted(() => {
       mdui.mutation()
     })
@@ -178,9 +193,9 @@ export default defineComponent({
     left: 310px;
     top: 25px;
     .c-artist-header-sub-text {
-      overflow: hidden;
+      overflow-y: scroll;
       width: 1090px;
-      height: 200px;
+      height: 190px;
     }
   }
 }

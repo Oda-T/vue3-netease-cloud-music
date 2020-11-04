@@ -24,4 +24,4 @@ export default defineComponent({
   }
 })
 </script>
-<style lang="stylus" scoped></style>
+<style lang="less" scoped></style>
