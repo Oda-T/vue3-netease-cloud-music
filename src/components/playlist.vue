@@ -1,32 +1,36 @@
 <template>
-  <div>
+  <div class="c-playlist">
     <!-- 概览 -->
     <header v-if="headerDetail.name" class="c-playlist-header mdui-typo">
-      <img class="c-playlist-header-img" :src="`${headerDetail.coverImgUrl}?param=264y264&quality=70`" :alt="headerDetail.name" />
+      <img class="c-playlist-header-img" :src="`${headerDetail.coverImgUrl}?param=200y200`" :alt="headerDetail.name" />
       <div class="c-playlist-header-text">
         <h1>{{ headerDetail.name }}</h1>
-        <p v-if="headerDetail.album">{{ headerDetail.album }}</p>
+        <p v-if="headerDetail.album">
+          专辑：
+          <router-link :to="`/album?id=${headerDetail.albumId}`">
+            {{ headerDetail.album }}
+          </router-link>
+        </p>
         <p v-if="headerDetail.updateTime">最近更新：{{ handleTime(headerDetail.updateTime) }}</p>
         <p v-if="headerDetail.playCount">{{ headerDetail.playCount }}次播放</p>
         <p v-if="headerDetail.artistName">
-          <router-link :to="`/artist?id=${headerDetail.artistId}`">
-            {{ headerDetail.artistName }}
-          </router-link>
+          歌手：
+          <router-link :to="`/artist?id=${headerDetail.artistId}`">{{ headerDetail.artistName }}</router-link>
         </p>
         <button class="c-playlist-header-play mdui-btn mdui-color-red-900 mdui-btn-raised mdui-ripple" @click.stop="handlePlay"
           ><i class="mdui-icon mdui-icon-left material-icons">play_arrow</i>播放</button
         >
-        <button class="mdui-btn mdui-color-red-400 mdui-ripple">
+        <button class="mdui-btn mdui-color-red-900 mdui-ripple">
           <i class="mdui-icon  material-icons" :class="{ 'mdui-icon-left': headerDetail.shareCount }">add_to_queue</i>{{ headerDetail.shareCount }}
         </button>
-        <button class="c-playlist-header-subscribedCount mdui-btn mdui-color-red-400 mdui-ripple">
+        <button class="c-playlist-header-subscribedCount mdui-btn mdui-color-red-900 mdui-ripple">
           <i class="mdui-icon material-icons" :class="{ 'mdui-icon-left': headerDetail.subscribedCount }">share</i>{{ headerDetail.subscribedCount }}
         </button>
-        <button class="mdui-btn mdui-color-red-400 mdui-ripple">
+        <button class="mdui-btn mdui-color-red-900 mdui-ripple">
           <i class="mdui-icon material-icons" :class="{ 'mdui-icon-left': headerDetail.commentCount }">sms</i>{{ headerDetail.commentCount }}
         </button>
 
-        <router-link class="c-playlist-header-tags mdui-chip" v-for="item in headerDetail.tags" :key="item.id" :to="`/discover/playlist/?cat=${item}`">
+        <router-link class="c-playlist-header-tags mdui-chip" v-for="item in headerDetail.tags" :key="item.id" :to="`/discover/playlist?cat=${item}`">
           <span class="mdui-chip-title">{{ item }}</span>
         </router-link>
 
@@ -39,7 +43,7 @@
         <tbody>
           <tr v-for="(item, index) in listDetail" :key="item.id" @mouseenter="curIndex = index" @mouseleave="curIndex = -1">
             <td style="width:123px">
-              <router-link :to="item.id"><img class="c-playlist-main-img" v-lazy="`${item.imgUrl}?param=32y32&quality=30`" :alt="item.name"/></router-link>
+              <router-link :to="item.id"><img class="c-playlist-main-img" v-lazy="`${item.imgUrl}?param=32y32`" :alt="item.name"/></router-link>
             </td>
             <td style="width:674px;maxWidth:674px" class="mdui-text-truncate">
               <router-link :to="item.id">
@@ -117,54 +121,59 @@ export default defineComponent({
 })
 </script>
 <style lang="less" scoped>
-.c-playlist-header {
-  position: relative;
-  width: 1400px;
-  margin: 0 auto;
-  height: 360px;
-  overflow: hidden;
-  .c-playlist-header-img {
-    position: absolute;
-    left: 0px;
-    top: 50px;
-    width: 264px;
-    height: 264px;
-  }
-  .c-playlist-header-text {
-    position: absolute;
-    left: 310px;
-    top: 25px;
-
-    .c-playlist-header-play {
-      margin-right: 50px;
-    }
-
-    .c-playlist-header-subscribedCount {
-      margin: 0 50px;
-    }
-  }
-  .c-playlist-header-tags {
-    margin-left: 50px;
-  }
-  .c-playlist-header-description {
-    display: -webkit-box;
+.c-playlist {
+  min-height: 360px;
+  width: 100%;
+  .c-playlist-header {
+    position: relative;
+    width: 1400px;
+    margin: 0 auto;
+    height: 360px;
     overflow: hidden;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
+    .c-playlist-header-img {
+      position: absolute;
+      left: 0px;
+      top: 50px;
+      width: 264px;
+      height: 264px;
+    }
+    .c-playlist-header-text {
+      position: absolute;
+      left: 310px;
+      top: 25px;
+
+      .c-playlist-header-play {
+        margin-right: 50px;
+      }
+
+      .c-playlist-header-subscribedCount {
+        margin: 0 50px;
+      }
+    }
+    .c-playlist-header-tags {
+      margin-left: 50px;
+    }
+    .c-playlist-header-description {
+      display: -webkit-box;
+      overflow: hidden;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+  }
+  .c-playlist-main {
+    width: 1400px;
+    margin: 0 auto;
+    .c-playlist-main-img {
+      vertical-align: middle;
+    }
+    .c-playlist-main-table-btn {
+      height: 57px;
+      overflow: hidden;
+      opacity: 0.7;
+    }
   }
 }
-.c-playlist-main {
-  width: 1400px;
-  margin: 0 auto;
-  .c-playlist-main-img {
-    vertical-align: middle;
-  }
-  .c-playlist-main-table-btn {
-    height: 57px;
-    overflow: hidden;
-    opacity: 0.7;
-  }
-}
+
 .btnShow {
   display: none;
 }

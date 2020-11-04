@@ -1,5 +1,5 @@
 <template>
-  <div v-if="pageCount > 12" class="c-playlist-pagination">
+  <div v-if="pageCount > 12" class="c-pagination">
     <span
       class="pagination-item"
       :class="{ 'pagination-item-action': curIndex === item }"
@@ -11,7 +11,7 @@
       {{ item }}
     </span>
   </div>
-  <div v-else class="c-playlist-pagination">
+  <div v-else class="c-pagination">
     <span
       class="pagination-item"
       :class="{ 'pagination-item-action': curIndex === item }"
@@ -119,7 +119,7 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
-.c-playlist-pagination {
+.c-pagination {
   width: 840px;
   margin: 60px auto;
   display: flex;

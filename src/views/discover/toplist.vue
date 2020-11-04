@@ -17,9 +17,9 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, reactive, ref } from 'vue'
+import { defineComponent, reactive, ref, watchEffect } from 'vue'
 import { useStore } from 'vuex'
-import { onBeforeRouteUpdate, useRoute } from 'vue-router'
+import { useRoute } from 'vue-router'
 
 import Recommend from '../../components/recommend.vue'
 import PlayList from '../../components/playlist.vue'
@@ -74,8 +74,9 @@ export default defineComponent({
         artist: playlist.description,
         picUrl: playlist.coverImgUrl
       }
+      const _l = playlist.tracks.length < 10 ? playlist.tracks.length : 10
 
-      for (let i = 0; i < 10; i++) {
+      for (let i = 0; i < _l; i++) {
         arr[i + 1] = {
           id: '/song?id=' + playlist.tracks[i].id.toString(),
           name: playlist.tracks[i].name,
@@ -124,7 +125,7 @@ export default defineComponent({
       })
     }
 
-    const getComments: (id: number, n: number) => void = async (id, n) => {
+    const getComments: (id: string, n: number) => void = async (id, n) => {
       commentsDetail.length = 0
 
       const { total, comments } = await request['httpGET']('GET_COMMENT_PLAYLIST', { 'id': id, 'limit': 20, 'offset': n })
@@ -148,7 +149,7 @@ export default defineComponent({
       }
     }
 
-    const getTopListDetail: (id: number) => void = async id => {
+    const getTopListDetail: (id: string) => void = async id => {
       listDetail.length = 0
 
       const { playlist } = await request['httpGET']('GET_PLAYLIST_DETAIL', { 'id': id })
@@ -178,33 +179,14 @@ export default defineComponent({
     }
 
     const pageNumber: (n: number) => void = n => {
-      getComments(Number(route.query.id), 20 * (n - 1))
+      typeof route.query.id === 'string' && getComments(route.query.id, 20 * (n - 1))
     }
 
-    // 观测route id
-    if (route.query.id) {
-      topListId.value = Number(route.query.id)
-      getComments(Number(route.query.id), 0)
-      getTopListDetail(Number(route.query.id))
-      window.scrollTo({ top: 0 })
-    } else {
-      topListId.value = 0
-      window.scrollTo({ top: 0 })
-    }
-
-    // 异步获取query
-    onBeforeRouteUpdate(() => {
-      setTimeout(() => {
-        if (route.query.id) {
-          topListId.value = Number(route.query.id)
-          getComments(Number(route.query.id), 0)
-          getTopListDetail(Number(route.query.id))
-          window.scrollTo({ top: 0 })
-        } else {
-          topListId.value = 0
-          window.scrollTo({ top: 0 })
-        }
-      }, 10)
+    // 观测route
+    watchEffect(() => {
+      route.path === '/discover/toplist' && typeof route.query.id === 'string'
+        ? ((topListId.value = Number(route.query.id)), getComments(route.query.id, 0), getTopListDetail(route.query.id), window.scrollTo({ top: 0 }))
+        : ((topListId.value = 0), window.scrollTo({ top: 0 }))
     })
 
     return {

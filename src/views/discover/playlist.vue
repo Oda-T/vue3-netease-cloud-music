@@ -10,8 +10,8 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, reactive, ref } from 'vue'
-import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
+import { defineComponent, reactive, ref, watchEffect } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 
 import Recommend from '../../components/recommend.vue'
 import Card from '../../components/card.vue'
@@ -79,7 +79,7 @@ export default defineComponent({
     }
 
     const getIdCallBack: (obj: { name: string }) => void = obj => {
-      router.push(`/discover/playlist/?cat=${encodeURIComponent(obj.name)}`)
+      router.push(`/discover/playlist?cat=${encodeURIComponent(obj.name)}`)
     }
 
     const pageNumber: (n: number) => void = n => {
@@ -88,14 +88,8 @@ export default defineComponent({
 
     getTopList()
 
-    // watch route id
-    typeof route.query.cat === 'string' ? ((cat.value = route.query.cat), getCardList(route.query.cat)) : ((cat.value = '全部'), getCardList('全部'))
-
-    onBeforeRouteUpdate(() => {
-      // 异步获取query
-      setTimeout(() => {
-        route.query.cat && getCardList(route.query.cat.toString())
-      }, 10)
+    watchEffect(() => {
+      route.path === '/discover/playlist' && typeof route.query.cat === 'string' ? ((cat.value = route.query.cat), getCardList(route.query.cat)) : ((cat.value = '全部'), getCardList('全部'))
     })
 
     return {

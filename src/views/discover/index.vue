@@ -87,10 +87,10 @@ export default defineComponent({
     // 热门推荐
     const getCardTopList: (n: number) => void = async n => {
       const { playlist } = await request['httpGET']('GET_PLAYLIST_DETAIL', { 'id': n })
-
       const _res = playlist.tracks
+      const _l = playlist.tracks.length < 10 ? playlist.tracks.length : 10
 
-      for (let i = 0; i < 10; i++) {
+      for (let i = 0; i < _l; i++) {
         cardsTopList[i] = {
           id: '/song?id=' + _res[i].id.toString(),
           name: _res[i].name,
@@ -108,7 +108,7 @@ export default defineComponent({
     }
 
     const getIdCallBackHot: (n: { id: number; name: string }) => void = n => {
-      router.push(`/discover/playlist/?cat=${n.name}`)
+      router.push(`/discover/playlist?cat=${n.name}`)
     }
 
     const getIdCallBackAlbums: (n: { id: number; name: string }) => void = n => {
@@ -193,8 +193,9 @@ export default defineComponent({
     // 首页新碟上架
     const getAlbumNewest: () => void = async () => {
       const { albums } = await request['httpGET']('GET_ALBUM_NEWEST')
+      const _l = albums.length < 10 ? albums.length : 10
 
-      for (let i = 0; i < 10; i++) {
+      for (let i = 0; i < _l; i++) {
         album.push({
           id: '/album?id=' + albums[i].id.toString(),
           name: albums[i].name,

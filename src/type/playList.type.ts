@@ -17,6 +17,7 @@ export type headerDetailInt = {
   updateTime?: string
   description?: string
   album?: string
+  albumId?: number
   playCount?: number
   artistName?: string
   artistId?: number

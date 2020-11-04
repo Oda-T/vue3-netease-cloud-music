@@ -50,7 +50,7 @@
     <!-- 路由 transition -->
     <router-view v-slot="{ Component }">
       <transition name="slide-fade">
-        <keep-alive exclude="Artist,Playlist,Song,Topic,Album,Creator,Dj,Djradio,Mv,Nmusician">
+        <keep-alive include="Discover,discoverTopList,discoverDjradio,discoverArtist">
           <component :is="Component" />
         </keep-alive>
       </transition>

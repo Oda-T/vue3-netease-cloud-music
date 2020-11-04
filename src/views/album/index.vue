@@ -111,6 +111,7 @@ export default defineComponent({
 
     const pageNumber: (n: number) => void = n => {
       getComments(Number(route.query.id), 20 * (n - 1))
+      window.scrollTo({ top: 0 })
     }
 
     // 单碟 album?id=n

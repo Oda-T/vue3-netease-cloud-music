@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div class="c-playlist-comments-title mdui-typo">
+  <div class="c-comments">
+    <div class="c-comments-title mdui-typo">
       <h2>评论</h2>
       <div class="mdui-textfield mdui-textfield-floating-label">
         <label class="mdui-textfield-label">说点什么</label>
@@ -8,8 +8,8 @@
       </div>
     </div>
     <!-- 热门 -->
-    <div class="c-playlist-hot mdui-text-color-red-900" v-if="hotCommentsDetail.length !== 0">热门评论</div>
-    <div class="c-playlist-comments" v-if="hotCommentsDetail.length !== 0">
+    <div class="c-comments-hot mdui-text-color-red-900" v-if="hotCommentsDetail.length !== 0">热门评论</div>
+    <div class="c-comments-container" v-if="hotCommentsDetail.length !== 0">
       <div class="comments-item" v-for="item in hotCommentsDetail" :key="item.id">
         <div class="mdui-typo">
           <hr />
@@ -34,8 +34,8 @@
       </div>
     </div>
     <!-- 最新 -->
-    <div v-if="commentsDetail.length !== 0" class="c-playlist-new mdui-text-color-red-900">最新评论</div>
-    <div v-if="commentsDetail.length !== 0" class="c-playlist-comments">
+    <div v-if="commentsDetail.length !== 0" class="c-comments-new mdui-text-color-red-900">最新评论</div>
+    <div v-if="commentsDetail.length !== 0" class="c-comments-container">
       <div class="comments-item" v-for="item in commentsDetail" :key="item.id">
         <div class="mdui-typo">
           <hr />
@@ -85,21 +85,21 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
-.c-playlist-comments-title {
+.c-comments-title {
   width: 1400px;
   margin: 100px auto 80px auto;
 }
-.c-playlist-hot {
+.c-comments-hot {
   width: 1100px;
   margin: 50px auto;
 }
 
-.c-playlist-new {
+.c-comments-new {
   width: 1100px;
   margin: 50px auto;
 }
 
-.c-playlist-comments {
+.c-comments-container {
   width: 1100px;
   margin: 50px auto;
   .comments-item {

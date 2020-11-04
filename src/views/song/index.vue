@@ -3,9 +3,12 @@
     <!-- 详情 -->
     <play-list :headerDetail="headerDetail" :listDetail="listDetail" />
     <!-- 歌词 -->
-    <div class="c-song-lyric-container mdui-panel" mdui-panel>
-      <div class="mdui-panel-item mdui-panel-item-open">
-        <div class="mdui-panel-item-header">歌词</div>
+    <div class="c-song-lyric-container mdui-panel mdui-panel-popout" mdui-panel>
+      <div class="mdui-panel-item">
+        <div class="mdui-panel-item-header">
+          <div class="mdui-panel-item-title">歌词</div>
+          <i class="mdui-panel-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
+        </div>
         <div class="mdui-panel-item-body">
           <p>{{ lyric }}</p>
         </div>
@@ -71,6 +74,7 @@ export default defineComponent({
         coverImgUrl: songs[0].al.picUrl,
         commentCount: total,
         album: songs[0].al.name,
+        albumId: songs[0].al.id,
         artistName: handleArtistName(songs[0].ar),
         artistId: songs[0].ar[0].id
       }
@@ -123,6 +127,7 @@ export default defineComponent({
 
     const pageNumber: (n: number) => void = n => {
       getComments(id.value, 20 * (n - 1))
+      window.scrollTo({ top: 0 })
     }
 
     typeof route.query.id === 'string' && ((id.value = route.query.id), getSongDetail(id.value), getComments(id.value))

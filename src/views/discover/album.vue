@@ -10,8 +10,8 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, reactive, ref } from 'vue'
-import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router'
+import { defineComponent, reactive, ref, watchEffect } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 
 import Recommend from '../../components/recommend.vue'
 import Card from '../../components/card.vue'
@@ -90,10 +90,8 @@ export default defineComponent({
       getCardList(cat.id, n)
     }
 
-    typeof route.query.area === 'string' ? ((activeName.value = getNameById(route.query.area)), getCardList(route.query.area)) : getCardList('ALL')
-
-    onBeforeRouteUpdate(() => {
-      getCardList(cat.id)
+    watchEffect(() => {
+      route.path === '/discover/album' && typeof route.query.area === 'string' ? ((activeName.value = getNameById(route.query.area)), getCardList(route.query.area)) : getCardList('ALL')
     })
 
     return {
