@@ -10,7 +10,8 @@
           <i class="mdui-panel-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
         </div>
         <div class="mdui-panel-item-body">
-          <p>{{ lyric }}</p>
+          <p v-if="lyric">{{ lyric }}</p>
+          <p v-else>无</p>
         </div>
       </div>
     </div>
