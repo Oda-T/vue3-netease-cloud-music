@@ -196,7 +196,7 @@ export default defineComponent({
         position: absolute;
         top: 0px;
         height: 100%;
-        transition: left 0.5s ease-in-out;
+        transition: left 0.2s ease-in-out;
         display: flex;
         flex-wrap: nowrap;
         .recommend-card-list {
