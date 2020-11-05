@@ -3,7 +3,7 @@
     <!-- swipe -->
     <swipe :banners="banner" />
     <!-- 热门推荐 -->
-    <recommend :topTitle="'热门推荐'" :topList="playlistHot" :cardList="cards" @getid="getIdCallBackHot">
+    <recommend :topTitle="'热门推荐'" :topList="playlistHot" :cardList="cards" @get-id="getIdCallBackHot">
       <!-- 右侧'更多'插槽 -->
       <router-link class="mdui-chip" style="float: right;margin: 30px 10px 0px;" to="/discover/playlist">
         <span class="mdui-chip-title">更多</span>
@@ -11,14 +11,14 @@
     </recommend>
 
     <!-- 新碟上架 -->
-    <recommend :topTitle="'新碟上架'" :topList="albumListHot" :cardList="album" @getid="getIdCallBackAlbums">
+    <recommend :topTitle="'新碟上架'" :topList="albumListHot" :cardList="album" @get-id="getIdCallBackAlbums">
       <router-link class="mdui-chip" style="float: right;margin: 30px 10px 0px;" to="/discover/album">
         <span class="mdui-chip-title">更多</span>
       </router-link>
     </recommend>
 
     <!-- 榜单 -->
-    <recommend :topTitle="'热门榜单'" :topList="topList" :cardList="cardsTopList" :activeName="'云音乐飙升榜'" @getid="getIdCallBackList">
+    <recommend :topTitle="'热门榜单'" :topList="topList" :cardList="cardsTopList" :activeName="activeName" @get-id="getIdCallBackList">
       <router-link class="mdui-chip" style="float: right;margin: 30px 10px 0px;" to="/discover/toplist">
         <span class="mdui-chip-title">更多</span>
       </router-link>
@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from 'vue'
+import { defineComponent, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 
@@ -48,6 +48,7 @@ export default defineComponent({
   setup() {
     const router = useRouter()
     const store = useStore()
+    const activeName = ref('云音乐飙升榜')
     const { topListFull } = store.state
     const playlistHot: topListInt[] = reactive([])
 
@@ -117,6 +118,8 @@ export default defineComponent({
 
     const getIdCallBackList: (n: { id: number; name: string }) => void = n => {
       getCardTopList(n.id)
+
+      activeName.value = n.name
     }
 
     // 根据图片类型不同，路由跳转到不同界面
@@ -233,7 +236,8 @@ export default defineComponent({
       album,
       topList,
       cardsTopList,
-      banner
+      banner,
+      activeName
     }
   }
 })

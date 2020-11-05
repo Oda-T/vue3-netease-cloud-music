@@ -1,6 +1,6 @@
 <template>
   <div id="discoverDjradio">
-    <recommend :topTitle="'主播电台'" :activeName="activeName" :topList="djList" :cardList="djCardList" @getid="getIdCallBackDj" />
+    <recommend :topTitle="'主播电台'" :activeName="activeName" :topList="djList" :cardList="djCardList" @get-id="getIdCallBackDj" />
     <div class="dj-card-container">
       <!-- 热门电台/新晋电台toggle -->
       <div class="dj-card-title">
@@ -101,6 +101,8 @@ export default defineComponent({
 
     const getIdCallBackDj: (n: { id: number; name: string }) => void = n => {
       getPlayList(n.id)
+
+      activeName.value = n.name
     }
 
     const handleSwitch: (e: Event) => void = e => {

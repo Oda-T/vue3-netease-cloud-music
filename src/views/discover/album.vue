@@ -1,7 +1,7 @@
 <template>
   <div id="discoverAlbum">
     <!-- 列表 -->
-    <recommend :topTitle="'全部新碟'" :activeName="activeName" :topList="TopList" @getid="getIdCallBack" />
+    <recommend :topTitle="'全部新碟'" :activeName="activeName" :topList="TopList" @get-id="getIdCallBack" />
     <!-- 推荐 -->
     <div class="album-card-container">
       <card v-for="item in cardList" :key="item.id" :item="item" />
@@ -91,7 +91,9 @@ export default defineComponent({
     }
 
     watchEffect(() => {
-      route.path === '/discover/album' && typeof route.query.area === 'string' ? ((activeName.value = getNameById(route.query.area)), getCardList(route.query.area)) : getCardList('ALL')
+      route.path === '/discover/album' && typeof route.query.area === 'string'
+        ? ((activeName.value = getNameById(route.query.area)), getCardList(route.query.area))
+        : ((activeName.value = '全部'), getCardList('ALL'))
     })
 
     return {

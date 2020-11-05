@@ -30,7 +30,7 @@
           <i class="mdui-icon material-icons" :class="{ 'mdui-icon-left': headerDetail.commentCount }">sms</i>{{ headerDetail.commentCount }}
         </button>
 
-        <router-link class="c-playlist-header-tags mdui-chip" v-for="item in headerDetail.tags" :key="item.id" :to="`/discover/playlist?cat=${item}`">
+        <router-link class="c-playlist-header-tags mdui-chip" v-for="item in headerDetail.tags" :key="item.id" :to="`/discover/playlist?cat=${encodeURIComponent(item)}`">
           <span class="mdui-chip-title">{{ item }}</span>
         </router-link>
 

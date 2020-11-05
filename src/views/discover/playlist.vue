@@ -1,7 +1,7 @@
 <template>
   <div id="discoverPlaylist">
     <!-- 列表 -->
-    <recommend :topTitle="'全部歌单'" :activeName="cat" :topList="TopList" @getid="getIdCallBack" />
+    <recommend :topTitle="'全部歌单'" :activeName="activeName" :topList="TopList" @get-id="getIdCallBack" />
     <!-- 推荐 -->
     <div class="playlist-card-container">
       <card v-for="item in cardList" :key="item.id" :item="item" />
@@ -39,7 +39,7 @@ export default defineComponent({
 
     const forceUpdate = ref('')
 
-    const cat = ref('全部')
+    const activeName = ref('全部')
 
     const getTopList: () => void = async () => {
       const { sub } = await request['httpGET']('GET_PLAYLIST_CATLIST')
@@ -83,13 +83,15 @@ export default defineComponent({
     }
 
     const pageNumber: (n: number) => void = n => {
-      getCardList(cat.value, n)
+      getCardList(activeName.value, n)
     }
 
     getTopList()
 
     watchEffect(() => {
-      route.path === '/discover/playlist' && typeof route.query.cat === 'string' ? ((cat.value = route.query.cat), getCardList(route.query.cat)) : ((cat.value = '全部'), getCardList('全部'))
+      route.path === '/discover/playlist' && typeof route.query.cat === 'string'
+        ? ((activeName.value = route.query.cat), getCardList(route.query.cat))
+        : ((activeName.value = '全部'), getCardList('全部'))
     })
 
     return {
@@ -98,7 +100,7 @@ export default defineComponent({
       totalListCount,
       pageNumber,
       forceUpdate,
-      cat,
+      activeName,
       getIdCallBack
     }
   }

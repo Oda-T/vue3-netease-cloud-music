@@ -2,9 +2,9 @@
   <div id="discoverToplist">
     <div v-if="!topListId">
       <!-- 特色榜单 -->
-      <recommend :topTitle="'特色音乐榜'" :activeName="specialActiveName" :topList="specialList" :cardList="specialCardList" @getid="getIdCallBackSpecial"></recommend>
+      <recommend :topTitle="'特色音乐榜'" :activeName="specialActiveName" :topList="specialList" :cardList="specialCardList" @get-id="getIdCallBackSpecial"></recommend>
       <!-- 全球媒体榜单 -->
-      <recommend :topTitle="'全球媒体榜'" :activeName="globalActiveName" :topList="globalList" :cardList="globalCardList" @getid="getIdCallBackGlobal"></recommend>
+      <recommend :topTitle="'全球媒体榜'" :activeName="globalActiveName" :topList="globalList" :cardList="globalCardList" @get-id="getIdCallBackGlobal"></recommend>
     </div>
     <!-- 榜单详情 -->
     <div v-else>

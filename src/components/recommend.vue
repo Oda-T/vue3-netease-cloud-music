@@ -6,7 +6,7 @@
         <hr />
       </div>
       <span class="recommend-title mdui-text-color-red-900">{{ topTitle }}</span>
-      <div class="recommend-hot-chip mdui-chip" v-for="item in topList" :class="{ 'mdui-color-red-900': item.name === listName }" :key="item.id" @click="handleListSwitch(item)">
+      <div class="recommend-hot-chip mdui-chip" v-for="item in topList" :class="{ 'mdui-color-red-900': item.name === activeName }" :key="item.id" @click="handleListSwitch(item)">
         <span class="mdui-chip-title">{{ item.name }}</span>
       </div>
       <!-- 右侧插槽 -->
@@ -100,7 +100,7 @@ export default defineComponent({
         handleCardItemContainerLeft()
       }
       // 抛出点击按钮的歌曲/歌单id
-      emit('getid', obj)
+      emit('get-id', obj)
     }
 
     watch(
@@ -125,7 +125,6 @@ export default defineComponent({
       cardItemContainerLeft,
       handleCardItemContainerLeft,
       handleCardItemContainerRight,
-      listName,
       handleListSwitch
     }
   }
