@@ -15,6 +15,7 @@ export type headerDetailInt = {
   commentCount?: number
   subscribedCount?: number
   updateTime?: string
+  desc?: string
   description?: string
   album?: string
   albumId?: number

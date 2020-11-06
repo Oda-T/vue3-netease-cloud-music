@@ -1,9 +1,10 @@
 <template>
   <div id="song">
     <!-- 详情 -->
-    <play-list :headerDetail="headerDetail" :listDetail="listDetail" />
+    <play-list-header :headerDetail="headerDetail" />
+    <play-list-detail :listDetail="listDetail" />
     <!-- 歌词 -->
-    <div class="c-song-lyric-container mdui-panel mdui-panel-popout" mdui-panel>
+    <div class="c-song-lyric-container mdui-panel mdui-panel-gapless" mdui-panel>
       <div class="mdui-panel-item">
         <div class="mdui-panel-item-header">
           <div class="mdui-panel-item-title">歌词</div>
@@ -26,7 +27,8 @@ import { defineComponent, reactive, ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import mdui from 'mdui'
 
-import PlayList from '../../components/playlist.vue'
+import PlayListHeader from '../../components/playListHeader.vue'
+import PlayListDetail from '../../components/playListDetail.vue'
 import Comments from '../../components/comments.vue'
 import Pagination from '../../components/pagination.vue'
 
@@ -38,7 +40,8 @@ import request from '../../api/index'
 export default defineComponent({
   name: 'Song',
   components: {
-    PlayList,
+    PlayListHeader,
+    PlayListDetail,
     Comments,
     Pagination
   },

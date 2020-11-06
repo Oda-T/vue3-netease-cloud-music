@@ -62,8 +62,7 @@
 import { defineComponent, toRefs } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
-
-import BackToTop from '../components/backtotop.vue'
+import BackToTop from '../components/backToTop.vue'
 
 export default defineComponent({
   components: {

@@ -8,7 +8,8 @@
     </div>
     <!-- 榜单详情 -->
     <div v-else>
-      <play-list :headerDetail="headerDetail" :listDetail="listDetail" />
+      <play-list-header :headerDetail="headerDetail" />
+      <play-list-detail :listDetail="listDetail" />
       <!-- 评论 -->
       <comments :commentsDetail="commentsDetail" :hotCommentsDetail="hotCommentsDetail" />
       <!-- 分页 -->
@@ -22,7 +23,8 @@ import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
 
 import Recommend from '../../components/recommend.vue'
-import PlayList from '../../components/playlist.vue'
+import PlayListHeader from '../../components/playListHeader.vue'
+import PlayListDetail from '../../components/playListDetail.vue'
 import Comments from '../../components/comments.vue'
 import Pagination from '../../components/pagination.vue'
 
@@ -36,15 +38,15 @@ export default defineComponent({
   name: 'discoverTopList',
   components: {
     Recommend,
-    PlayList,
     Comments,
-    Pagination
+    Pagination,
+    PlayListHeader,
+    PlayListDetail
   },
 
   setup() {
     const store = useStore()
     const route = useRoute()
-    const { topListFull } = store.state
 
     const specialList: Array<topListInt> = reactive([])
     const specialCardList: Array<cardListInt> = reactive([])
@@ -96,7 +98,7 @@ export default defineComponent({
 
     // getGlobalList
     const getGlobalList: () => void = () => {
-      for (let i = 5; i < 35; i++) {
+      for (let i = 5; i < store.state.topListFull.length; i++) {
         globalList[i - 5] = store.state.topListFull[i]
       }
       getPlayList(globalList[0].id, globalCardList)
@@ -115,7 +117,7 @@ export default defineComponent({
     }
 
     // 获取音乐榜媒体榜缓存
-    if (topListFull.length) {
+    if (store.state.topListFull.length) {
       getSpecialList()
       getGlobalList()
     } else {

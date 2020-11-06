@@ -1,6 +1,7 @@
 <template>
   <div id="playlist">
-    <play-list :headerDetail="headerDetail" :listDetail="listDetail" />
+    <play-list-header :headerDetail="headerDetail" />
+    <play-list-detail :listDetail="listDetail" />
     <!-- 评论 -->
     <comments :commentsDetail="commentsDetail" :hotCommentsDetail="hotCommentsDetail" />
     <!-- 分页 -->
@@ -11,7 +12,8 @@
 import { defineComponent, reactive, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
-import PlayList from '../../components/playlist.vue'
+import PlayListHeader from '../../components/playListHeader.vue'
+import PlayListDetail from '../../components/playListDetail.vue'
 import Comments from '../../components/comments.vue'
 import Pagination from '../../components/pagination.vue'
 
@@ -23,9 +25,10 @@ import request from '../../api/index'
 export default defineComponent({
   name: 'Playlist',
   components: {
-    PlayList,
     Comments,
-    Pagination
+    Pagination,
+    PlayListHeader,
+    PlayListDetail
   },
   setup() {
     const route = useRoute()

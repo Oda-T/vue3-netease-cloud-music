@@ -87,10 +87,6 @@ export default defineComponent({
     }
 
     const handleListSwitch: (one: { name: string }) => void = obj => {
-      if (listName.value === obj.name) {
-        return
-      }
-
       if (props.activeName === '') {
         listName.value = ''
       } else {

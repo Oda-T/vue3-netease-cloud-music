@@ -1,13 +1,7 @@
 <template>
   <div id="artist">
     <!-- 概览 -->
-    <header class="c-artist-header mdui-typo">
-      <img class="c-artist-header-img" :src="artistDetail.coverImgUrl" :alt="artistDetail.name" />
-      <div class="c-artist-header-text">
-        <h1>{{ artistDetail.name }}</h1>
-        <p class="c-artist-header-sub-text">{{ artistDetail.description }}</p>
-      </div>
-    </header>
+    <play-list-header :headerDetail="headerDetail" />
     <!-- 作品 -->
     <div class="c-artist-body">
       <div class="mdui-tab mdui-tab-full-width" mdui-tab>
@@ -17,7 +11,7 @@
         <a href="#artist-tab4" class="mdui-ripple" @click="getArtistDesc(id)">艺人介绍</a>
       </div>
       <div id="artist-tab1" class="mdui-p-a-2">
-        <play-list :headerDetail="headerDetail" :listDetail="listDetail" />
+        <play-list-detail :listDetail="listDetail" />
       </div>
       <div id="artist-tab2" class="mdui-p-a-2">
         <card v-for="item in cardList" :key="item.id" :item="item" />
@@ -41,9 +35,8 @@ import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 import mdui from 'mdui'
 
 import Card from '../../components/card.vue'
-import PlayList from '../../components/playlist.vue'
-
-import { artistDetailInt } from '../../type/artist.type'
+import PlayListHeader from '../../components/playListHeader.vue'
+import PlayListDetail from '../../components/playListDetail.vue'
 import { playListInt, headerDetailInt } from '../../type/playList.type'
 import { cardInt } from '../../type/card.type'
 
@@ -52,16 +45,15 @@ import request from '../../api/index'
 export default defineComponent({
   name: 'Artist',
   components: {
-    PlayList,
-    Card
+    Card,
+    PlayListHeader,
+    PlayListDetail
   },
   setup() {
     const route = useRoute()
     const id = ref(0)
 
-    const artistDetail = ref({} as artistDetailInt)
     const headerDetail = ref({} as headerDetailInt)
-
     const cardList: Array<cardInt> = reactive([])
     const mvCardList: Array<cardInt> = reactive([])
 
@@ -70,17 +62,17 @@ export default defineComponent({
     const listDetail: Array<playListInt> = reactive([])
     // 获取详情以及热门曲目
     const getArtistDetail: (n: number) => void = async n => {
-      artistDetail.value = {
+      headerDetail.value = {
         coverImgUrl: '',
-        description: '',
+        desc: '',
         name: ''
       }
 
       const { artist, hotSongs } = await request['httpGET']('GET_ARTIST', { 'id': n })
 
-      artistDetail.value = {
+      headerDetail.value = {
         coverImgUrl: artist.img1v1Url + '?param=264y264',
-        description: artist.briefDesc,
+        desc: artist.briefDesc,
         name: artist.name
       }
 
@@ -160,7 +152,6 @@ export default defineComponent({
       mdui.mutation()
     })
     return {
-      artistDetail,
       listDetail,
       headerDetail,
       cardList,
