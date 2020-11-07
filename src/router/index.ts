@@ -196,6 +196,14 @@ const routes: Array<RouteRecordRaw> = [
         }
       },
       {
+        path: 'video',
+        component: () => import(/* webpackChunkName: "video" */ '@/views/video/index.vue'),
+        name: 'video',
+        meta: {
+          title: '视频'
+        }
+      },
+      {
         path: 'm/at/:id?',
         component: () => import(/* webpackChunkName: "mat" */ '@/views/m/at.vue'),
         name: 'at',
@@ -208,7 +216,7 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import(/* webpackChunkName: "user" */ '@/views/user/index.vue'),
         name: 'at',
         meta: {
-          title: 'm/at'
+          title: 'user'
         }
       },
       {

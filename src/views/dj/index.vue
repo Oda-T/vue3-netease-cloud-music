@@ -21,7 +21,7 @@ import { headerDetailInt } from '../../type/playList.type'
 import request from '../../api/index'
 
 export default defineComponent({
-  name: 'Playlist',
+  name: 'Dj',
   components: {
     Comments,
     Pagination,

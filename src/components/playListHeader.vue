@@ -17,12 +17,17 @@
         歌手：
         <router-link :to="`/artist?id=${headerDetail.artistId}`">{{ handleArtistName(headerDetail.artistName) }}</router-link>
       </p>
+      <p v-if="headerDetail.userName">
+        by：
+        <router-link :to="`/user/home?id=${headerDetail.userId}`">{{ handleArtistName(headerDetail.userName) }}</router-link>
+      </p>
       <!-- 歌手描述 -->
       <p v-if="headerDetail.desc" class="c-playlist-header-desc mdui-typo">{{ headerDetail.desc }}</p>
-      <!-- 专辑描述 -->
-      <button class="c-playlist-header-count mdui-btn mdui-color-red-900 mdui-btn-raised mdui-ripple" @click.stop="handlePlay">
+      <!-- 播放按钮 -->
+      <button v-else class="c-playlist-header-count mdui-btn mdui-color-red-900 mdui-btn-raised mdui-ripple" @click.stop="handlePlay">
         <i class="mdui-icon mdui-icon-left material-icons">play_arrow</i>播放
       </button>
+      <!-- 其他按钮 -->
       <button v-if="headerDetail.likedCount === 0 ? true : headerDetail.likedCount" class="c-playlist-header-count mdui-btn mdui-color-red-900 mdui-ripple">
         <i class="mdui-icon  material-icons" :class="{ 'mdui-icon-left': headerDetail.likedCount }">thumb_up</i><span v-if="headerDetail.likedCount">{{ headerDetail.likedCount }}</span>
       </button>
@@ -30,8 +35,8 @@
         <i class="mdui-icon  material-icons" :class="{ 'mdui-icon-left': headerDetail.shareCount }">share</i><span v-if="headerDetail.shareCount">{{ headerDetail.shareCount }}</span>
       </button>
       <button v-if="headerDetail.subscribedCount === 0 ? true : headerDetail.subscribedCount" class="c-playlist-header-count mdui-btn mdui-color-red-900 mdui-ripple">
-        <i class="mdui-icon material-icons" :class="{ 'mdui-icon-left': headerDetail.subscribedCount }">add_to_queue</i
-        ><span v-if="headerDetail.subscribedCount">{{ headerDetail.subscribedCount }}</span>
+        <i class="mdui-icon material-icons" :class="{ 'mdui-icon-left': headerDetail.subscribedCount }">add_to_queue</i>
+        <span v-if="headerDetail.subscribedCount">{{ headerDetail.subscribedCount }}</span>
       </button>
       <button v-if="headerDetail.commentCount === 0 ? true : headerDetail.commentCount" class="c-playlist-header-count mdui-btn mdui-color-red-900 mdui-ripple">
         <i class="mdui-icon material-icons" :class="{ 'mdui-icon-left': headerDetail.commentCount }">sms</i><span v-if="headerDetail.commentCount">{{ headerDetail.commentCount }}</span>

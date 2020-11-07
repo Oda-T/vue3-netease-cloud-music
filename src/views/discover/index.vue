@@ -127,6 +127,8 @@ export default defineComponent({
       switch (type) {
         case 3000:
           return url.slice(url.indexOf('com/') + 3)
+        case 1000:
+          return '/playlist?id=' + id
         case 1004:
           return '/mv?id=' + id
         case 10:
@@ -149,7 +151,6 @@ export default defineComponent({
           aHref: handleHref(banners[i].encodeId, banners[i].targetType, banners[i].url)
         }
       }
-      console.log(banners)
     }
 
     // 热门歌单分类

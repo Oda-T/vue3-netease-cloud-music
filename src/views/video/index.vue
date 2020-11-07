@@ -4,7 +4,7 @@
     <!-- 视频信息 -->
     <transition name="fade">
       <div v-if="videoShow" class="mv-video-container" @click.self="videoShow = false">
-        <video :src="mvurl" class="mv-video" controls />
+        <video :src="videoUrl" class="mv-video" controls />
       </div>
     </transition>
     <!-- 评论 -->
@@ -27,7 +27,7 @@ import { commentsInt } from '../../type/comments.type'
 import request from '../../api/index'
 
 export default defineComponent({
-  name: 'MV',
+  name: 'Video',
   components: {
     Comments,
     Pagination,
@@ -35,7 +35,7 @@ export default defineComponent({
   },
   setup() {
     const route = useRoute()
-    const mvurl = ref('')
+    const videoUrl = ref('')
     const videoShow = ref(false)
     const headerDetail = ref({} as headerDetailInt)
     const pageCount = ref(0)
@@ -44,30 +44,32 @@ export default defineComponent({
 
     // 加载mv信息
     const getPlayList: (n: string) => void = async n => {
-      const { data } = await request['httpGET']('GET_MV_DETAIL', { 'mvid': n })
+      const { data } = await request['httpGET']('GET_VIDEO_DETAIL', { 'id': n })
 
       headerDetail.value = {
-        name: data.name,
-        coverImgUrl: data.cover,
+        name: data.title,
+        coverImgUrl: data.coverUrl,
         updateTime: data.publishTime,
-        artistName: data.artists,
-        artistId: data.artistId,
+        userName: data.creator.nickname,
+        userId: data.creator.userId,
         shareCount: data.shareCount,
-        subscribedCount: data.subCount,
+        subscribedCount: data.subscribeCount,
         commentCount: data.commentCount,
-        playCount: data.playCount
+        playCount: data.playTime,
+        likedCount: data.praisedCount
       }
     }
     // 获取mv地址
     const getMvUrl: (n: string) => void = async n => {
-      const { data } = await request['httpGET']('GET_MV_URL', { 'id': n, 'r': 360 })
-      mvurl.value = data.url
+      const { urls } = await request['httpGET']('GET_VIDEO_URL', { 'id': n })
+
+      videoUrl.value = urls[0].url
     }
 
     // 加载评论
     const getComments: (id: string, n?: number) => void = async (id, n = 0) => {
       commentsDetail.length = 0
-      const { total, comments, hotComments } = await request['httpGET']('GET_COMMENT_MV', { 'id': id, 'limit': 20, 'offset': n })
+      const { total, comments, hotComments } = await request['httpGET']('GET_COMMENT_VIDEO', { 'id': id, 'limit': 20, 'offset': n })
 
       // 热门评论
       if (n === 0) {
@@ -123,7 +125,7 @@ export default defineComponent({
       pageCount,
       pageNumber,
       headerDetail,
-      mvurl,
+      videoUrl,
       videoShow
     }
   }

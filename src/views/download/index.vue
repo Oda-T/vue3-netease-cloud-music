@@ -21,6 +21,6 @@ export default defineComponent({
 <style lang="less" scoped>
 .download {
   width: 200px;
-  margin: 200px auto 0px auto;
+  margin: 100px auto 0px auto;
 }
 </style>

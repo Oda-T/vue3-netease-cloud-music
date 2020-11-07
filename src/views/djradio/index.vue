@@ -16,7 +16,7 @@ import { playListInt, headerDetailInt } from '../../type/playList.type'
 import request from '../../api/index'
 
 export default defineComponent({
-  name: 'Playlist',
+  name: 'Djradio',
   components: {
     PlayListHeader,
     PlayListDetail

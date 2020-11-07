@@ -24,5 +24,7 @@ export type headerDetailInt = {
   playCount?: number
   artistName?: string
   artistId?: number
+  userName?: string
+  userId?: number
   tags?: Array<string>
 }

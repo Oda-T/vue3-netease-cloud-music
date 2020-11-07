@@ -12,7 +12,12 @@
         <a class="mdui-btn mdui-btn-icon mdui-ripple mdui-ripple-white" @click="handleTypoTitle('creator')" mdui-tooltip="{content: '创作者中心'}">
           <i class="mdui-icon material-icons">queue</i>
         </a>
-        <a class="mdui-btn mdui-btn-icon mdui-ripple mdui-ripple-white" mdui-tooltip="{content: 'Login'}"><i class="mdui-icon material-icons">person</i></a>
+        <a v-if="loginFlag" class="mdui-btn mdui-btn-icon mdui-ripple mdui-ripple-white" mdui-tooltip="{content: 'Login'}" mdui-dialog="{target: '#loginDialog'}">
+          <i class="mdui-icon material-icons">person</i>
+        </a>
+        <a v-else class="mdui-btn mdui-btn-icon mdui-ripple mdui-ripple-white" mdui-tooltip="{content: 'User Center'}">
+          <i class="mdui-icon material-icons">free_breakfast</i>
+        </a>
         <a href="https://github.com/OdaNeo/vue3-netease-cloud-music" target="_blank" class="mdui-btn mdui-btn-icon mdui-ripple mdui-ripple-white" mdui-tooltip="{content: 'Github'}">
           <svg class="mdui-icon">
             <use xlink:href="#icon-github"></use>
@@ -42,7 +47,34 @@
         </li>
       </ul>
     </div>
+    <!-- 登录对话框 -->
+    <div class="mdui-dialog" id="loginDialog" ref="loginDialog">
+      <div class="mdui-tab mdui-tab-full-width mdui-color-red-900" mdui-tab>
+        <a href="#loginDialog-tab1" class="mdui-ripple mdui-tab-active">邮箱登录</a>
+        <a href="#loginDialog-tab2" class="mdui-ripple">手机登录</a>
+      </div>
+      <div id="loginDialog-tab1" class="mdui-p-a-2">
+        <div class="mdui-textfield mdui-textfield-floating-label">
+          <i class="mdui-icon material-icons">email</i>
+          <label class="mdui-textfield-label">Email</label>
+          <input class="mdui-textfield-input" type="email" required />
+          <div class="mdui-textfield-error">邮箱格式错误</div>
+        </div>
+        <div class="mdui-textfield mdui-textfield-floating-label">
+          <i class="mdui-icon material-icons">lock</i>
+          <label class="mdui-textfield-label">Password</label>
+          <input class="mdui-textfield-input" type="text" pattern="^.*(?=.{6,})(?=.*[a-z])(?=.*[A-Z]).*$" required maxlength="60" />
+          <div class="mdui-textfield-error">密码至少 6 位，且包含大小写字母</div>
+          <div class="mdui-textfield-helper">请输入至少 6 位，且包含大小写字母的密码</div>
+        </div>
+      </div>
+      <div id="loginDialog-tab2" class="mdui-p-a-2">shopping content</div>
 
+      <div class="mdui-dialog-actions">
+        <button class="mdui-btn mdui-ripple" mdui-dialog-close>cancel</button>
+        <button class="mdui-btn mdui-ripple" mdui-dialog-confirm>erase</button>
+      </div>
+    </div>
     <!-- 底栏播放器 -->
     <!-- 返回顶端 -->
     <back-to-top />
@@ -59,10 +91,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs } from 'vue'
+import { defineComponent, toRefs, onMounted, ref } from 'vue'
+import mdui from 'mdui'
+
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import BackToTop from '../components/backToTop.vue'
+
+import { getToken } from '../utils/auth'
 
 export default defineComponent({
   components: {
@@ -71,7 +107,11 @@ export default defineComponent({
   setup() {
     const router = useRouter()
     const store = useStore()
+    const loginFlag = ref('' as string | undefined)
+    const loginDialog = ref(null as unknown)
     const { toolbarTitle, toolbarSubTitle, curIndex, curChildIndex } = toRefs(store.state)
+
+    loginFlag.value = getToken()
 
     const listItem = [
       {
@@ -125,7 +165,19 @@ export default defineComponent({
       router.push({ name: name })
     }
 
+    onMounted(() => {
+      mdui.mutation()
+
+      const el = loginDialog.value as HTMLElement
+
+      el.addEventListener('confirm.mdui.dialog', () => {
+        console.log(1)
+      })
+    })
+
     return {
+      loginFlag,
+      loginDialog,
       listItem,
       toolbarTitle,
       toolbarSubTitle,

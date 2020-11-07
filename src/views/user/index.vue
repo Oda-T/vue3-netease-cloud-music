@@ -1,26 +1,13 @@
 <template>
-  <div>
-    <div>{{ count }}</div>
-  </div>
+  <div id="user"></div>
 </template>
 <script lang="ts">
-import { defineComponent, reactive, toRefs, computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: 'Topic',
+  name: 'User',
   setup() {
-    const route = useRoute()
-
-    const state = reactive({
-      count: computed(() => {
-        return route.path
-      })
-    })
-
-    return {
-      ...toRefs(state)
-    }
+    return {}
   }
 })
 </script>

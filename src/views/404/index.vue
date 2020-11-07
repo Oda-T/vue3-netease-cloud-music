@@ -1,5 +1,5 @@
 <template>
-  <div>404</div>
+  <div id="404">404</div>
 </template>
 <script lang="ts">
 import { defineComponent, onMounted } from 'vue'

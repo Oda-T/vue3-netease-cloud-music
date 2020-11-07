@@ -19,6 +19,10 @@ import * as DJ_INDEX from './dj/index'
 
 import * as MV_INDEX from './mv/index'
 
+import * as VIDEO_INDEX from './video/index'
+
+import * as LAYOUT_INDEX from './layout/index'
+
 type REQUEST_NAME = {
   [key: string]: string
 }
@@ -36,7 +40,9 @@ const REQUEST_NAME: REQUEST_NAME = {
   ...SONG_INDEX,
   ...DJRADIO_INDEX,
   ...DJ_INDEX,
-  ...MV_INDEX
+  ...MV_INDEX,
+  ...VIDEO_INDEX,
+  ...LAYOUT_INDEX
 }
 
 export default REQUEST_NAME
