@@ -10,16 +10,16 @@
         <a href="#artist-tab3" class="mdui-ripple" @click="getArtistMv(id)">相关MV</a>
         <a href="#artist-tab4" class="mdui-ripple" @click="getArtistDesc(id)">艺人介绍</a>
       </div>
-      <div id="artist-tab1" class="mdui-p-a-2">
+      <div id="artist-tab1" class="mdui-p-t-2 mdui-p-b-2">
         <play-list-detail :listDetail="listDetail" />
       </div>
-      <div id="artist-tab2" class="mdui-p-a-2">
+      <div id="artist-tab2" class="mdui-p-t-2 mdui-p-b-2">
         <card v-for="item in cardList" :key="item.id" :item="item" />
       </div>
-      <div id="artist-tab3" class="mdui-p-a-2">
+      <div id="artist-tab3" class="mdui-p-t-2 mdui-p-b-2">
         <card v-for="item in mvCardList" :key="item.id" :item="item" />
       </div>
-      <div id="artist-tab4" class="mdui-p-a-2">
+      <div id="artist-tab4" class="mdui-p-t-2 mdui-p-b-2">
         <div class="mdui-typo" v-for="item in description" :key="item.id" :item="item">
           <h3>{{ item.ti }}</h3>
           <p>{{ item.txt }}</p>

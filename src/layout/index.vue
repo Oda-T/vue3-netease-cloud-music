@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="layout">
     <!-- 顶部工具栏 -->
     <div class="mdui-appbar mdui-appbar-fixed">
       <div class="mdui-toolbar mdui-color-red-900">

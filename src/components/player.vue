@@ -4,7 +4,7 @@
     <!-- 显示隐藏内容 -->
 
     <div class="c-player-hide" :style="{ height: cPlayerHideHeight }" @mouseenter="hidebtnshow = !hidebtnshow" @mouseleave="hidebtnshow = !hidebtnshow">
-      <img class="c-player-hide-avatar" v-lazy="avatarL" alt="" />
+      <img class="c-player-hide-avatar" v-lazy="avatarL" />
 
       <transition name="fade">
         <div v-show="hidebtnshow" class="c-player-hide-btn">

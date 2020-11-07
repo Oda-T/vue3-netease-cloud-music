@@ -14,7 +14,7 @@
         <div class="mdui-typo">
           <hr />
         </div>
-        <img class="comments-item-img" v-lazy="`${item.useravatar}?param=10y10&quality=70`" :alt="item.username" />
+        <img class="comments-item-img" v-lazy="`${item.useravatar}?param=10y10&quality=70`" />
         <span class="comments-item-user">{{ item.username }}</span>
         <span class="comments-item-time">{{ handleTime(item.time) }}</span>
         <p class="comments-item-comments">{{ item.content }}</p>
@@ -40,7 +40,7 @@
         <div class="mdui-typo">
           <hr />
         </div>
-        <img class="comments-item-img" v-lazy="item.useravatar" :alt="item.username" />
+        <img class="comments-item-img" v-lazy="item.useravatar" />
         <span class="comments-item-user">{{ item.username }}</span>
         <span class="comments-item-time">{{ handleTime(item.time) }}</span>
         <p class="comments-item-comments">{{ item.content }}</p>
@@ -85,6 +85,9 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
+.c-comments {
+  overflow: hidden;
+}
 .c-comments-title {
   width: 1400px;
   margin: 100px auto 80px auto;

@@ -4,8 +4,8 @@
     <table class="mdui-table mdui-table-hoverable">
       <tbody>
         <tr v-for="(item, index) in listDetail" :key="item.id" @mouseenter="curIndex = index" @mouseleave="curIndex = -1">
-          <td style="width:123px">
-            <router-link :to="item.id"><img class="c-playlist-main-img" v-lazy="`${item.imgUrl}?param=32y32`" :alt="item.name"/></router-link>
+          <td style="width:123px;maxWidth:123px">
+            <router-link :to="item.id"><img class="c-playlist-main-img" v-lazy="`${item.imgUrl}?param=32y32`"/></router-link>
           </td>
           <td style="width:674px;maxWidth:674px" class="mdui-text-truncate">
             <router-link :to="item.id">
@@ -17,7 +17,7 @@
               {{ handleArtistName(item.artist) }}
             </router-link>
           </td>
-          <td style="width:184px" class="c-playlist-main-table-btn">
+          <td style="width:184px;maxWidth:184px" class="c-playlist-main-table-btn">
             <div :class="{ btnShow: curIndex !== index }">
               <button class="mdui-btn mdui-btn-icon mdui-btn-dense"><i class="mdui-icon material-icons">add</i></button>
               <button class="mdui-btn mdui-btn-icon mdui-btn-dense"><i class="mdui-icon material-icons">add_to_queue</i></button>
@@ -40,7 +40,7 @@ export default defineComponent({
   props: {
     listDetail: Object
   },
-  setup(prop, { emit }) {
+  setup() {
     const curIndex = ref(-1)
 
     const getDuoNum: (d: number) => string | number = d => {
@@ -52,15 +52,20 @@ export default defineComponent({
       return `${Math.floor(_d / 60)}:${getDuoNum(Math.floor(_d % 60))}`
     }
 
-    const handleArtistName: (arr: Array<{ name: string }>) => string = arr => {
-      if (arr.length === 1) {
-        return arr[0].name
+    // 多个作者用/分割
+    const handleArtistName: (arr: string | Array<{ name: string }>) => string = arr => {
+      if (typeof arr === 'string') {
+        return arr
+      } else {
+        if (arr.length === 1) {
+          return arr[0].name
+        }
+        const _arr: Array<string> = []
+        for (let i = 0; i < arr.length; i++) {
+          _arr.push(arr[i].name)
+        }
+        return _arr.join('/')
       }
-      const _arr: Array<string> = []
-      for (let i = 0; i < arr.length; i++) {
-        _arr.push(arr[i].name)
-      }
-      return _arr.join('/')
     }
 
     return {

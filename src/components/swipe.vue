@@ -9,7 +9,7 @@
         :to="itemlink.aHref"
         :class="{ 'c-swipe-link-pre': indexlink === preIndex, 'c-swipe-link-cur': indexlink === curIndex, 'c-swipe-link-next': indexlink === nextIndex }"
       >
-        <img class="c-swipe-img" :src="itemlink.imgSrc" :alt="itemlink.imgSrc" />
+        <img class="c-swipe-img" :src="itemlink.imgSrc" />
       </router-link>
     </div>
     <!-- 分页 -->

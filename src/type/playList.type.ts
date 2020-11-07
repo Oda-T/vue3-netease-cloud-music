@@ -10,6 +10,8 @@ export type playListInt = {
 export type headerDetailInt = {
   name: string
   coverImgUrl: string
+  category?: string
+  likedCount?: number
   trackCount?: number
   shareCount?: number
   commentCount?: number
