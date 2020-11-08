@@ -10,8 +10,9 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, reactive, ref, watchEffect } from 'vue'
+import { defineComponent, reactive, ref, toRefs, watchEffect } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 
 import Recommend from '../../components/recommend.vue'
 import Card from '../../components/card.vue'
@@ -32,27 +33,18 @@ export default defineComponent({
   setup() {
     const route = useRoute()
     const router = useRouter()
+    const store = useStore()
 
     const TopList: Array<topListInt> = reactive([])
     const cardList: Array<cardInt> = reactive([])
     const totalListCount = ref(0)
-
     const forceUpdate = ref('')
-
     const activeName = ref('全部')
+    const { playListFull } = toRefs(store.state)
 
     const getTopList: () => void = async () => {
-      const { sub } = await request['httpGET']('GET_PLAYLIST_CATLIST')
-
-      TopList[0] = {
-        id: -1,
-        name: '全部'
-      }
-      for (let i = 0; i < sub.length; i++) {
-        TopList[i + 1] = {
-          id: sub[i].id,
-          name: sub[i].name
-        }
+      for (let i = 0; i < playListFull.value.length; i++) {
+        TopList[i] = playListFull.value[i]
       }
     }
 
@@ -86,7 +78,17 @@ export default defineComponent({
       getCardList(activeName.value, n)
     }
 
-    getTopList()
+    // 从sessionStorage读取
+    if (sessionStorage.playListFull) {
+      playListFull.value = JSON.parse(sessionStorage.playListFull)
+      getTopList()
+    } else if (playListFull.value.length) {
+      getTopList()
+    } else {
+      store.dispatch('getPlaylistFull').then(() => {
+        getTopList()
+      })
+    }
 
     watchEffect(() => {
       route.path === '/discover/playlist' && typeof route.query.cat === 'string'

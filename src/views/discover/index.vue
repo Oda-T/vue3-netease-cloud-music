@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref } from 'vue'
+import { defineComponent, reactive, ref, toRefs } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 
@@ -49,8 +49,8 @@ export default defineComponent({
     const router = useRouter()
     const store = useStore()
     const activeName = ref('云音乐飙升榜')
-    const { topListFull } = store.state
     const playlistHot: topListInt[] = reactive([])
+    const { topListFull } = toRefs(store.state)
 
     // swipe
     const banner: Array<swipeInt> = reactive([])
@@ -103,7 +103,7 @@ export default defineComponent({
 
     const getTopList: () => void = () => {
       for (let i = 0; i < 3; i++) {
-        topList[i] = store.state.topListFull[i]
+        topList[i] = topListFull.value[i]
       }
       getCardTopList(topList[0].id)
     }
@@ -136,7 +136,7 @@ export default defineComponent({
         case 1:
           return '/song?id=' + id
         default:
-          return url.slice(url.indexOf('com/') + 3)
+          return '/404'
       }
     }
 
@@ -151,6 +151,7 @@ export default defineComponent({
           aHref: handleHref(banners[i].encodeId, banners[i].targetType, banners[i].url)
         }
       }
+      console.log(banners)
     }
 
     // 热门歌单分类
@@ -217,9 +218,9 @@ export default defineComponent({
 
     // 首页榜单
     if (sessionStorage.topListFull) {
-      store.state.topListFull = JSON.parse(sessionStorage.topListFull)
+      topListFull.value = JSON.parse(sessionStorage.topListFull)
       getTopList()
-    } else if (topListFull.length) {
+    } else if (topListFull.value.length) {
       getTopList()
     } else {
       store.dispatch('getTopListFull').then(() => {

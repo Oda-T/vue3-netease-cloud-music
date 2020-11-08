@@ -212,11 +212,11 @@ const routes: Array<RouteRecordRaw> = [
         }
       },
       {
-        path: 'user/home',
+        path: 'user',
         component: () => import(/* webpackChunkName: "user" */ '@/views/user/index.vue'),
-        name: 'at',
+        name: 'user',
         meta: {
-          title: 'user'
+          title: '用户中心'
         }
       },
       {

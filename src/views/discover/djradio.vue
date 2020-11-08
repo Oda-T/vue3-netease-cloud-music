@@ -28,8 +28,8 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, reactive } from 'vue'
-
+import { defineComponent, ref, reactive, toRefs } from 'vue'
+import { useStore } from 'vuex'
 import Recommend from '../../components/recommend.vue'
 
 import { topListInt, cardListInt } from '../../type/recommend.type'
@@ -43,14 +43,14 @@ export default defineComponent({
     Recommend
   },
   setup() {
+    const store = useStore()
     const djList: Array<topListInt> = reactive([])
     const djCardList: Array<cardListInt> = reactive([])
 
     const djPanelList: Array<panelInt> = reactive([])
-
     const djPanelTitle = ref('热门电台Top15')
-
     const activeName = ref('')
+    const { djListFull } = toRefs(store.state)
 
     const handleTime: (d: number) => string = d => {
       const _d = new Date(d)
@@ -58,13 +58,8 @@ export default defineComponent({
     }
 
     const getTopList: () => void = async () => {
-      const { data } = await request['httpGET']('GET_DJ_CATEGORY_RECOMMEND')
-
-      for (let i = 0; i < data.length; i++) {
-        djList[i] = {
-          id: data[i].categoryId,
-          name: data[i].categoryName
-        }
+      for (let i = 0; i < djListFull.value.length; i++) {
+        djList[i] = djListFull.value[i]
       }
       activeName.value = djList[0].name
     }
@@ -116,8 +111,17 @@ export default defineComponent({
       }
     }
 
-    // 获取特色dj列表
-    getTopList()
+    //  从sessionStorage读取特色dj列表
+    if (sessionStorage.djListFull) {
+      djListFull.value = JSON.parse(sessionStorage.djListFull)
+      getTopList()
+    } else if (djListFull.value.length) {
+      getTopList()
+    } else {
+      store.dispatch('getDjListFull').then(() => {
+        getTopList()
+      })
+    }
     // 获取推荐目录
     getPlayList(1)
     // hot dj

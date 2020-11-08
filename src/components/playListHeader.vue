@@ -2,7 +2,7 @@
   <!-- 概览 -->
   <div class="c-playlist-header mdui-typo">
     <img class="c-playlist-header-img" :src="`${headerDetail.coverImgUrl}?param=200y200`" :alt="headerDetail.name" />
-    <div class="c-playlist-header-text">
+    <div v-if="headerDetail.name" class="c-playlist-header-text">
       <h1>{{ headerDetail.name }}</h1>
       <p v-if="headerDetail.album">
         专辑：
@@ -17,7 +17,7 @@
         歌手：
         <router-link :to="`/artist?id=${headerDetail.artistId}`">{{ handleArtistName(headerDetail.artistName) }}</router-link>
       </p>
-      <p v-if="headerDetail.userName">
+      <p v-else-if="headerDetail.userName">
         by：
         <router-link :to="`/user/home?id=${headerDetail.userId}`">{{ handleArtistName(headerDetail.userName) }}</router-link>
       </p>
@@ -28,17 +28,17 @@
         <i class="mdui-icon mdui-icon-left material-icons">play_arrow</i>播放
       </button>
       <!-- 其他按钮 -->
-      <button v-if="headerDetail.likedCount === 0 ? true : headerDetail.likedCount" class="c-playlist-header-count mdui-btn mdui-color-red-900 mdui-ripple">
+      <button v-if="typeof headerDetail.likedCount === 'number'" class="c-playlist-header-count mdui-btn mdui-color-red-900 mdui-ripple">
         <i class="mdui-icon  material-icons" :class="{ 'mdui-icon-left': headerDetail.likedCount }">thumb_up</i><span v-if="headerDetail.likedCount">{{ headerDetail.likedCount }}</span>
       </button>
-      <button v-if="headerDetail.shareCount === 0 ? true : headerDetail.shareCount" class="c-playlist-header-count mdui-btn mdui-color-red-900 mdui-ripple">
+      <button v-if="typeof headerDetail.shareCount === 'number'" class="c-playlist-header-count mdui-btn mdui-color-red-900 mdui-ripple">
         <i class="mdui-icon  material-icons" :class="{ 'mdui-icon-left': headerDetail.shareCount }">share</i><span v-if="headerDetail.shareCount">{{ headerDetail.shareCount }}</span>
       </button>
-      <button v-if="headerDetail.subscribedCount === 0 ? true : headerDetail.subscribedCount" class="c-playlist-header-count mdui-btn mdui-color-red-900 mdui-ripple">
+      <button v-if="typeof headerDetail.subscribedCount === 'number'" class="c-playlist-header-count mdui-btn mdui-color-red-900 mdui-ripple">
         <i class="mdui-icon material-icons" :class="{ 'mdui-icon-left': headerDetail.subscribedCount }">add_to_queue</i>
         <span v-if="headerDetail.subscribedCount">{{ headerDetail.subscribedCount }}</span>
       </button>
-      <button v-if="headerDetail.commentCount === 0 ? true : headerDetail.commentCount" class="c-playlist-header-count mdui-btn mdui-color-red-900 mdui-ripple">
+      <button v-if="typeof headerDetail.commentCount === 'number'" class="c-playlist-header-count mdui-btn mdui-color-red-900 mdui-ripple">
         <i class="mdui-icon material-icons" :class="{ 'mdui-icon-left': headerDetail.commentCount }">sms</i><span v-if="headerDetail.commentCount">{{ headerDetail.commentCount }}</span>
       </button>
       <router-link class="c-playlist-header-count mdui-chip" v-for="item in headerDetail.tags" :key="item.id" :to="`/discover/playlist?cat=${encodeURIComponent(item)}`">

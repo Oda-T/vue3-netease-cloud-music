@@ -6,7 +6,7 @@ import mdui from 'mdui'
 class HttpRequest {
   private axiosIns: AxiosInstance = axios.create({
     baseURL: 'http://localhost:3000',
-    timeout: 50000,
+    timeout: 5000,
     withCredentials: true
   })
 
@@ -52,6 +52,12 @@ class HttpRequest {
       case 301:
         mdui.snackbar({
           message: `${code}需要登陆`,
+          position: 'right-bottom'
+        })
+        break
+      case 502:
+        mdui.snackbar({
+          message: `${code}错误`,
           position: 'right-bottom'
         })
         break

@@ -9,7 +9,9 @@ export default createStore({
     toolbarSubTitle: '推荐',
     curIndex: -1,
     curChildIndex: -1,
-    topListFull: []
+    topListFull: [],
+    playListFull: [],
+    djListFull: []
   },
   mutations: {
     setToolbarTitle: (state, i) => {
@@ -29,6 +31,14 @@ export default createStore({
     setTopListFull: (state, i) => {
       sessionStorage.topListFull = JSON.stringify(i)
       state.topListFull = i
+    },
+    setPlaylistFull: (state, i) => {
+      sessionStorage.playListFull = JSON.stringify(i)
+      state.playListFull = i
+    },
+    setDjListFull: (state, i) => {
+      sessionStorage.djListFull = JSON.stringify(i)
+      state.djListFull = i
     }
   },
   actions: {
@@ -44,6 +54,38 @@ export default createStore({
         })
       }
       commit('setTopListFull', _list)
+
+      return Promise.resolve()
+    },
+    getPlaylistFull: async ({ commit }) => {
+      const _list: Array<topListInt> = []
+      const { sub } = await request['httpGET']('GET_PLAYLIST_CATLIST')
+
+      _list[0] = {
+        id: -1,
+        name: '全部'
+      }
+      for (let i = 0; i < sub.length; i++) {
+        _list[i + 1] = {
+          id: i,
+          name: sub[i].name
+        }
+      }
+      commit('setPlaylistFull', _list)
+
+      return Promise.resolve()
+    },
+    getDjListFull: async ({ commit }) => {
+      const _list: Array<topListInt> = []
+      const { data } = await request['httpGET']('GET_DJ_CATEGORY_RECOMMEND')
+
+      for (let i = 0; i < data.length; i++) {
+        _list[i] = {
+          id: data[i].categoryId,
+          name: data[i].categoryName
+        }
+      }
+      commit('setDjListFull', _list)
 
       return Promise.resolve()
     }

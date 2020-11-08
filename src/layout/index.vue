@@ -12,12 +12,14 @@
         <a class="mdui-btn mdui-btn-icon mdui-ripple mdui-ripple-white" @click="handleTypoTitle('creator')" mdui-tooltip="{content: '创作者中心'}">
           <i class="mdui-icon material-icons">queue</i>
         </a>
-        <a v-if="loginFlag" class="mdui-btn mdui-btn-icon mdui-ripple mdui-ripple-white" mdui-tooltip="{content: 'Login'}" mdui-dialog="{target: '#loginDialog'}">
+        <!-- 未登录 -->
+        <a v-if="!loginFlag" class="mdui-btn mdui-btn-icon mdui-ripple mdui-ripple-white" mdui-tooltip="{content: 'Login'}" mdui-dialog="{target: '#loginDialog'}">
           <i class="mdui-icon material-icons">person</i>
         </a>
-        <a v-else class="mdui-btn mdui-btn-icon mdui-ripple mdui-ripple-white" mdui-tooltip="{content: 'User Center'}">
+        <!-- 登录 -->
+        <router-link v-else class="mdui-btn mdui-btn-icon mdui-ripple mdui-ripple-white" mdui-tooltip="{content: 'User Center'}" to="/user">
           <i class="mdui-icon material-icons">free_breakfast</i>
-        </a>
+        </router-link>
         <a href="https://github.com/OdaNeo/vue3-netease-cloud-music" target="_blank" class="mdui-btn mdui-btn-icon mdui-ripple mdui-ripple-white" mdui-tooltip="{content: 'Github'}">
           <svg class="mdui-icon">
             <use xlink:href="#icon-github"></use>
@@ -49,30 +51,25 @@
     </div>
     <!-- 登录对话框 -->
     <div class="mdui-dialog" id="loginDialog" ref="loginDialog">
-      <div class="mdui-tab mdui-tab-full-width mdui-color-red-900" mdui-tab>
-        <a href="#loginDialog-tab1" class="mdui-ripple mdui-tab-active">邮箱登录</a>
-        <a href="#loginDialog-tab2" class="mdui-ripple">手机登录</a>
-      </div>
-      <div id="loginDialog-tab1" class="mdui-p-a-2">
+      <div class="mdui-dialog-title">登录</div>
+      <div class="mdui-dialog-content">
         <div class="mdui-textfield mdui-textfield-floating-label">
-          <i class="mdui-icon material-icons">email</i>
-          <label class="mdui-textfield-label">Email</label>
-          <input class="mdui-textfield-input" type="email" required />
-          <div class="mdui-textfield-error">邮箱格式错误</div>
+          <i class="mdui-icon material-icons">person</i>
+          <label class="mdui-textfield-label">Email/Phone</label>
+          <input class="mdui-textfield-input" type="text" required autocomplete="off" maxlength="60" v-model="loginEmailPhone" />
+          <div class="mdui-textfield-helper">输入邮箱或者手机号</div>
         </div>
         <div class="mdui-textfield mdui-textfield-floating-label">
           <i class="mdui-icon material-icons">lock</i>
           <label class="mdui-textfield-label">Password</label>
-          <input class="mdui-textfield-input" type="text" pattern="^.*(?=.{6,})(?=.*[a-z])(?=.*[A-Z]).*$" required maxlength="60" />
-          <div class="mdui-textfield-error">密码至少 6 位，且包含大小写字母</div>
-          <div class="mdui-textfield-helper">请输入至少 6 位，且包含大小写字母的密码</div>
+          <input class="mdui-textfield-input" type="password" pattern="^.*(?=.{8,})(?=.*[a-zA-Z])(?=.*[0-9]).*$" required autocomplete="off" maxlength="20" v-model="loginPassword" />
+          <div class="mdui-textfield-error">密码至少 8 位，且包含数字大小写字母</div>
         </div>
       </div>
-      <div id="loginDialog-tab2" class="mdui-p-a-2">shopping content</div>
 
       <div class="mdui-dialog-actions">
-        <button class="mdui-btn mdui-ripple" mdui-dialog-close>cancel</button>
-        <button class="mdui-btn mdui-ripple" mdui-dialog-confirm>erase</button>
+        <button class="mdui-btn mdui-ripple" mdui-dialog-close>取消</button>
+        <button class="mdui-btn mdui-ripple" :disabled="!canLogin" mdui-dialog-confirm>登录</button>
       </div>
     </div>
     <!-- 底栏播放器 -->
@@ -91,14 +88,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs, onMounted, ref } from 'vue'
+import { defineComponent, toRefs, onMounted, ref, watch } from 'vue'
 import mdui from 'mdui'
 
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
+
 import BackToTop from '../components/backToTop.vue'
 
 import { getToken } from '../utils/auth'
+import { emailValidate, passwordValidate, phoneValidate } from '../validator/layout'
+import request from '../api/index'
 
 export default defineComponent({
   components: {
@@ -110,6 +110,10 @@ export default defineComponent({
     const loginFlag = ref('' as string | undefined)
     const loginDialog = ref(null as unknown)
     const { toolbarTitle, toolbarSubTitle, curIndex, curChildIndex } = toRefs(store.state)
+
+    const loginEmailPhone = ref('')
+    const loginPassword = ref('')
+    const canLogin = ref(false)
 
     loginFlag.value = getToken()
 
@@ -165,13 +169,25 @@ export default defineComponent({
       router.push({ name: name })
     }
 
+    watch([loginEmailPhone, loginPassword], ([emailPhone, pass]) => {
+      // 验证是否通过
+      canLogin.value = (emailValidate.test(emailPhone) || phoneValidate.test(emailPhone)) && passwordValidate.test(pass)
+    })
+
     onMounted(() => {
       mdui.mutation()
 
       const el = loginDialog.value as HTMLElement
+      // 点击登录事件
+      el.addEventListener('confirm.mdui.dialog', async () => {
+        // 手机邮箱登录接口不同
+        emailValidate.test(loginEmailPhone.value)
+          ? await request['httpPOST']('POST_LOGIN', { 'email': loginEmailPhone.value, 'password': loginPassword.value })
+          : await request['httpPOST']('POST_LOGIN_CELLPHONE', { 'phone': loginEmailPhone.value, 'password': loginPassword.value })
 
-      el.addEventListener('confirm.mdui.dialog', () => {
-        console.log(1)
+        // 强刷
+        loginFlag.value = getToken()
+        location.reload()
       })
     })
 
@@ -184,7 +200,10 @@ export default defineComponent({
       curIndex,
       curChildIndex,
       handleTypoTitle,
-      handleTypoSubTitle
+      handleTypoSubTitle,
+      loginEmailPhone,
+      loginPassword,
+      canLogin
     }
   }
 })
