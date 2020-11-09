@@ -1,7 +1,7 @@
 <template>
   <!-- 概览 -->
   <div class="c-playlist-header mdui-typo">
-    <img class="c-playlist-header-img" :src="`${headerDetail.coverImgUrl}?param=200y200`" :alt="headerDetail.name" />
+    <img v-if="headerDetail.coverImgUrl" class="c-playlist-header-img" :src="`${headerDetail.coverImgUrl}?param=200y200`" :alt="headerDetail.name" />
     <div v-if="headerDetail.name" class="c-playlist-header-text">
       <h1>{{ headerDetail.name }}</h1>
       <p v-if="headerDetail.album">

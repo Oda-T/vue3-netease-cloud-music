@@ -8,5 +8,11 @@ export const GET_LOGOUT = '/logout'
 export const GET_LOGIN_STATUS = '/login/status'
 // 用户信息
 export const GET_USER_DETAIL = '/user/detail'
+// 换绑手机
+export const GET_USER_REPLACEPHONE = '/user/replacephone'
+// 更新信息
+export const GET_USER_UPDATE = '/user/update'
+// 更新头像
+export const GET_AVATAR_UPLOAD = '/avatar/upload'
 // 用户歌单
 export const GET_USER_PLAYLIST = '/user/playlist'

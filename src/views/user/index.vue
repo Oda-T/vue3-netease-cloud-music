@@ -1,5 +1,5 @@
 <template>
-  <div v-if="token && userProfile" id="user">
+  <div v-if="token && avatarUrl" id="user">
     <div class="user-card mdui-card">
       <!-- 卡片头部，包含头像、标题、副标题 -->
       <div class="mdui-card-header">
@@ -28,21 +28,34 @@
       </div>
       <!-- 卡片的按钮 -->
       <div v-if="!route.query.id" class="mdui-card-actions">
+        <button class="mdui-btn mdui-ripple" @click="logout">登出</button>
         <button class="mdui-btn mdui-ripple">编辑</button>
       </div>
+    </div>
+
+    <div class="user-card-container">
+      <div class="user-card-title">
+        <h1 class="mdui-typo-title mdui-text-color-red-900">歌单</h1>
+      </div>
+      <card v-for="item in cardList" :key="item.id" :item="item" />
     </div>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, watch } from 'vue'
+import { defineComponent, ref, watch, reactive } from 'vue'
 import { useRoute } from 'vue-router'
+
+import Card from '../../components/card.vue'
+import { cardInt } from '../../type/card.type'
 
 import request from '../../api/index'
 import { getToken } from '../../utils/auth'
 
 export default defineComponent({
   name: 'User',
-  components: {},
+  components: {
+    Card
+  },
   setup() {
     const token = getToken()
     const route = useRoute()
@@ -52,10 +65,26 @@ export default defineComponent({
     const avatarUrl = ref('')
     const backgroundUrl = ref('')
     const signature = ref('')
+    const cardList: Array<cardInt> = reactive([])
 
     const handleTime: (d: number) => string = d => {
       const _d = new Date(d)
       return `${_d.getFullYear()}年${_d.getMonth() + 1}月${_d.getDate()}日`
+    }
+
+    const getUserPlayList: (n?: number) => void = async (n = 0) => {
+      cardList.length = 0
+
+      const { playlist } = await request['httpGET']('GET_USER_PLAYLIST', { 'uid': userId.value, 'limit': 30, 'offset': n })
+
+      for (let i = 0; i < playlist.length; i++) {
+        cardList[i] = {
+          id: '/playlist?id=' + playlist[i].id,
+          name: playlist[i].name,
+          artist: playlist[i].creator.nickname,
+          picUrl: playlist[i].coverImgUrl
+        }
+      }
     }
 
     const handleRouteQuery: () => void = async () => {
@@ -65,7 +94,6 @@ export default defineComponent({
         const { profile } = await request['httpGET']('GET_LOGIN_STATUS')
         userId.value = profile.userId
       }
-
       const data = await request['httpGET']('GET_USER_DETAIL', { 'uid': userId.value })
 
       avatarUrl.value = data.profile.avatarUrl + '?param=50y50'
@@ -87,6 +115,13 @@ export default defineComponent({
         '粉丝': data.profile.followeds,
         '关注': data.profile.newFollows
       }
+
+      getUserPlayList()
+    }
+
+    const logout: () => void = async () => {
+      await request['httpGET']('GET_LOGOUT')
+      location.reload()
     }
 
     watch(
@@ -105,7 +140,9 @@ export default defineComponent({
       avatarUrl,
       backgroundUrl,
       signature,
-      route
+      route,
+      logout,
+      cardList
     }
   }
 })
@@ -113,7 +150,7 @@ export default defineComponent({
 <style lang="less" scoped>
 .user-card {
   width: 1200px;
-  margin: 50px auto 100px auto;
+  margin: 50px auto;
   overflow: hidden;
   .user-card-list {
     display: flex;
@@ -121,6 +158,14 @@ export default defineComponent({
     li {
       width: 400px;
     }
+  }
+}
+
+.user-card-container {
+  width: 1333px;
+  margin: 50px auto;
+  .user-card-title {
+    margin-left: 20px;
   }
 }
 </style>

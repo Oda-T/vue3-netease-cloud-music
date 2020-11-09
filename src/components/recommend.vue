@@ -192,10 +192,8 @@ export default defineComponent({
       .recommend-card-item-container {
         position: absolute;
         top: 0px;
-        height: 100%;
         transition: left 0.2s ease-in-out;
         display: flex;
-        flex-wrap: nowrap;
         .recommend-card-list {
           display: inline-block;
           width: 192px;

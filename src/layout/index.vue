@@ -79,7 +79,7 @@
     <!-- 路由 transition -->
     <router-view v-slot="{ Component }">
       <transition name="slide-fade">
-        <keep-alive include="Discover,discoverTopList,discoverDjradio,discoverArtist">
+        <keep-alive include="Discover,discoverTopList,discoverDjradio,discoverArtist,User">
           <component :is="Component" />
         </keep-alive>
       </transition>
@@ -178,7 +178,7 @@ export default defineComponent({
       mdui.mutation()
 
       const el = loginDialog.value as HTMLElement
-      // 点击登录事件
+      // 点击登录事件 mdui
       el.addEventListener('confirm.mdui.dialog', async () => {
         // 手机邮箱登录接口不同
         emailValidate.test(loginEmailPhone.value)
