@@ -209,24 +209,24 @@ export default defineComponent({
         })
       }
     }
-
+    // 首页榜单
+    const getTopListFull: () => void = async () => {
+      if (sessionStorage.topListFull) {
+        topListFull.value = JSON.parse(sessionStorage.topListFull)
+        getTopList()
+      } else if (topListFull.value.length) {
+        getTopList()
+      } else {
+        await store.dispatch('getTopListFull')
+        getTopList()
+      }
+    }
     // 调用
     swipe()
     getPlaylistHot()
     getPersonalized()
     getAlbumNewest()
-
-    // 首页榜单
-    if (sessionStorage.topListFull) {
-      topListFull.value = JSON.parse(sessionStorage.topListFull)
-      getTopList()
-    } else if (topListFull.value.length) {
-      getTopList()
-    } else {
-      store.dispatch('getTopListFull').then(() => {
-        getTopList()
-      })
-    }
+    getTopListFull()
 
     return {
       getIdCallBackHot,

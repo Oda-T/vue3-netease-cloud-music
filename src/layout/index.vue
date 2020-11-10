@@ -79,7 +79,7 @@
     <!-- 路由 transition -->
     <router-view v-slot="{ Component }">
       <transition name="slide-fade">
-        <keep-alive include="Discover,discoverTopList,discoverDjradio,discoverArtist,User">
+        <keep-alive include="Discover,discoverTopList,discoverDjradio,discoverArtist">
           <component :is="Component" />
         </keep-alive>
       </transition>
@@ -186,7 +186,6 @@ export default defineComponent({
           : await request['httpPOST']('POST_LOGIN_CELLPHONE', { 'phone': loginEmailPhone.value, 'password': loginPassword.value })
 
         // 强刷
-        loginFlag.value = getToken()
         location.reload()
       })
     })

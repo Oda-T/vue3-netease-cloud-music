@@ -43,7 +43,8 @@
 </template>
 <script lang="ts">
 import { defineComponent, ref, watch, reactive } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 
 import Card from '../../components/card.vue'
 import { cardInt } from '../../type/card.type'
@@ -59,8 +60,14 @@ export default defineComponent({
   setup() {
     const token = getToken()
     const route = useRoute()
-    const userId = ref('')
+    const router = useRouter()
+    const store = useStore()
 
+    // 如果未登录，重定向到首页
+    !token && router.replace({ name: 'discover' })
+
+    // 登录
+    let userId = ''
     const userProfile = ref({})
     const avatarUrl = ref('')
     const backgroundUrl = ref('')
@@ -75,7 +82,7 @@ export default defineComponent({
     const getUserPlayList: (n?: number) => void = async (n = 0) => {
       cardList.length = 0
 
-      const { playlist } = await request['httpGET']('GET_USER_PLAYLIST', { 'uid': userId.value, 'limit': 30, 'offset': n })
+      const { playlist } = await request['httpGET']('GET_USER_PLAYLIST', { 'uid': userId, 'limit': 30, 'offset': n })
 
       for (let i = 0; i < playlist.length; i++) {
         cardList[i] = {
@@ -88,13 +95,7 @@ export default defineComponent({
     }
 
     const handleRouteQuery: () => void = async () => {
-      if (typeof route.query.id === 'string') {
-        userId.value = route.query.id
-      } else {
-        const { profile } = await request['httpGET']('GET_LOGIN_STATUS')
-        userId.value = profile.userId
-      }
-      const data = await request['httpGET']('GET_USER_DETAIL', { 'uid': userId.value })
+      const data = await request['httpGET']('GET_USER_DETAIL', { 'uid': userId })
 
       avatarUrl.value = data.profile.avatarUrl + '?param=50y50'
       backgroundUrl.value = data.profile.backgroundUrl + '?param=950y350'
@@ -119,6 +120,20 @@ export default defineComponent({
       getUserPlayList()
     }
 
+    const getUserId: () => void = async () => {
+      if (typeof route.query.id === 'string') {
+        userId = route.query.id
+        handleRouteQuery()
+      } else if (store.state.userId === '') {
+        await store.dispatch('getUserId')
+        userId = store.state.userId
+        handleRouteQuery()
+      } else {
+        userId = store.state.userId
+        handleRouteQuery()
+      }
+    }
+
     const logout: () => void = async () => {
       await request['httpGET']('GET_LOGOUT')
       location.reload()
@@ -129,7 +144,7 @@ export default defineComponent({
         return route.query.id
       },
       () => {
-        route.path === '/user' && handleRouteQuery()
+        token && route.path === '/user' && getUserId()
       },
       { immediate: true }
     )

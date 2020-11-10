@@ -116,15 +116,16 @@ export default defineComponent({
       getPlayList(n.id, globalCardList)
     }
 
-    // 获取音乐榜媒体榜缓存
-    if (store.state.topListFull.length) {
-      getSpecialList()
-      getGlobalList()
-    } else {
-      store.dispatch('getTopListFull').then(() => {
+    const getTopListFull: () => void = async () => {
+      // 获取音乐榜媒体榜缓存
+      if (store.state.topListFull.length) {
         getSpecialList()
         getGlobalList()
-      })
+      } else {
+        await store.dispatch('getTopListFull')
+        getSpecialList()
+        getGlobalList()
+      }
     }
 
     const getComments: (id: string, n: number) => void = async (id, n) => {
@@ -183,6 +184,8 @@ export default defineComponent({
     const pageNumber: (n: number) => void = n => {
       typeof route.query.id === 'string' && getComments(route.query.id, 20 * (n - 1))
     }
+
+    getTopListFull()
 
     // 观测route
     watchEffect(() => {

@@ -77,18 +77,20 @@ export default defineComponent({
     const pageNumber: (n: number) => void = n => {
       getCardList(activeName.value, n)
     }
-
-    // 从sessionStorage读取
-    if (sessionStorage.playListFull) {
-      playListFull.value = JSON.parse(sessionStorage.playListFull)
-      getTopList()
-    } else if (playListFull.value.length) {
-      getTopList()
-    } else {
-      store.dispatch('getPlaylistFull').then(() => {
+    const getPlaylistFull: () => void = async () => {
+      // 从sessionStorage读取
+      if (sessionStorage.playListFull) {
+        playListFull.value = JSON.parse(sessionStorage.playListFull)
         getTopList()
-      })
+      } else if (playListFull.value.length) {
+        getTopList()
+      } else {
+        await store.dispatch('getPlaylistFull')
+        getTopList()
+      }
     }
+
+    getPlaylistFull()
 
     watchEffect(() => {
       route.path === '/discover/playlist' && typeof route.query.cat === 'string'

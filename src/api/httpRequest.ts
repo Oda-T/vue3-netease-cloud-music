@@ -49,18 +49,6 @@ class HttpRequest {
       case 200:
         callback(response)
         break
-      case 301:
-        mdui.snackbar({
-          message: `${code}需要登陆`,
-          position: 'right-bottom'
-        })
-        break
-      case 502:
-        mdui.snackbar({
-          message: `${code}错误`,
-          position: 'right-bottom'
-        })
-        break
       default:
         mdui.snackbar({
           message: `${code}`,

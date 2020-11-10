@@ -11,7 +11,8 @@ export default createStore({
     curChildIndex: -1,
     topListFull: [],
     playListFull: [],
-    djListFull: []
+    djListFull: [],
+    userId: ''
   },
   mutations: {
     setToolbarTitle: (state, i) => {
@@ -39,6 +40,9 @@ export default createStore({
     setDjListFull: (state, i) => {
       sessionStorage.djListFull = JSON.stringify(i)
       state.djListFull = i
+    },
+    setUserId: (state, i) => {
+      state.userId = i
     }
   },
   actions: {
@@ -54,8 +58,6 @@ export default createStore({
         })
       }
       commit('setTopListFull', _list)
-
-      return Promise.resolve()
     },
     getPlaylistFull: async ({ commit }) => {
       const _list: Array<topListInt> = []
@@ -72,8 +74,6 @@ export default createStore({
         }
       }
       commit('setPlaylistFull', _list)
-
-      return Promise.resolve()
     },
     getDjListFull: async ({ commit }) => {
       const _list: Array<topListInt> = []
@@ -86,8 +86,10 @@ export default createStore({
         }
       }
       commit('setDjListFull', _list)
-
-      return Promise.resolve()
+    },
+    getUserId: async ({ commit }) => {
+      const { profile } = await request['httpGET']('GET_LOGIN_STATUS')
+      commit('setUserId', profile.userId)
     }
   },
   modules: {}

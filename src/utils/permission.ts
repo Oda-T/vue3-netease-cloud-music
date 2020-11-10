@@ -1,8 +1,6 @@
 import router from '../router'
 import store from '../store/index'
 
-// const topListFull = store.state.topListFull
-
 router.beforeEach(to => {
   // 修改layout title subtitle index
   store.commit('setToolbarTitle', to.meta.title)

@@ -110,23 +110,24 @@ export default defineComponent({
         getDjPanelList('hot')
       }
     }
-
-    //  从sessionStorage读取特色dj列表
-    if (sessionStorage.djListFull) {
-      djListFull.value = JSON.parse(sessionStorage.djListFull)
-      getTopList()
-    } else if (djListFull.value.length) {
-      getTopList()
-    } else {
-      store.dispatch('getDjListFull').then(() => {
+    const getDjListFull: () => void = async () => {
+      //  从sessionStorage读取特色dj列表
+      if (sessionStorage.djListFull) {
+        djListFull.value = JSON.parse(sessionStorage.djListFull)
         getTopList()
-      })
+      } else if (djListFull.value.length) {
+        getTopList()
+      } else {
+        await store.dispatch('getDjListFull')
+        getTopList()
+      }
     }
+
     // 获取推荐目录
     getPlayList(1)
     // hot dj
     getDjPanelList('hot')
-    // new dj
+    getDjListFull()
 
     return {
       activeName,
