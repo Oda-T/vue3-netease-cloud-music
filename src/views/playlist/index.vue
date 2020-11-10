@@ -2,10 +2,9 @@
   <div id="playlist">
     <play-list-header :headerDetail="headerDetail" />
     <play-list-detail :listDetail="listDetail" />
-    <!-- 评论 -->
-    <comments :commentsDetail="commentsDetail" :hotCommentsDetail="hotCommentsDetail" />
-    <!-- 分页 -->
-    <pagination :pageCount="pageCount" @page-number="pageNumber" />
+
+    <!-- 评论、分页 -->
+    <comments-pagination :reuqestURL="'GET_COMMENT_PLAYLIST'" />
   </div>
 </template>
 <script lang="ts">
@@ -14,10 +13,8 @@ import { useRoute } from 'vue-router'
 
 import PlayListHeader from '../../components/playListHeader.vue'
 import PlayListDetail from '../../components/playListDetail.vue'
-import Comments from '../../components/comments.vue'
-import Pagination from '../../components/pagination.vue'
+import CommentsPagination from '../../components/commentsPagination.vue'
 
-import { commentsInt } from '../../type/comments.type'
 import { playListInt, headerDetailInt } from '../../type/playList.type'
 
 import request from '../../api/index'
@@ -25,21 +22,17 @@ import request from '../../api/index'
 export default defineComponent({
   name: 'Playlist',
   components: {
-    Comments,
-    Pagination,
     PlayListHeader,
-    PlayListDetail
+    PlayListDetail,
+    CommentsPagination
   },
   setup() {
     const route = useRoute()
     const headerDetail = ref({} as headerDetailInt)
     const listDetail: Array<playListInt> = reactive([])
-    const pageCount = ref(0)
-    const commentsDetail: Array<commentsInt> = reactive([])
-    const hotCommentsDetail: Array<commentsInt> = reactive([])
 
     // 获得歌单
-    const getPlayList: (n: number) => void = async n => {
+    const getPlayList: (n: string) => void = async n => {
       const { playlist } = await request['httpGET']('GET_PLAYLIST_DETAIL', { 'id': n })
 
       const tracks = playlist.tracks
@@ -69,44 +62,11 @@ export default defineComponent({
       }
     }
 
-    // 加载评论
-    const getComments: (id: number, n: number) => void = async (id, n) => {
-      commentsDetail.length = 0
-      const { total, comments } = await request['httpGET']('GET_COMMENT_PLAYLIST', { 'id': id, 'limit': 20, 'offset': n })
-      pageCount.value = Math.ceil(total / 20)
-
-      for (let i = 0; i < comments.length; i++) {
-        commentsDetail[i] = {
-          username: comments[i].user.nickname,
-          useravatar: comments[i].user.avatarUrl,
-          usertype: comments[i].user.userType,
-          content: comments[i].content,
-          liked: comments[i].liked,
-          likedcount: comments[i].likedCount,
-          time: comments[i].time,
-          replied: {
-            username: comments[i].beReplied.length ? comments[i].beReplied[0].user.nickname : undefined,
-            content: comments[i].beReplied.length ? comments[i].beReplied[0].content : undefined
-          }
-        }
-      }
-    }
-
-    const pageNumber: (n: number) => void = n => {
-      getComments(Number(route.query.id), 20 * (n - 1))
-      window.scrollTo({ top: 0 })
-    }
-
-    route.query.id && (getPlayList(Number(route.query.id)), getComments(Number(route.query.id), 0))
+    typeof route.query.id === 'string' && getPlayList(route.query.id)
 
     return {
-      route,
       headerDetail,
-      listDetail,
-      commentsDetail,
-      pageCount,
-      pageNumber,
-      hotCommentsDetail
+      listDetail
     }
   }
 })

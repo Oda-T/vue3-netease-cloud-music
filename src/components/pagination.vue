@@ -32,6 +32,7 @@ export default defineComponent({
   props: {
     pageCount: Number
   },
+  emits: ['page-number'],
   setup(prop, { emit }) {
     const stack: Array<number | string> = reactive([])
 

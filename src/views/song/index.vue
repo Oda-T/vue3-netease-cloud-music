@@ -16,10 +16,8 @@
         </div>
       </div>
     </div>
-    <!-- 评论 -->
-    <comments :commentsDetail="commentsDetail" :hotCommentsDetail="hotCommentsDetail" />
-    <!-- 分页 -->
-    <pagination :pageCount="pageCount" @page-number="pageNumber" />
+    <!-- 评论、分页 -->
+    <comments-pagination :reuqestURL="'GET_COMMENT_MUSIC'" />
   </div>
 </template>
 <script lang="ts">
@@ -29,10 +27,8 @@ import mdui from 'mdui'
 
 import PlayListHeader from '../../components/playListHeader.vue'
 import PlayListDetail from '../../components/playListDetail.vue'
-import Comments from '../../components/comments.vue'
-import Pagination from '../../components/pagination.vue'
+import CommentsPagination from '../../components/commentsPagination.vue'
 
-import { commentsInt } from '../../type/comments.type'
 import { playListInt, headerDetailInt } from '../../type/playList.type'
 
 import request from '../../api/index'
@@ -42,18 +38,13 @@ export default defineComponent({
   components: {
     PlayListHeader,
     PlayListDetail,
-    Comments,
-    Pagination
+    CommentsPagination
   },
   setup() {
     const route = useRoute()
     const headerDetail = ref({} as headerDetailInt)
     const listDetail: Array<playListInt> = reactive([])
     const lyric = ref('')
-    const pageCount = ref(0)
-    const commentsDetail: Array<commentsInt> = reactive([])
-    const hotCommentsDetail: Array<commentsInt> = reactive([])
-    const id = ref('')
 
     const handleArtistName: (arr: Array<{ name: string }>) => string = arr => {
       if (arr.length === 1) {
@@ -83,58 +74,8 @@ export default defineComponent({
         artistId: songs[0].ar[0].id
       }
     }
-    const getComments: (id: string, n?: number) => void = async (id, n = 0) => {
-      commentsDetail.length = 0
 
-      const { total, comments, hotComments } = await request['httpGET']('GET_COMMENT_MUSIC', { 'id': id, 'offset': n })
-
-      // 热门评论
-      if (n === 0) {
-        pageCount.value = Math.ceil(total / 20)
-
-        for (let i = 0; i < hotComments.length; i++) {
-          hotCommentsDetail[i] = {
-            username: hotComments[i].user.nickname,
-            useravatar: hotComments[i].user.avatarUrl,
-            usertype: hotComments[i].user.userType,
-            content: hotComments[i].content,
-            liked: hotComments[i].liked,
-            likedcount: hotComments[i].likedCount,
-            time: hotComments[i].time,
-            replied: {
-              username: hotComments[i].beReplied.length ? hotComments[i].beReplied[0].user.nickname : undefined,
-              content: hotComments[i].beReplied.length ? hotComments[i].beReplied[0].content : undefined
-            }
-          }
-        }
-      } else {
-        hotCommentsDetail.length = 0
-      }
-
-      // 最新评论
-      for (let i = 0; i < comments.length; i++) {
-        commentsDetail[i] = {
-          username: comments[i].user.nickname,
-          useravatar: comments[i].user.avatarUrl,
-          usertype: comments[i].user.userType,
-          content: comments[i].content,
-          liked: comments[i].liked,
-          likedcount: comments[i].likedCount,
-          time: comments[i].time,
-          replied: {
-            username: comments[i].beReplied.length ? comments[i].beReplied[0].user.nickname : undefined,
-            content: comments[i].beReplied.length ? comments[i].beReplied[0].content : undefined
-          }
-        }
-      }
-    }
-
-    const pageNumber: (n: number) => void = n => {
-      getComments(id.value, 20 * (n - 1))
-      window.scrollTo({ top: 0 })
-    }
-
-    typeof route.query.id === 'string' && ((id.value = route.query.id), getSongDetail(id.value), getComments(id.value))
+    typeof route.query.id === 'string' && getSongDetail(route.query.id)
 
     onMounted(() => {
       mdui.mutation()
@@ -144,12 +85,7 @@ export default defineComponent({
       route,
       headerDetail,
       listDetail,
-      lyric,
-      commentsDetail,
-      hotCommentsDetail,
-      pageCount,
-      pageNumber,
-      id
+      lyric
     }
   }
 })

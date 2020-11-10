@@ -5,15 +5,16 @@
       <router-link :to="item.id">
         <img v-lazy="`${item.picUrl}?param=150y150&quality=70`" />
       </router-link>
-
       <transition name="fade">
-        <div v-show="btnShow" class="mdui-card-menu">
-          <button class="mdui-btn mdui-btn-icon mdui-text-color-white c-card-menu-vert-btn"><i class="mdui-icon material-icons">more_vert</i></button>
+        <div v-show="btnShow" class="mdui-card-menu" @click.stop="$emit('card-menu-click')">
+          <button class="mdui-btn mdui-btn-icon mdui-text-color-white c-card-menu-vert-btn">
+            <i class="mdui-icon material-icons">{{ menuIcon }}</i>
+          </button>
         </div>
       </transition>
 
       <transition name="fade">
-        <div v-show="btnShow" class="c-card-menu-play">
+        <div v-show="btnShow" class="c-card-menu-play" @click.stop="$emit('card-play-click')">
           <button class="mdui-btn mdui-btn-icon mdui-text-color-white c-card-menu-play-btn"><i class="mdui-icon material-icons">play_arrow</i></button>
         </div>
       </transition>
@@ -33,17 +34,22 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-
+import { useRoute } from 'vue-router'
 export default defineComponent({
   name: 'Card',
   props: {
     item: Object
   },
+  emits: ['card-menu-click', 'card-play-click'],
   setup() {
     const btnShow = ref(false)
+    const menuIcon = ref('')
+    const route = useRoute()
 
+    route.path === '/my' ? (menuIcon.value = 'explicit') : (menuIcon.value = 'favorite_border')
     return {
-      btnShow
+      btnShow,
+      menuIcon
     }
   }
 })

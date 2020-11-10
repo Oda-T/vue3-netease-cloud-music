@@ -4,14 +4,39 @@
       <div class="my-card-title">
         <h1 class="mdui-typo-title mdui-text-color-red-900">歌单</h1>
       </div>
-      <card v-for="item in cardList" :key="item.id" :item="item" />
+      <card v-for="item in cardList" :key="item.id" :item="item" @card-menu-click="handleEditDialog(item.id)" />
+    </div>
+
+    <div class="mdui-dialog">
+      <div class="mdui-dialog-title">登录</div>
+      <div class="mdui-dialog-content">
+        <form>
+          <div class="mdui-textfield mdui-textfield-floating-label">
+            <i class="mdui-icon material-icons">person</i>
+            <label class="mdui-textfield-label">Email/Phone</label>
+            <input class="mdui-textfield-input" type="text" required autocomplete="off" maxlength="60" />
+            <div class="mdui-textfield-helper">输入邮箱或者手机号</div>
+          </div>
+          <div class="mdui-textfield mdui-textfield-floating-label">
+            <i class="mdui-icon material-icons">lock</i>
+            <label class="mdui-textfield-label">Password</label>
+            <input class="mdui-textfield-input" type="password" pattern="^.*(?=.{8,})(?=.*[a-zA-Z])(?=.*[0-9]).*$" required autocomplete="off" maxlength="20" />
+            <div class="mdui-textfield-error">密码至少 8 位，且包含数字大小写字母</div>
+          </div>
+        </form>
+      </div>
+      <div class="mdui-dialog-actions">
+        <button class="mdui-btn mdui-ripple" mdui-dialog-close>取消</button>
+        <button class="mdui-btn mdui-ripple" mdui-dialog-confirm>登录</button>
+      </div>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, reactive } from 'vue'
+import { defineComponent, onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
+import mdui from 'mdui'
 
 import Card from '../../components/card.vue'
 import { cardInt } from '../../type/card.type'
@@ -29,11 +54,14 @@ export default defineComponent({
     const router = useRouter()
     const store = useStore()
     const cardList: Array<cardInt> = reactive([])
+    const showEidtDialog = ref(true)
+
     let userId = ''
 
-    // 如果未登录，重定向到首页
-    !token && router.replace({ name: 'discover' })
-    // 如果登录
+    const handleEditDialog: (id: string) => void = id => {
+      console.log(id.split('?id=')[1])
+    }
+
     const getUserPlayList: (n?: number) => void = async (n = 0) => {
       cardList.length = 0
 
@@ -59,10 +87,18 @@ export default defineComponent({
         getUserPlayList()
       }
     }
-    getUserId()
+
+    // 如果未登录，重定向到首页
+    token ? getUserId() : router.replace({ name: 'discover' })
+
+    onMounted(() => {
+      mdui.mutation()
+    })
 
     return {
-      cardList
+      cardList,
+      showEidtDialog,
+      handleEditDialog
     }
   }
 })

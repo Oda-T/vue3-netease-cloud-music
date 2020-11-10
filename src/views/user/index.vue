@@ -63,9 +63,6 @@ export default defineComponent({
     const router = useRouter()
     const store = useStore()
 
-    // 如果未登录，重定向到首页
-    !token && router.replace({ name: 'discover' })
-
     // 登录
     let userId = ''
     const userProfile = ref({})
@@ -138,6 +135,9 @@ export default defineComponent({
       await request['httpGET']('GET_LOGOUT')
       location.reload()
     }
+
+    // 如果未登录，重定向到首页
+    !token && router.replace({ name: 'discover' })
 
     watch(
       () => {

@@ -10,10 +10,8 @@
     <div v-else>
       <play-list-header :headerDetail="headerDetail" />
       <play-list-detail :listDetail="listDetail" />
-      <!-- 评论 -->
-      <comments :commentsDetail="commentsDetail" :hotCommentsDetail="hotCommentsDetail" />
-      <!-- 分页 -->
-      <pagination :pageCount="pageCount" @page-number="pageNumber" />
+      <!-- 评论、分页 -->
+      <comments-pagination :reuqestURL="'GET_COMMENT_PLAYLIST'" />
     </div>
   </div>
 </template>
@@ -25,11 +23,10 @@ import { useRoute } from 'vue-router'
 import Recommend from '../../components/recommend.vue'
 import PlayListHeader from '../../components/playListHeader.vue'
 import PlayListDetail from '../../components/playListDetail.vue'
-import Comments from '../../components/comments.vue'
-import Pagination from '../../components/pagination.vue'
+
+import CommentsPagination from '../../components/commentsPagination.vue'
 
 import { topListInt, cardListInt } from '../../type/recommend.type'
-import { commentsInt } from '../../type/comments.type'
 import { playListInt, headerDetailInt } from '../../type/playList.type'
 
 import request from '../../api/index'
@@ -38,10 +35,9 @@ export default defineComponent({
   name: 'discoverTopList',
   components: {
     Recommend,
-    Comments,
-    Pagination,
     PlayListHeader,
-    PlayListDetail
+    PlayListDetail,
+    CommentsPagination
   },
 
   setup() {
@@ -56,16 +52,11 @@ export default defineComponent({
     const globalCardList: Array<cardListInt> = reactive([])
     const globalActiveName = ref('云音乐说唱榜')
 
-    const pageCount = ref(0)
-
-    const commentsDetail: Array<commentsInt> = reactive([])
-    const hotCommentsDetail: Array<commentsInt> = reactive([])
-
     const headerDetail = ref({} as headerDetailInt)
 
     const listDetail: Array<playListInt> = reactive([])
 
-    const topListId = ref(0)
+    const topListId = ref('')
 
     const getPlayList: (n: number, arr: cardListInt[]) => void = async (n, arr) => {
       const { playlist } = await request['httpGET']('GET_PLAYLIST_DETAIL', { 'id': n })
@@ -128,30 +119,6 @@ export default defineComponent({
       }
     }
 
-    const getComments: (id: string, n: number) => void = async (id, n) => {
-      commentsDetail.length = 0
-
-      const { total, comments } = await request['httpGET']('GET_COMMENT_PLAYLIST', { 'id': id, 'limit': 20, 'offset': n })
-
-      pageCount.value = Math.ceil(total / 20)
-
-      for (let i = 0; i < comments.length; i++) {
-        commentsDetail[i] = {
-          username: comments[i].user.nickname,
-          useravatar: comments[i].user.avatarUrl,
-          usertype: comments[i].user.userType,
-          content: comments[i].content,
-          liked: comments[i].liked,
-          likedcount: comments[i].likedCount,
-          time: comments[i].time,
-          replied: {
-            username: comments[i].beReplied.length ? comments[i].beReplied[0].user.nickname : undefined,
-            content: comments[i].beReplied.length ? comments[i].beReplied[0].content : undefined
-          }
-        }
-      }
-    }
-
     const getTopListDetail: (id: string) => void = async id => {
       listDetail.length = 0
 
@@ -181,17 +148,13 @@ export default defineComponent({
       }
     }
 
-    const pageNumber: (n: number) => void = n => {
-      typeof route.query.id === 'string' && getComments(route.query.id, 20 * (n - 1))
-    }
-
     getTopListFull()
 
     // 观测route
     watchEffect(() => {
       route.path === '/discover/toplist' && typeof route.query.id === 'string'
-        ? ((topListId.value = Number(route.query.id)), getComments(route.query.id, 0), getTopListDetail(route.query.id), window.scrollTo({ top: 0 }))
-        : ((topListId.value = 0), window.scrollTo({ top: 0 }))
+        ? ((topListId.value = route.query.id), getTopListDetail(route.query.id), window.scrollTo({ top: 0 }))
+        : ((topListId.value = ''), window.scrollTo({ top: 0 }))
     })
 
     return {
@@ -204,12 +167,8 @@ export default defineComponent({
       getIdCallBackSpecial,
       getIdCallBackGlobal,
       topListId,
-      commentsDetail,
-      pageCount,
-      pageNumber,
       listDetail,
-      headerDetail,
-      hotCommentsDetail
+      headerDetail
     }
   }
 })

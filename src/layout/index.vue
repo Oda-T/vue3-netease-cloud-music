@@ -53,20 +53,21 @@
     <div class="mdui-dialog" id="loginDialog" ref="loginDialog">
       <div class="mdui-dialog-title">登录</div>
       <div class="mdui-dialog-content">
-        <div class="mdui-textfield mdui-textfield-floating-label">
-          <i class="mdui-icon material-icons">person</i>
-          <label class="mdui-textfield-label">Email/Phone</label>
-          <input class="mdui-textfield-input" type="text" required autocomplete="off" maxlength="60" v-model="loginEmailPhone" />
-          <div class="mdui-textfield-helper">输入邮箱或者手机号</div>
-        </div>
-        <div class="mdui-textfield mdui-textfield-floating-label">
-          <i class="mdui-icon material-icons">lock</i>
-          <label class="mdui-textfield-label">Password</label>
-          <input class="mdui-textfield-input" type="password" pattern="^.*(?=.{8,})(?=.*[a-zA-Z])(?=.*[0-9]).*$" required autocomplete="off" maxlength="20" v-model="loginPassword" />
-          <div class="mdui-textfield-error">密码至少 8 位，且包含数字大小写字母</div>
-        </div>
+        <form>
+          <div class="mdui-textfield mdui-textfield-floating-label">
+            <i class="mdui-icon material-icons">person</i>
+            <label class="mdui-textfield-label">Email/Phone</label>
+            <input class="mdui-textfield-input" type="text" required autocomplete="off" maxlength="60" v-model="loginEmailPhone" />
+            <div class="mdui-textfield-helper">输入邮箱或者手机号</div>
+          </div>
+          <div class="mdui-textfield mdui-textfield-floating-label">
+            <i class="mdui-icon material-icons">lock</i>
+            <label class="mdui-textfield-label">Password</label>
+            <input class="mdui-textfield-input" type="password" pattern="^.*(?=.{8,})(?=.*[a-zA-Z])(?=.*[0-9]).*$" required autocomplete="off" maxlength="20" v-model="loginPassword" />
+            <div class="mdui-textfield-error">密码至少 8 位，且包含数字大小写字母</div>
+          </div>
+        </form>
       </div>
-
       <div class="mdui-dialog-actions">
         <button class="mdui-btn mdui-ripple" mdui-dialog-close>取消</button>
         <button class="mdui-btn mdui-ripple" :disabled="!canLogin" mdui-dialog-confirm>登录</button>

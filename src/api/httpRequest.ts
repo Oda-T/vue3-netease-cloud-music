@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios'
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
 
 import { returnDataType } from '../type/http-request.type'
 import mdui from 'mdui'
@@ -6,7 +6,7 @@ import mdui from 'mdui'
 class HttpRequest {
   private axiosIns: AxiosInstance = axios.create({
     baseURL: 'http://localhost:3000',
-    timeout: 5000,
+    timeout: 10000,
     withCredentials: true
   })
 
@@ -15,19 +15,13 @@ class HttpRequest {
     this.axiosIns.interceptors.request.use((config: AxiosRequestConfig) => {
       return config
     })
-    this.axiosIns.interceptors.response.use(
-      ({ data }: AxiosResponse) => {
+    this.axiosIns.interceptors.response.use(({ data }: AxiosResponse) => {
+      try {
         return Promise.resolve(data)
-      },
-      (err: AxiosError) => {
-        mdui.snackbar({
-          message: err.message,
-          position: 'right-bottom',
-          buttonText: '返回'
-        })
-        return Promise.reject(err)
+      } catch (error) {
+        return Promise.reject(error)
       }
-    )
+    })
   }
   // get
   public get = async <T>(url: string, data: T, callback: Function): Promise<void> => {
@@ -41,7 +35,7 @@ class HttpRequest {
     const response: returnDataType = await this.axiosIns.post(url, data)
     this.codeType(response, callback)
   }
-  // 200 or another
+  // 200 or others
   private codeType = (response: returnDataType, callback: Function): void => {
     const code = response.code
 
@@ -49,12 +43,23 @@ class HttpRequest {
       case 200:
         callback(response)
         break
-      default:
+      case 301:
         mdui.snackbar({
-          message: `${code}`,
+          message: `错误代码：${code}需要登陆`,
           position: 'right-bottom'
         })
-        console.error(response)
+        break
+      case 502:
+        mdui.snackbar({
+          message: `错误代码：${code}需要登陆`,
+          position: 'right-bottom'
+        })
+        break
+      default:
+        mdui.snackbar({
+          message: `错误代码：${code}`,
+          position: 'right-bottom'
+        })
     }
   }
 }

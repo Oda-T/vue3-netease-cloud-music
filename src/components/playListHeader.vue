@@ -24,7 +24,7 @@
       <!-- 歌手描述 -->
       <p v-if="headerDetail.desc" class="c-playlist-header-desc mdui-typo">{{ headerDetail.desc }}</p>
       <!-- 播放按钮 -->
-      <button v-else class="c-playlist-header-count mdui-btn mdui-color-red-900 mdui-btn-raised mdui-ripple" @click.stop="handlePlay">
+      <button v-else class="c-playlist-header-count mdui-btn mdui-color-red-900 mdui-btn-raised mdui-ripple" @click.stop="$emit('handle-play')">
         <i class="mdui-icon mdui-icon-left material-icons">play_arrow</i>播放
       </button>
       <!-- 其他按钮 -->
@@ -57,14 +57,11 @@ export default defineComponent({
   props: {
     headerDetail: Object
   },
-  setup(prop, { emit }) {
+  emits: ['handle-play'],
+  setup() {
     const handleTime: (d: number) => string = d => {
       const _d = new Date(d)
       return `${_d.getFullYear()}年${_d.getMonth() + 1}月${_d.getDate()}日`
-    }
-
-    const handlePlay: () => void = () => {
-      emit('handle-play')
     }
 
     // 多个作者用/分割
@@ -85,7 +82,6 @@ export default defineComponent({
 
     return {
       handleTime,
-      handlePlay,
       handleArtistName
     }
   }

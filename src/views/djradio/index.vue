@@ -28,15 +28,14 @@ export default defineComponent({
 
     // 获得歌单
     const getPlayList: (n: string) => void = async n => {
-      const { djRadio } = await request['httpGET']('GET_DJ_DETAIL', { 'rid': n })
-
+      const { data } = await request['httpGET']('GET_DJ_DETAIL', { 'rid': n })
       headerDetail.value = {
-        name: djRadio.name,
-        coverImgUrl: djRadio.picUrl,
-        description: djRadio.desc,
-        shareCount: djRadio.shareCount,
-        subscribedCount: djRadio.subCount,
-        updateTime: djRadio.lastProgramCreateTime
+        name: data.name,
+        coverImgUrl: data.picUrl,
+        description: data.desc,
+        shareCount: data.shareCount,
+        subscribedCount: data.subCount,
+        updateTime: data.lastProgramCreateTime
       }
 
       const { programs } = await request['httpGET']('GET_DJ_PROGRAM', { 'rid': n, 'offset': 0 })
