@@ -23,6 +23,8 @@ import * as VIDEO_INDEX from './video/index'
 
 import * as USER_INDEX from './user/index'
 
+import * as MY_INDEX from './my/index'
+
 type REQUEST_NAME = {
   [key: string]: string
 }
@@ -42,7 +44,8 @@ const REQUEST_NAME: REQUEST_NAME = {
   ...DJ_INDEX,
   ...MV_INDEX,
   ...VIDEO_INDEX,
-  ...USER_INDEX
+  ...USER_INDEX,
+  ...MY_INDEX
 }
 
 export default REQUEST_NAME

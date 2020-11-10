@@ -49,6 +49,12 @@ class HttpRequest {
           position: 'right-bottom'
         })
         break
+      case 401:
+        mdui.snackbar({
+          message: `错误代码：${code}无权限`,
+          position: 'right-bottom'
+        })
+        break
       case 502:
         mdui.snackbar({
           message: `错误代码：${code}需要登陆`,
@@ -56,6 +62,7 @@ class HttpRequest {
         })
         break
       default:
+        console.log(response)
         mdui.snackbar({
           message: `错误代码：${code}`,
           position: 'right-bottom'

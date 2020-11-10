@@ -3,4 +3,5 @@ export type cardInt = {
   name: string
   artist: string
   picUrl: string
+  description?: string
 }

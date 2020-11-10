@@ -6,10 +6,12 @@
         <img v-lazy="`${item.picUrl}?param=150y150&quality=70`" />
       </router-link>
       <transition name="fade">
-        <div v-show="btnShow" class="mdui-card-menu" @click.stop="$emit('card-menu-click')">
-          <button class="mdui-btn mdui-btn-icon mdui-text-color-white c-card-menu-vert-btn">
-            <i class="mdui-icon material-icons">{{ menuIcon }}</i>
-          </button>
+        <div v-show="btnShow" class="mdui-card-menu">
+          <slot>
+            <button class="mdui-btn mdui-btn-icon mdui-text-color-white">
+              <i class="mdui-icon material-icons">favorite_border</i>
+            </button>
+          </slot>
         </div>
       </transition>
 
@@ -34,22 +36,18 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import { useRoute } from 'vue-router'
+
 export default defineComponent({
   name: 'Card',
   props: {
     item: Object
   },
-  emits: ['card-menu-click', 'card-play-click'],
+  emits: ['card-play-click'],
   setup() {
     const btnShow = ref(false)
-    const menuIcon = ref('')
-    const route = useRoute()
 
-    route.path === '/my' ? (menuIcon.value = 'explicit') : (menuIcon.value = 'favorite_border')
     return {
-      btnShow,
-      menuIcon
+      btnShow
     }
   }
 })
