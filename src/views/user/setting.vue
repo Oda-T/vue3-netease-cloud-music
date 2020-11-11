@@ -2,8 +2,7 @@
   <div id="userSetting">
     <div class="mdui-tab" mdui-tab>
       <a href="#user-setting-tab1" class="mdui-ripple">基本设置</a>
-      <a href="#user-setting-tab2" class="mdui-ripple">绑定设置</a>
-      <a href="#user-setting-tab3" class="mdui-ripple">隐私设置</a>
+      <a href="#user-setting-tab2" class="mdui-ripple">修改密码</a>
     </div>
     <div id="user-setting-tab1" class="mdui-p-a-2">
       <div class="user-setting-tab-container">
@@ -63,19 +62,48 @@
           <input class="mdui-textfield-input" type="text" disabled maxlength="30" v-model="userSettingCity" />
         </div>
         <!-- 保存 -->
-        <button class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-red-900" @click="save">保存</button>
+        <button class="mdui-btn mdui-btn-raised mdui-ripple mdui-m-a-5 mdui-color-red-900" @click="save">保存</button>
       </div>
     </div>
-    <div id="user-setting-tab2" class="mdui-p-a-2">shopping content</div>
-    <div id="user-setting-tab3" class="mdui-p-a-2">images content</div>
+    <div id="user-setting-tab2" class="mdui-p-a-2">
+      <div class="user-setting-tab-container">
+        <!-- 修改密码 -->
+        <form>
+          <div class="mdui-textfield">
+            <i class="mdui-icon material-icons">account_circle</i>
+            <label class="mdui-textfield-label">输入手机号</label>
+            <input class="mdui-textfield-input" type="text" pattern="^1[0-9]{10}$" required autocomplete="off" maxlength="11" v-model="userSettingPhone" />
+            <div class="mdui-textfield-error">手机号格式有误</div>
+          </div>
+          <div class="mdui-textfield">
+            <i class="mdui-icon material-icons">account_circle</i>
+            <label class="mdui-textfield-label">修改密码</label>
+            <input class="mdui-textfield-input" type="password" pattern="^.*(?=.{8,})(?=.*[a-zA-Z])(?=.*[0-9]).*$" required autocomplete="off" maxlength="20" v-model="userSettingPassword" />
+            <div class="mdui-textfield-error">密码至少 8 位，且包含数字大小写字母</div>
+          </div>
+          <div class="mdui-textfield">
+            <i class="mdui-icon material-icons">account_circle</i>
+            <label class="mdui-textfield-label">输入验证码</label>
+            <input class="mdui-textfield-input" type="text" maxlength="8" required autocomplete="off" v-model="userSettingCaptcha" />
+            <div class="mdui-textfield-error">验证码不能为空</div>
+          </div>
+        </form>
+        <!-- 发送验证码 -->
+        <button class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-red-900 mdui-m-a-5" :disabled="!canSendCaptcha" @click="sendCaptcha">发送验证码</button>
+        <!-- 提交修改 -->
+        <button class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-red-900" :disabled="!canSendPassword" @click="sendNewPassword">提交修改</button>
+      </div>
+    </div>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue'
+import { defineComponent, onMounted, ref, watch } from 'vue'
 import { useStore } from 'vuex'
 import mdui from 'mdui'
 import request from '../../api/index'
 import { handleTime, handleTimeStamp } from '../../utils/time'
+
+import { passwordValidate, phoneValidate } from '../../validator/layout'
 
 export default defineComponent({
   name: 'UserSetting',
@@ -88,6 +116,12 @@ export default defineComponent({
     const userSettingProvince = ref('')
     const userSettingCity = ref('')
     const userSettingSex = ref(-1)
+    const userSettingPhone = ref('')
+    const userSettingPassword = ref('')
+    const userSettingCaptcha = ref('')
+
+    const canSendCaptcha = ref(false)
+    const canSendPassword = ref(false)
 
     const handleRouteQuery: () => void = async () => {
       const data = await request['httpGET']('GET_USER_DETAIL', { 'uid': userId, 'timestamp': Date.now() })
@@ -122,8 +156,30 @@ export default defineComponent({
       })
       location.reload()
     }
+    const sendCaptcha: () => void = async () => {
+      await request['httpGET']('GET_CAPTCHA_SENT', { 'phone': userSettingPhone.value })
+    }
+
+    const sendNewPassword: () => void = async () => {
+      await request['httpPOST']('POST_REGISTER_CELLPHONE', {
+        'phone': userSettingPhone.value,
+        'password': userSettingPassword.value,
+        'captcha': userSettingCaptcha.value,
+        'timestamp': Date.now()
+      })
+    }
 
     getUserId()
+
+    watch(
+      [userSettingPhone, userSettingPassword, userSettingCaptcha],
+      ([phone, password, captcha]) => {
+        canSendCaptcha.value = phoneValidate.test(phone)
+
+        captcha && (canSendPassword.value = phoneValidate.test(phone) && passwordValidate.test(password))
+      },
+      { immediate: true }
+    )
 
     onMounted(() => {
       mdui.mutation()
@@ -135,7 +191,14 @@ export default defineComponent({
       userSettingBirthday,
       userSettingProvince,
       userSettingCity,
-      save
+      userSettingPhone,
+      userSettingPassword,
+      userSettingCaptcha,
+      save,
+      sendCaptcha,
+      sendNewPassword,
+      canSendCaptcha,
+      canSendPassword
     }
   }
 })

@@ -230,15 +230,6 @@ const routes: Array<RouteRecordRaw> = [
         }
       },
       {
-        path: 'user/level',
-        component: () => import(/* webpackChunkName: "userLevel" */ '@/views/user/level.vue'),
-        name: 'userLevel',
-        meta: {
-          title: '用户中心',
-          subtitle: '用户等级'
-        }
-      },
-      {
         path: '404',
         component: () => import(/* webpackChunkName: "404" */ '@/views/404/index.vue'),
         name: '404',
