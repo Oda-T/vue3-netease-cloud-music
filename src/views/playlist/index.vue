@@ -33,7 +33,7 @@ export default defineComponent({
 
     // 获得歌单
     const getPlayList: (n: string) => void = async n => {
-      const { playlist } = await request['httpGET']('GET_PLAYLIST_DETAIL', { 'id': n })
+      const { playlist } = await request['httpGET']('GET_PLAYLIST_DETAIL', { 'id': n, 'timestamp': Date.now() })
 
       const tracks = playlist.tracks
 

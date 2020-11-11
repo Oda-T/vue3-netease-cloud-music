@@ -36,6 +36,7 @@ import { topListInt, cardListInt } from '../../type/recommend.type'
 import { panelInt } from '../../type/panel'
 
 import request from '../../api/index'
+import { handleTime } from '../../utils/time'
 
 export default defineComponent({
   name: 'discoverDjradio',
@@ -51,11 +52,6 @@ export default defineComponent({
     const djPanelTitle = ref('热门电台Top15')
     const activeName = ref('')
     const { djListFull } = toRefs(store.state)
-
-    const handleTime: (d: number) => string = d => {
-      const _d = new Date(d)
-      return `${_d.getFullYear()}年${_d.getMonth() + 1}月${_d.getDate()}日`
-    }
 
     const getTopList: () => void = async () => {
       for (let i = 0; i < djListFull.value.length; i++) {

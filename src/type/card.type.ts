@@ -4,4 +4,5 @@ export type cardInt = {
   artist: string
   picUrl: string
   description?: string
+  tags?: Array<string>
 }

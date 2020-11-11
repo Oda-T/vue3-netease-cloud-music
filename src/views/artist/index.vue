@@ -3,7 +3,7 @@
     <!-- 概览 -->
     <play-list-header :headerDetail="headerDetail" />
     <!-- 作品 -->
-    <div class="c-artist-body">
+    <div class="artist-body">
       <div class="mdui-tab mdui-tab-full-width" mdui-tab>
         <a href="#artist-tab1" class="mdui-ripple mdui-tab-active">热门作品</a>
         <a href="#artist-tab2" class="mdui-ripple" @click="getArtistAlbum(id)">热门专辑</a>
@@ -166,31 +166,7 @@ export default defineComponent({
 })
 </script>
 <style lang="less" scoped>
-.c-artist-header {
-  position: relative;
-  width: 1400px;
-  margin: 0 auto;
-  height: 360px;
-  overflow: hidden;
-  .c-artist-header-img {
-    position: absolute;
-    left: 0px;
-    top: 50px;
-    width: 264px;
-    height: 264px;
-  }
-  .c-artist-header-text {
-    position: absolute;
-    left: 310px;
-    top: 25px;
-    .c-artist-header-sub-text {
-      overflow-y: scroll;
-      width: 1090px;
-      height: 190px;
-    }
-  }
-}
-.c-artist-body {
+.artist-body {
   width: 1400px;
   margin: 0 auto;
   overflow: hidden;

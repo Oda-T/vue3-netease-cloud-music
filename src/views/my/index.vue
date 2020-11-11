@@ -5,9 +5,7 @@
         <h1 class="mdui-typo-title mdui-text-color-red-900">歌单</h1>
       </div>
       <card v-for="item in cardList" :key="item.id" :item="item">
-        <button class="mdui-btn mdui-btn-icon mdui-text-color-white" mdui-dialog="{target: '#editDialog'}" @click="handleEditDialog(item)">
-          <i class="mdui-icon material-icons">explicit</i>
-        </button>
+        <i class="mdui-icon material-icons" mdui-dialog="{target: '#editDialog'}" @click="handleEditDialog(item)">rate_review</i>
       </card>
     </div>
     <!-- 编辑对话框 -->
@@ -15,17 +13,21 @@
       <div class="mdui-dialog-title">修改歌单信息</div>
       <div class="mdui-dialog-content">
         <div class="mdui-textfield mdui-textfield-floating-label">
-          <i class="mdui-icon material-icons">person</i>
-          <label class="mdui-textfield-label">歌单名</label>
-          <input class="mdui-textfield-input" type="text" required autocomplete="off" maxlength="20" v-model="editName" />
+          <i class="mdui-icon material-icons">hearing</i>
+          <input class="mdui-textfield-input" type="text" required :disabled="disabled" autocomplete="off" maxlength="30" v-model="editName" />
           <div class="mdui-textfield-error">歌单名不能为空</div>
-          <div class="mdui-textfield-helper">输入歌单名</div>
+          <div class="mdui-textfield-helper">输入歌单名（用户"喜欢的音乐"歌单不可修改）</div>
         </div>
+
         <div class="mdui-textfield mdui-textfield-floating-label">
-          <i class="mdui-icon material-icons">lock</i>
-          <label class="mdui-textfield-label">描述</label>
+          <i class="mdui-icon material-icons">font_download</i>
           <input class="mdui-textfield-input" type="text" autocomplete="off" maxlength="60" v-model="editDesc" />
           <div class="mdui-textfield-helper">输入描述</div>
+        </div>
+        <div class="mdui-textfield mdui-textfield-floating-label">
+          <i class="mdui-icon material-icons">style</i>
+          <input class="mdui-textfield-input" mdui-dialog-close type="text" autocomplete="off" v-model="editTags" mdui-dialog="{target: '#tagsDialog', modal:'true'}" @click="handleEditTagsPopup" />
+          <div class="mdui-textfield-helper">选择标签，最多3个</div>
         </div>
       </div>
       <div class="mdui-dialog-actions">
@@ -33,10 +35,21 @@
         <button class="mdui-btn mdui-ripple" :disabled="!editName" mdui-dialog-confirm>确认修改</button>
       </div>
     </div>
+    <!-- tags对话框 -->
+    <div class="my-tags-dialog mdui-dialog" id="tagsDialog">
+      <!-- 纸片 -->
+      <div v-for="item in playListFull" :key="item.id" class="my-chip-item mdui-chip" :class="{ 'mdui-color-red-900': editTags.includes(item.name) }" @click="handleEditTags(item.name)">
+        <span class="mdui-chip-title">{{ item.name }}</span>
+      </div>
+      <!-- btn -->
+      <div class="mdui-dialog-actions">
+        <button class="mdui-btn mdui-ripple" mdui-dialog="{target: '#editDialog'}" mdui-dialog-confirm>确认</button>
+      </div>
+    </div>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, onMounted, reactive, ref } from 'vue'
+import { defineComponent, onMounted, reactive, ref, toRefs } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import mdui from 'mdui'
@@ -61,29 +74,39 @@ export default defineComponent({
 
     const editName = ref('')
     const editDesc = ref('')
+    const editTags = ref([] as Array<string>)
+    const disabled = ref(false)
+
+    const { playListFull } = toRefs(store.state)
 
     let playlistId = ''
-
+    // ***喜欢的音乐，没有修改权限
+    let playlistIdFav = ''
     let userId = ''
 
-    const handleEditDialog: (item: cardInt) => void = item => {
-      playlistId = item.id.split('?id=')[1]
-      editName.value = item.name
-      item.description && (editDesc.value = item.description)
+    const handleEditDialog: (item: cardInt) => void = async item => {
+      const { id, name, description, tags } = item
+      playlistId = id.split('?id=')[1]
+      playlistId === playlistIdFav ? (disabled.value = true) : (disabled.value = false)
+      editName.value = name
+      description && (editDesc.value = description)
+      editTags.value = []
+      tags && (editTags.value = editTags.value.concat(tags))
     }
 
     const getUserPlayList: (n?: number) => void = async (n = 0) => {
       cardList.length = 0
+      const { playlist } = await request['httpGET']('GET_USER_PLAYLIST', { 'uid': userId, 'limit': 30, 'offset': n, 'timestamp': Date.now() })
 
-      const { playlist } = await request['httpGET']('GET_USER_PLAYLIST', { 'uid': userId, 'limit': 30, 'offset': n })
-
+      playlistIdFav = playlist[0].id.toString()
       for (let i = 0; i < playlist.length; i++) {
         cardList[i] = {
           id: '/playlist?id=' + playlist[i].id,
           name: playlist[i].name,
           artist: 'id=' + playlist[i].id,
           picUrl: playlist[i].coverImgUrl,
-          description: playlist[i].description
+          description: playlist[i].description,
+          tags: playlist[i].tags
         }
       }
     }
@@ -98,6 +121,24 @@ export default defineComponent({
         getUserPlayList()
       }
     }
+    // tags弹框
+    const handleEditTagsPopup: () => void = async () => {
+      // 从sessionStorage读取getPlaylistFull
+      if (sessionStorage.playListFull) {
+        playListFull.value = JSON.parse(sessionStorage.playListFull)
+      } else {
+        await store.dispatch('getPlaylistFull')
+      }
+    }
+
+    // tags 选中
+    const handleEditTags: (s: string) => void = s => {
+      editTags.value.includes(s) ? editTags.value.splice(editTags.value.indexOf(s), 1) : editTags.value.push(s)
+
+      if (editTags.value.length > 3) {
+        editTags.value.shift()
+      }
+    }
 
     // 如果未登录，重定向到首页
     token ? getUserId() : router.replace({ name: 'discover' })
@@ -107,20 +148,26 @@ export default defineComponent({
 
       const el = editDialog.value as HTMLElement
       // 点击修改歌单信息 mdui
-      // 有可能显示无权限，且中间件缓存会导致修改后的页面更新不及时
       el.addEventListener('confirm.mdui.dialog', async () => {
-        await request['httpGET']('GET_PLAYLIST_DESC_UPDATE', { 'id': playlistId, 'desc': editDesc.value })
+        playlistId !== playlistIdFav && (await request['httpGET']('GET_PLAYLIST_NAME_UPDATE', { 'id': playlistId, 'name': editName.value, 'timestamp': Date.now() }))
+        await request['httpGET']('GET_PLAYLIST_DESC_UPDATE', { 'id': playlistId, 'desc': editDesc.value, 'timestamp': Date.now() })
+        await request['httpGET']('GET_PLAYLIST_TAGS_UPDATE', { 'id': playlistId, 'tags': editTags.value.join(';'), 'timestamp': Date.now() })
 
-        await request['httpGET']('GET_PLAYLIST_NAME_UPDATE', { 'id': playlistId, 'name': editName.value })
+        getUserPlayList()
       })
     })
 
     return {
+      disabled,
       cardList,
       handleEditDialog,
+      handleEditTags,
+      handleEditTagsPopup,
       editDialog,
       editName,
-      editDesc
+      editDesc,
+      editTags,
+      playListFull
     }
   }
 })
@@ -131,6 +178,12 @@ export default defineComponent({
   margin: 50px auto;
   .my-card-title {
     margin-left: 20px;
+  }
+}
+.my-tags-dialog {
+  padding: 0px 10px 0 15px;
+  .my-chip-item {
+    margin: 15px 10px 0px 10px;
   }
 }
 </style>

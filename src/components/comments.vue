@@ -65,6 +65,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { handleTime } from '../utils/time'
 
 export default defineComponent({
   name: 'Comments',
@@ -73,10 +74,6 @@ export default defineComponent({
     hotCommentsDetail: Object
   },
   setup() {
-    const handleTime: (d: number) => string = d => {
-      const _d = new Date(d)
-      return `${_d.getFullYear()}年${_d.getMonth() + 1}月${_d.getDate()}日`
-    }
     return {
       handleTime
     }

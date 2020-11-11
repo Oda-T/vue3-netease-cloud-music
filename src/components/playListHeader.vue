@@ -51,6 +51,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { handleTime } from '../utils/time'
 
 export default defineComponent({
   name: 'playListHeader',
@@ -59,11 +60,6 @@ export default defineComponent({
   },
   emits: ['handle-play'],
   setup() {
-    const handleTime: (d: number) => string = d => {
-      const _d = new Date(d)
-      return `${_d.getFullYear()}年${_d.getMonth() + 1}月${_d.getDate()}日`
-    }
-
     // 多个作者用/分割
     const handleArtistName: (arr: string | Array<{ name: string }>) => string = arr => {
       if (typeof arr === 'string') {
@@ -81,8 +77,8 @@ export default defineComponent({
     }
 
     return {
-      handleTime,
-      handleArtistName
+      handleArtistName,
+      handleTime
     }
   }
 })

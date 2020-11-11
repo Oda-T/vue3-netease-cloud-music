@@ -213,10 +213,29 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: 'user',
-        component: () => import(/* webpackChunkName: "user" */ '@/views/user/index.vue'),
-        name: 'user',
+        component: () => import(/* webpackChunkName: "userHome" */ '@/views/user/home.vue'),
+        name: 'userHome',
         meta: {
-          title: '用户中心'
+          title: '用户中心',
+          subtitle: '基本信息'
+        }
+      },
+      {
+        path: 'user/setting',
+        component: () => import(/* webpackChunkName: "userSetting" */ '@/views/user/setting.vue'),
+        name: 'userSetting',
+        meta: {
+          title: '用户中心',
+          subtitle: '用户设置'
+        }
+      },
+      {
+        path: 'user/level',
+        component: () => import(/* webpackChunkName: "userLevel" */ '@/views/user/level.vue'),
+        name: 'userLevel',
+        meta: {
+          title: '用户中心',
+          subtitle: '用户等级'
         }
       },
       {

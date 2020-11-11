@@ -1,5 +1,5 @@
 <template>
-  <div v-if="token && avatarUrl" id="user">
+  <div v-if="token && avatarUrl" id="userHome">
     <div class="user-card mdui-card">
       <!-- 卡片头部，包含头像、标题、副标题 -->
       <div class="mdui-card-header">
@@ -7,7 +7,6 @@
         <div class="mdui-card-header-title">{{ userProfile['昵称'] }}</div>
         <div class="mdui-card-header-subtitle">Lv:{{ userProfile['等级'] }}</div>
       </div>
-
       <!-- 卡片的媒体内容，可以包含图片、视频等媒体内容，以及标题、副标题 -->
       <div class="mdui-card-media">
         <img :src="backgroundUrl" />
@@ -29,10 +28,12 @@
       <!-- 卡片的按钮 -->
       <div v-if="!route.query.id" class="mdui-card-actions">
         <button class="mdui-btn mdui-ripple" @click="logout">登出</button>
-        <button class="mdui-btn mdui-ripple">编辑</button>
+        <button class="mdui-btn mdui-ripple" @click="refresh">刷新登录状态</button>
+        <router-link to="/user/setting">
+          <button class="mdui-btn mdui-ripple">编辑个人信息</button>
+        </router-link>
       </div>
     </div>
-
     <div class="user-card-container">
       <div class="user-card-title">
         <h1 class="mdui-typo-title mdui-text-color-red-900">歌单</h1>
@@ -51,9 +52,10 @@ import { cardInt } from '../../type/card.type'
 
 import request from '../../api/index'
 import { getToken } from '../../utils/auth'
+import { handleTime } from '../../utils/time'
 
 export default defineComponent({
-  name: 'User',
+  name: 'UserHome',
   components: {
     Card
   },
@@ -71,11 +73,6 @@ export default defineComponent({
     const signature = ref('')
     const cardList: Array<cardInt> = reactive([])
 
-    const handleTime: (d: number) => string = d => {
-      const _d = new Date(d)
-      return `${_d.getFullYear()}年${_d.getMonth() + 1}月${_d.getDate()}日`
-    }
-
     const getUserPlayList: (n?: number) => void = async (n = 0) => {
       cardList.length = 0
 
@@ -92,7 +89,7 @@ export default defineComponent({
     }
 
     const handleRouteQuery: () => void = async () => {
-      const data = await request['httpGET']('GET_USER_DETAIL', { 'uid': userId })
+      const data = await request['httpGET']('GET_USER_DETAIL', { 'uid': userId, 'timestamp': Date.now() })
 
       avatarUrl.value = data.profile.avatarUrl + '?param=50y50'
       backgroundUrl.value = data.profile.backgroundUrl + '?param=950y350'
@@ -102,6 +99,7 @@ export default defineComponent({
         '昵称': data.profile.nickname,
         '等级': data.level,
         '注册时间': handleTime(data.createTime),
+        '省份': data.profile.province,
         '城市': data.profile.city,
         '生日': handleTime(data.profile.birthday),
         '听过的歌': data.listenSongs,
@@ -136,6 +134,11 @@ export default defineComponent({
       location.reload()
     }
 
+    const refresh: () => void = async () => {
+      await request['httpGET']('GET_LOGIN_REFRESH')
+      location.reload()
+    }
+
     // 如果未登录，重定向到首页
     !token && router.replace({ name: 'discover' })
 
@@ -157,7 +160,8 @@ export default defineComponent({
       signature,
       route,
       logout,
-      cardList
+      cardList,
+      refresh
     }
   }
 })

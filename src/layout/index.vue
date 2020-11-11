@@ -57,7 +57,7 @@
           <div class="mdui-textfield mdui-textfield-floating-label">
             <i class="mdui-icon material-icons">person</i>
             <label class="mdui-textfield-label">Email/Phone</label>
-            <input class="mdui-textfield-input" type="text" required autocomplete="off" maxlength="60" v-model="loginEmailPhone" />
+            <input class="mdui-textfield-input" type="text" required autocomplete="off" maxlength="20" v-model="loginEmailPhone" />
             <div class="mdui-textfield-helper">输入邮箱或者手机号</div>
           </div>
           <div class="mdui-textfield mdui-textfield-floating-label">

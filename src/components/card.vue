@@ -7,11 +7,11 @@
       </router-link>
       <transition name="fade">
         <div v-show="btnShow" class="mdui-card-menu">
-          <slot>
-            <button class="mdui-btn mdui-btn-icon mdui-text-color-white">
+          <button class="mdui-btn mdui-btn-icon mdui-text-color-white">
+            <slot>
               <i class="mdui-icon material-icons">favorite_border</i>
-            </button>
-          </slot>
+            </slot>
+          </button>
         </div>
       </transition>
 
@@ -25,7 +25,7 @@
     <!-- 卡片的标题和副标题 -->
     <div class="mdui-card-primary">
       <div class="mdui-card-primary-title mdui-text-truncate c-card-list-title">
-        <i v-if="item.type === 1" style="border:1px solid red;border-radius:5px;font-size:13px;letter-spacing:-2px;margin-right:8px;padding:2px;">电台节目</i>
+        <i v-if="item.type === 1">电台节目</i>
         <router-link :to="item.id" class="c-card-list-title-inner">{{ item.name }}</router-link>
       </div>
       <div v-if="item.playCount" class="mdui-card-primary-subtitle mdui-text-truncate"><i class="c-card-list-title-icon mdui-icon material-icons">headset</i>{{ item.playCount }}</div>
@@ -77,6 +77,14 @@ export default defineComponent({
   margin-bottom: 5px;
   line-height: 28px;
   height: 34px;
+  i {
+    border: 1px solid red;
+    border-radius: 5px;
+    font-size: 13px;
+    letter-spacing: -2px;
+    margin-right: 8px;
+    padding: 2px;
+  }
 
   .c-card-list-title-inner {
     text-decoration: none;

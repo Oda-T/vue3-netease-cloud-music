@@ -4,7 +4,7 @@
     <play-list-header :headerDetail="headerDetail" />
     <play-list-detail :listDetail="listDetail" />
     <!-- 歌词 -->
-    <div class="c-song-lyric-container mdui-panel mdui-panel-gapless" mdui-panel>
+    <div class="song-lyric-container mdui-panel mdui-panel-gapless" mdui-panel>
       <div class="mdui-panel-item">
         <div class="mdui-panel-item-header">
           <div class="mdui-panel-item-title">歌词</div>
@@ -91,7 +91,7 @@ export default defineComponent({
 })
 </script>
 <style lang="less" scoped>
-.c-song-lyric-container {
+.song-lyric-container {
   width: 1400px;
   margin: 0 auto;
 }
