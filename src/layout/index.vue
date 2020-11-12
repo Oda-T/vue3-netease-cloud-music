@@ -183,8 +183,8 @@ export default defineComponent({
       el.addEventListener('confirm.mdui.dialog', async () => {
         // 手机邮箱登录接口不同
         emailValidate.test(loginEmailPhone.value)
-          ? await request['httpPOST']('POST_LOGIN', { 'email': loginEmailPhone.value, 'password': loginPassword.value })
-          : await request['httpPOST']('POST_LOGIN_CELLPHONE', { 'phone': loginEmailPhone.value, 'password': loginPassword.value })
+          ? await request['httpPOST']('POST_LOGIN', { 'email': loginEmailPhone.value, 'password': loginPassword.value, 'timestamp': Date.now() })
+          : await request['httpPOST']('POST_LOGIN_CELLPHONE', { 'phone': loginEmailPhone.value, 'password': loginPassword.value, 'timestamp': Date.now() })
 
         // 强刷
         location.reload()

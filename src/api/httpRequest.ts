@@ -45,25 +45,19 @@ class HttpRequest {
         break
       case 301:
         mdui.snackbar({
-          message: `错误代码：${code}需要登陆`,
+          message: `错误代码：${code}`,
           position: 'right-bottom'
         })
         break
       case 401:
         mdui.snackbar({
-          message: `错误代码：${code}无权限`,
+          message: `错误代码：${code}`,
           position: 'right-bottom'
         })
         break
       case 502:
         mdui.snackbar({
-          message: `错误代码：${code}需要登陆`,
-          position: 'right-bottom'
-        })
-        break
-      case 505:
-        mdui.snackbar({
-          message: `错误代码：${code}http版本错误`,
+          message: `错误代码：${code}`,
           position: 'right-bottom'
         })
         break
