@@ -115,11 +115,10 @@ export default defineComponent({
       if (store.state.userId === '') {
         await store.dispatch('getUserId')
         userId = store.state.userId
-        getUserPlayList()
       } else {
         userId = store.state.userId
-        getUserPlayList()
       }
+      getUserPlayList()
     }
     // tags弹框
     const handleEditTagsPopup: () => void = async () => {

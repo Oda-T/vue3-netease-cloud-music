@@ -118,15 +118,13 @@ export default defineComponent({
     const getUserId: () => void = async () => {
       if (typeof route.query.id === 'string') {
         userId = route.query.id
-        handleRouteQuery()
       } else if (store.state.userId === '') {
         await store.dispatch('getUserId')
         userId = store.state.userId
-        handleRouteQuery()
       } else {
         userId = store.state.userId
-        handleRouteQuery()
       }
+      handleRouteQuery()
     }
 
     const logout: () => void = async () => {

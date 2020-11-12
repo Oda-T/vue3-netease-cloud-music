@@ -14,3 +14,5 @@ export const GET_USER_REPLACEPHONE = '/user/replacephone'
 export const GET_AVATAR_UPLOAD = '/avatar/upload'
 // 用户歌单
 export const GET_USER_PLAYLIST = '/user/playlist'
+// 登录状态
+export const GET_LOGIN_STATUS = '/login/status'
