@@ -6,8 +6,6 @@ export const POST_LOGIN = '/login'
 export const GET_LOGOUT = '/logout'
 // 刷新
 export const GET_LOGIN_REFRESH = '/login/refresh'
-// 登陆状态
-export const GET_LOGIN_STATUS = '/login/status'
 // 用户信息
 export const GET_USER_DETAIL = '/user/detail'
 // 换绑手机

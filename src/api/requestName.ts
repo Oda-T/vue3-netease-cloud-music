@@ -48,8 +48,8 @@ const REQUEST_NAME: REQUEST_NAME = {
   ...VIDEO_INDEX,
   ...USER_HOME,
   ...USER_SETTING,
-  ...USER_LEVEL,
-  ...MY_INDEX
+  ...MY_INDEX,
+  ...USER_LEVEL
 }
 
 export default REQUEST_NAME

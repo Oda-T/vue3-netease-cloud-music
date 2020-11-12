@@ -61,12 +61,18 @@ class HttpRequest {
           position: 'right-bottom'
         })
         break
+      case 505:
+        mdui.snackbar({
+          message: `错误代码：${code}http版本错误`,
+          position: 'right-bottom'
+        })
+        break
       default:
-        console.log(response)
         mdui.snackbar({
           message: `错误代码：${code}`,
           position: 'right-bottom'
         })
+        console.log(response)
     }
   }
 }
