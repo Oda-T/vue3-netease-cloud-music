@@ -66,8 +66,8 @@
         <button class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-red-900" @click="save">保存</button>
       </div>
     </div>
-    <div id="user-setting-tab2" class="mdui-p-a-2">shopping content</div>
-    <div id="user-setting-tab3" class="mdui-p-a-2">images content</div>
+    <div id="user-setting-tab2" class="mdui-p-a-2">TODO</div>
+    <div id="user-setting-tab3" class="mdui-p-a-2">no API</div>
   </div>
 </template>
 <script lang="ts">
