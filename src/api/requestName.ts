@@ -23,7 +23,6 @@ import * as VIDEO_INDEX from './video/index'
 
 import * as USER_HOME from './user/home'
 import * as USER_SETTING from './user/setting'
-import * as USER_LEVEL from './user/level'
 
 import * as MY_INDEX from './my/index'
 
@@ -48,8 +47,7 @@ const REQUEST_NAME: REQUEST_NAME = {
   ...VIDEO_INDEX,
   ...USER_HOME,
   ...USER_SETTING,
-  ...MY_INDEX,
-  ...USER_LEVEL
+  ...MY_INDEX
 }
 
 export default REQUEST_NAME

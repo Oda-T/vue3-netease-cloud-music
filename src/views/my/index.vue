@@ -2,11 +2,17 @@
   <div id="my">
     <div class="my-card-container">
       <div class="my-card-title">
-        <h1 class="mdui-typo-title mdui-text-color-red-900">歌单</h1>
+        <h1 class="mdui-typo-title mdui-text-color-red-900">创建的歌单</h1>
       </div>
       <card v-for="item in cardList" :key="item.id" :item="item">
         <i class="mdui-icon material-icons" mdui-dialog="{target: '#editDialog'}" @click="handleEditDialog(item)">rate_review</i>
       </card>
+    </div>
+    <div class="my-card-container">
+      <div class="my-card-title">
+        <h1 class="mdui-typo-title mdui-text-color-red-900">收藏的歌单</h1>
+      </div>
+      <card v-for="item in cardListSub" :key="item.id" :item="item" />
     </div>
     <!-- 编辑对话框 -->
     <div class="mdui-dialog" id="editDialog" ref="editDialog">
@@ -70,6 +76,7 @@ export default defineComponent({
     const router = useRouter()
     const store = useStore()
     const cardList: Array<cardInt> = reactive([])
+    const cardListSub: Array<cardInt> = reactive([])
     const editDialog = ref(null as unknown)
 
     const editName = ref('')
@@ -96,17 +103,30 @@ export default defineComponent({
 
     const getUserPlayList: (n?: number) => void = async (n = 0) => {
       cardList.length = 0
+      cardListSub.length = 0
       const { playlist } = await request['httpGET']('GET_USER_PLAYLIST', { 'uid': userId, 'limit': 30, 'offset': n, 'timestamp': Date.now() })
 
       playlistIdFav = playlist[0].id.toString()
+
       for (let i = 0; i < playlist.length; i++) {
-        cardList[i] = {
-          id: '/playlist?id=' + playlist[i].id,
-          name: playlist[i].name,
-          artist: 'id=' + playlist[i].id,
-          picUrl: playlist[i].coverImgUrl,
-          description: playlist[i].description,
-          tags: playlist[i].tags
+        if (playlist[i].subscribed) {
+          cardListSub.push({
+            id: '/playlist?id=' + playlist[i].id,
+            name: playlist[i].name,
+            artist: 'id=' + playlist[i].id,
+            picUrl: playlist[i].coverImgUrl,
+            description: playlist[i].description,
+            tags: playlist[i].tags
+          })
+        } else {
+          cardList.push({
+            id: '/playlist?id=' + playlist[i].id,
+            name: playlist[i].name,
+            artist: 'id=' + playlist[i].id,
+            picUrl: playlist[i].coverImgUrl,
+            description: playlist[i].description,
+            tags: playlist[i].tags
+          })
         }
       }
     }
@@ -159,6 +179,7 @@ export default defineComponent({
     return {
       disabled,
       cardList,
+      cardListSub,
       handleEditDialog,
       handleEditTags,
       handleEditTagsPopup,

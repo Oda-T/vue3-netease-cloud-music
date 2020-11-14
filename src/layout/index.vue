@@ -181,13 +181,19 @@ export default defineComponent({
       const el = loginDialog.value as HTMLElement
       // 点击登录事件 mdui
       el.addEventListener('confirm.mdui.dialog', async () => {
+        let data = { code: 0, msg: '' }
         // 手机邮箱登录接口不同
         emailValidate.test(loginEmailPhone.value)
-          ? await request['httpPOST']('POST_LOGIN', { 'email': loginEmailPhone.value, 'password': loginPassword.value, 'timestamp': Date.now() })
-          : await request['httpPOST']('POST_LOGIN_CELLPHONE', { 'phone': loginEmailPhone.value, 'password': loginPassword.value, 'timestamp': Date.now() })
+          ? (data = await request['httpPOST']('POST_LOGIN', { 'email': loginEmailPhone.value, 'password': loginPassword.value, 'timestamp': Date.now() }))
+          : (data = await request['httpPOST']('POST_LOGIN_CELLPHONE', { 'phone': loginEmailPhone.value, 'password': loginPassword.value, 'timestamp': Date.now() }))
 
-        // 强刷
-        location.reload()
+        if (data.code === 200) {
+          sessionStorage.login = ''
+          location.reload()
+        } else {
+          sessionStorage.login = ''
+          location.reload()
+        }
       })
     })
 

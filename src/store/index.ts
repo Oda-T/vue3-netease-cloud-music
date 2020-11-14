@@ -1,7 +1,9 @@
 import { createStore } from 'vuex'
+import mdui from 'mdui'
 
 import { topListInt } from '../type/recommend.type'
 import request from '../api/index'
+import { removeToken } from '../utils/auth'
 
 export default createStore({
   state: {
@@ -12,7 +14,8 @@ export default createStore({
     topListFull: [],
     playListFull: [],
     djListFull: [],
-    userId: ''
+    userId: '',
+    loginStatus: 'unlogin'
   },
   mutations: {
     setToolbarTitle: (state, i) => {
@@ -43,6 +46,9 @@ export default createStore({
     },
     setUserId: (state, i) => {
       state.userId = i
+    },
+    setLoaginStatus: (state, i) => {
+      state.loginStatus = i
     }
   },
   actions: {
@@ -90,6 +96,24 @@ export default createStore({
     getUserId: async ({ commit }) => {
       const { profile } = await request['httpGET']('GET_LOGIN_STATUS')
       commit('setUserId', profile.userId)
+    },
+    getLoaginStatus: async ({ commit }) => {
+      const { code } = await request['httpGET']('GET_LOGIN_STATUS', { 'timestamp': Date.now() })
+      code === 200
+        ? (commit('setLoaginStatus', 'login'),
+          (sessionStorage.login = 'login'),
+          mdui.snackbar({
+            message: '登录成功',
+            position: 'right-bottom',
+            timeout: 800
+          }))
+        : (commit('setLoaginStatus', 'unlogin'),
+          ((sessionStorage.login = 'unlogin'), removeToken()),
+          mdui.snackbar({
+            message: '未登录',
+            position: 'right-bottom',
+            timeout: 800
+          }))
     }
   },
   modules: {}

@@ -172,14 +172,6 @@ const routes: Array<RouteRecordRaw> = [
         }
       },
       {
-        path: 'topic',
-        component: () => import(/* webpackChunkName: "topic" */ '@/views/topic/index.vue'),
-        name: 'topic',
-        meta: {
-          title: '话题'
-        }
-      },
-      {
         path: 'live',
         component: () => import(/* webpackChunkName: "live" */ '@/views/live/index.vue'),
         name: 'live',
@@ -227,15 +219,6 @@ const routes: Array<RouteRecordRaw> = [
         meta: {
           title: '用户中心',
           subtitle: '用户设置'
-        }
-      },
-      {
-        path: 'user/level',
-        component: () => import(/* webpackChunkName: "userLevel" */ '@/views/user/level.vue'),
-        name: 'userLevel',
-        meta: {
-          title: '用户中心',
-          subtitle: '用户等级'
         }
       },
       {

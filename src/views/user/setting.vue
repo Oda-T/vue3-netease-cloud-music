@@ -1,9 +1,10 @@
 <template>
-  <div id="userSetting">
+  <div v-if="token" id="userSetting">
     <div class="mdui-tab" mdui-tab>
       <a href="#user-setting-tab1" class="mdui-ripple">基本设置</a>
       <a href="#user-setting-tab2" class="mdui-ripple">修改密码</a>
       <a href="#user-setting-tab3" class="mdui-ripple" @click="getUserBinding">用户绑定信息</a>
+      <a href="#user-setting-tab4" class="mdui-ripple" @click="getUserRecording">用户播放记录</a>
     </div>
     <div id="user-setting-tab1" class="mdui-p-a-2">
       <div class="user-setting-tab-container">
@@ -108,6 +109,9 @@
         </div>
       </div>
     </div>
+    <div id="user-setting-tab4" class="mdui-p-a-2">
+      <div>{{ record }}</div>
+    </div>
   </div>
 </template>
 <script lang="ts">
@@ -144,6 +148,7 @@ export default defineComponent({
     const canSendPassword = ref(false)
 
     const binding = ref([])
+    const record = ref([])
 
     const handleRouteQuery: () => void = async () => {
       const data = await request['httpGET']('GET_USER_DETAIL', { 'uid': userId, 'timestamp': Date.now() })
@@ -167,7 +172,7 @@ export default defineComponent({
     }
 
     const save: () => void = async () => {
-      await request['httpGET']('GET_USER_UPDATE', {
+      const data = await request['httpGET']('GET_USER_UPDATE', {
         'province': userSettingProvince.value,
         'city': userSettingCity.value,
         'signature': userSettingDesc.value,
@@ -176,22 +181,76 @@ export default defineComponent({
         'nickname': userSettingName.value,
         'timestamp': Date.now()
       })
-      location.reload()
+      // 修改失败，原因未知
+      if (data.code === 200 && data.full !== false) {
+        mdui.snackbar({
+          message: '修改成功',
+          position: 'right-bottom',
+          timeout: 800,
+          onClosed: () => {
+            location.reload()
+          }
+        })
+      } else {
+        mdui.snackbar({
+          message: '修改失败',
+          position: 'right-bottom',
+          timeout: 800,
+          onClosed: () => {
+            location.reload()
+          }
+        })
+      }
     }
     const sendCaptcha: () => void = async () => {
-      await request['httpGET']('GET_CAPTCHA_SENT', { 'phone': userSettingPhone.value })
+      const data = await request['httpGET']('GET_CAPTCHA_SENT', { 'phone': userSettingPhone.value })
+
+      if (data.code === 200) {
+        mdui.snackbar({
+          message: '验证码发送成功',
+          position: 'right-bottom',
+          timeout: 1000
+        })
+      } else {
+        mdui.snackbar({
+          message: '验证码发送失败，请稍后重试',
+          position: 'right-bottom',
+          timeout: 1000
+        })
+      }
     }
 
     const sendNewPassword: () => void = async () => {
-      await request['httpPOST']('POST_REGISTER_CELLPHONE', {
+      const data = await request['httpPOST']('POST_REGISTER_CELLPHONE', {
         'phone': userSettingPhone.value,
         'password': userSettingPassword.value,
         'captcha': userSettingCaptcha.value,
         'timestamp': Date.now()
       })
-      // 登出
-      await request['httpGET']('GET_LOGOUT')
-      location.reload()
+
+      if (data.code === 200) {
+        mdui.snackbar({
+          message: '修改成功',
+          position: 'right-bottom',
+          timeout: 800,
+          onClosed: async () => {
+            await request['httpGET']('GET_LOGOUT')
+            sessionStorage.login = ''
+            location.reload()
+          }
+        })
+      } else {
+        mdui.snackbar({
+          message: '修改失败',
+          position: 'right-bottom',
+          timeout: 800,
+          onClosed: async () => {
+            await request['httpGET']('GET_LOGOUT')
+            sessionStorage.login = ''
+            location.reload()
+          }
+        })
+      }
     }
 
     const getUserBinding: () => void = async () => {
@@ -199,8 +258,15 @@ export default defineComponent({
       binding.value = bindings
     }
 
+    // 播放记录
+    const getUserRecording: () => void = async () => {
+      const data = await request['httpGET']('GET_USER_RECORD', { 'uid': userId, 'type': 1, 'timestamp': Date.now() })
+      record.value = data.weekData
+    }
+
     // 无token，重定向
     !token && router.replace({ name: 'discover' })
+
     getUserId()
 
     watch(
@@ -232,8 +298,11 @@ export default defineComponent({
       canSendCaptcha,
       canSendPassword,
       getUserBinding,
+      getUserRecording,
       binding,
-      handleTime
+      record,
+      handleTime,
+      token
     }
   }
 })

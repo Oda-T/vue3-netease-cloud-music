@@ -9,7 +9,7 @@
         <div v-show="btnShow" class="mdui-card-menu">
           <button class="mdui-btn mdui-btn-icon mdui-text-color-white">
             <slot>
-              <i class="mdui-icon material-icons">favorite_border</i>
+              <!-- <i class="mdui-icon material-icons">favorite_border</i> -->
             </slot>
           </button>
         </div>

@@ -8,4 +8,12 @@ router.beforeEach(to => {
 
   store.commit('setCurIndex', to.meta.index)
   store.commit('setCurChildIndex', to.meta.childindex)
+
+  // 登录状态查询
+
+  if (!sessionStorage.login) {
+    //防止重定向出现两次弹窗
+    sessionStorage.login = '*login'
+    store.dispatch('getLoaginStatus')
+  }
 })

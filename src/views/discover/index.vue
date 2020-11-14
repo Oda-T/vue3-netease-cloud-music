@@ -5,21 +5,21 @@
     <!-- 热门推荐 -->
     <recommend :topTitle="'热门推荐'" :topList="playlistHot" :cardList="cards" @get-id="getIdCallBackHot">
       <!-- 右侧'更多'插槽 -->
-      <router-link class="mdui-chip" style="float: right;margin: 30px 10px 0px;" to="/discover/playlist">
+      <router-link class="mdui-chip" style="float: right; margin: 30px 10px 0px" to="/discover/playlist">
         <span class="mdui-chip-title">更多</span>
       </router-link>
     </recommend>
 
     <!-- 新碟上架 -->
     <recommend :topTitle="'新碟上架'" :topList="albumListHot" :cardList="album" @get-id="getIdCallBackAlbums">
-      <router-link class="mdui-chip" style="float: right;margin: 30px 10px 0px;" to="/discover/album">
+      <router-link class="mdui-chip" style="float: right; margin: 30px 10px 0px" to="/discover/album">
         <span class="mdui-chip-title">更多</span>
       </router-link>
     </recommend>
 
     <!-- 榜单 -->
     <recommend :topTitle="'热门榜单'" :topList="topList" :cardList="cardsTopList" :activeName="activeName" @get-id="getIdCallBackList">
-      <router-link class="mdui-chip" style="float: right;margin: 30px 10px 0px;" to="/discover/toplist">
+      <router-link class="mdui-chip" style="float: right; margin: 30px 10px 0px" to="/discover/toplist">
         <span class="mdui-chip-title">更多</span>
       </router-link>
     </recommend>
@@ -151,7 +151,6 @@ export default defineComponent({
           aHref: handleHref(banners[i].encodeId, banners[i].targetType, banners[i].url)
         }
       }
-      console.log(banners)
     }
 
     // 热门歌单分类
@@ -198,6 +197,7 @@ export default defineComponent({
     // 首页新碟上架
     const getAlbumNewest: () => void = async () => {
       const { albums } = await request['httpGET']('GET_ALBUM_NEWEST')
+
       const _l = albums.length < 10 ? albums.length : 10
 
       for (let i = 0; i < _l; i++) {

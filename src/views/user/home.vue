@@ -46,6 +46,7 @@
 import { defineComponent, ref, watch, reactive } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
+import mdui from 'mdui'
 
 import Card from '../../components/card.vue'
 import { cardInt } from '../../type/card.type'
@@ -126,15 +127,25 @@ export default defineComponent({
       }
       handleRouteQuery()
     }
-
+    // 登出
     const logout: () => void = async () => {
-      await request['httpGET']('GET_LOGOUT')
+      await request['httpGET']('GET_LOGOUT', { 'timestamp': Date.now() })
+
+      sessionStorage.login = ''
       location.reload()
     }
 
     const refresh: () => void = async () => {
-      await request['httpGET']('GET_LOGIN_REFRESH')
-      location.reload()
+      const data = await request['httpGET']('GET_LOGIN_REFRESH')
+      data.code === 200 &&
+        mdui.snackbar({
+          message: '刷新成功',
+          position: 'right-bottom',
+          timeout: 800,
+          onClosed: () => {
+            location.reload()
+          }
+        })
     }
 
     // 如果未登录，重定向到首页

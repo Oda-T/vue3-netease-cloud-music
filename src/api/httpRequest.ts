@@ -1,7 +1,6 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios'
 
 import { returnDataType } from '../type/http-request.type'
-import mdui from 'mdui'
 
 class HttpRequest {
   private axiosIns: AxiosInstance = axios.create({
@@ -15,59 +14,27 @@ class HttpRequest {
     this.axiosIns.interceptors.request.use((config: AxiosRequestConfig) => {
       return config
     })
-    this.axiosIns.interceptors.response.use(({ data }: AxiosResponse) => {
-      try {
+    this.axiosIns.interceptors.response.use(
+      ({ data }: AxiosResponse) => {
         return Promise.resolve(data)
-      } catch (error) {
-        return Promise.reject(error)
+      },
+      (error: AxiosError) => {
+        return Promise.resolve(error)
       }
-    })
+    )
   }
   // get
   public get = async <T>(url: string, data: T, callback: Function): Promise<void> => {
     const response: returnDataType = await this.axiosIns.get(url, {
       params: data
     })
-    this.codeType(response, callback)
+    callback(response)
   }
   // post
   public post = async <T>(url: string, data: T, callback: Function): Promise<void> => {
     const response: returnDataType = await this.axiosIns.post(url, data)
-    this.codeType(response, callback)
-  }
-  // 200 or others
-  private codeType = (response: returnDataType, callback: Function): void => {
-    const code = response.code
 
-    switch (code) {
-      case 200:
-        callback(response)
-        break
-      case 301:
-        mdui.snackbar({
-          message: `错误代码：${code}`,
-          position: 'right-bottom'
-        })
-        break
-      case 401:
-        mdui.snackbar({
-          message: `错误代码：${code}`,
-          position: 'right-bottom'
-        })
-        break
-      case 502:
-        mdui.snackbar({
-          message: `错误代码：${code}`,
-          position: 'right-bottom'
-        })
-        break
-      default:
-        mdui.snackbar({
-          message: `错误代码：${code}`,
-          position: 'right-bottom'
-        })
-        console.log(response)
-    }
+    callback(response)
   }
 }
 export default HttpRequest
