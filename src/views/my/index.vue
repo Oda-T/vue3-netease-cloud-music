@@ -56,7 +56,6 @@
 </template>
 <script lang="ts">
 import { defineComponent, onMounted, reactive, ref, toRefs } from 'vue'
-import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import mdui from 'mdui'
 
@@ -64,7 +63,6 @@ import Card from '../../components/card.vue'
 import { cardInt } from '../../type/card.type'
 
 import request from '../../api/index'
-import { getToken } from '../../utils/auth'
 
 export default defineComponent({
   name: 'My',
@@ -72,8 +70,6 @@ export default defineComponent({
     Card
   },
   setup() {
-    const token = getToken()
-    const router = useRouter()
     const store = useStore()
     const cardList: Array<cardInt> = reactive([])
     const cardListSub: Array<cardInt> = reactive([])
@@ -132,12 +128,10 @@ export default defineComponent({
     }
 
     const getUserId: () => void = async () => {
-      if (store.state.userId === '') {
+      if (!sessionStorage.userId) {
         await store.dispatch('getUserId')
-        userId = store.state.userId
-      } else {
-        userId = store.state.userId
       }
+      userId = sessionStorage.userId
       getUserPlayList()
     }
     // tags弹框
@@ -159,8 +153,7 @@ export default defineComponent({
       }
     }
 
-    // 如果未登录，重定向到首页
-    token ? getUserId() : router.replace({ name: 'discover' })
+    getUserId()
 
     onMounted(() => {
       mdui.mutation()

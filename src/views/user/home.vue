@@ -1,5 +1,5 @@
 <template>
-  <div v-if="token && avatarUrl" id="userHome">
+  <div id="userHome">
     <div class="user-card mdui-card">
       <!-- 卡片头部，包含头像、标题、副标题 -->
       <div class="mdui-card-header">
@@ -44,7 +44,7 @@
 </template>
 <script lang="ts">
 import { defineComponent, ref, watch, reactive } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 import mdui from 'mdui'
 
@@ -52,7 +52,6 @@ import Card from '../../components/card.vue'
 import { cardInt } from '../../type/card.type'
 
 import request from '../../api/index'
-import { getToken } from '../../utils/auth'
 import { handleTime } from '../../utils/time'
 
 export default defineComponent({
@@ -61,9 +60,7 @@ export default defineComponent({
     Card
   },
   setup() {
-    const token = getToken()
     const route = useRoute()
-    const router = useRouter()
     const store = useStore()
 
     // 登录
@@ -119,11 +116,11 @@ export default defineComponent({
     const getUserId: () => void = async () => {
       if (typeof route.query.id === 'string') {
         userId = route.query.id
-      } else if (store.state.userId === '') {
-        await store.dispatch('getUserId')
-        userId = store.state.userId
+      } else if (sessionStorage.userId) {
+        userId = sessionStorage.userId
       } else {
-        userId = store.state.userId
+        await store.dispatch('getUserId')
+        userId = sessionStorage.userId
       }
       handleRouteQuery()
     }
@@ -132,6 +129,7 @@ export default defineComponent({
       await request['httpGET']('GET_LOGOUT', { 'timestamp': Date.now() })
 
       sessionStorage.login = ''
+      sessionStorage.userId = ''
       location.reload()
     }
 
@@ -148,21 +146,17 @@ export default defineComponent({
         })
     }
 
-    // 如果未登录，重定向到首页
-    !token && router.replace({ name: 'discover' })
-
     watch(
       () => {
         return route.query.id
       },
       () => {
-        token && route.path === '/user' && getUserId()
+        route.path === '/user' && getUserId()
       },
       { immediate: true }
     )
 
     return {
-      token,
       userProfile,
       avatarUrl,
       backgroundUrl,

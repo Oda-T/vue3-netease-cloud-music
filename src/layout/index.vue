@@ -30,7 +30,7 @@
     <!-- 左侧抽屉 -->
     <div class="mdui-drawer g-left-drawer">
       <ul class="mdui-list" mdui-collapse="{accordion: true}">
-        <li v-for="(item, index) in listItem" :key="item.id" class="mdui-collapse-item mdui-collapse-item-open">
+        <li v-for="(item, index) in listItem" :key="index" class="mdui-collapse-item mdui-collapse-item-open">
           <div class="mdui-collapse-item-header mdui-list-item mdui-ripple" :class="{ 'mdui-list-item-active': index === curIndex }" @click.stop="handleTypoTitle(item.name)">
             <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-theme-700">{{ item.icon }}</i>
             <div class="mdui-list-item-content">{{ item.content }}</div>
@@ -38,7 +38,7 @@
           <ul v-if="item.children" class="mdui-collapse-item-body mdui-list mdui-list-dense">
             <li
               v-for="(i, index) in item.children"
-              :key="i.id"
+              :key="index"
               class="mdui-list-item mdui-ripple"
               :class="{ 'mdui-list-item-active': index === curChildIndex }"
               @click.stop="handleTypoSubTitle(i.name)"

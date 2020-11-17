@@ -1,5 +1,5 @@
 <template>
-  <div v-if="token" id="userSetting">
+  <div id="userSetting">
     <div class="mdui-tab" mdui-tab>
       <a href="#user-setting-tab1" class="mdui-ripple">基本设置</a>
       <a href="#user-setting-tab2" class="mdui-ripple">修改密码</a>
@@ -116,14 +116,12 @@
 </template>
 <script lang="ts">
 import { defineComponent, onMounted, ref, watch } from 'vue'
-import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 
 import mdui from 'mdui'
 import request from '../../api/index'
 
 import { handleTime, handleTimeStamp } from '../../utils/time'
-import { getToken } from '../../utils/auth'
 import { passwordValidate, phoneValidate } from '../../validator/layout'
 
 export default defineComponent({
@@ -131,8 +129,6 @@ export default defineComponent({
   setup() {
     let userId = ''
     const store = useStore()
-    const token = getToken()
-    const router = useRouter()
 
     const userSettingName = ref('')
     const userSettingDesc = ref('')
@@ -162,12 +158,10 @@ export default defineComponent({
     }
 
     const getUserId: () => void = async () => {
-      if (store.state.userId === '') {
+      if (!sessionStorage.userId) {
         await store.dispatch('getUserId')
-        userId = store.state.userId
-      } else {
-        userId = store.state.userId
       }
+      userId = sessionStorage.userId
       handleRouteQuery()
     }
 
@@ -264,9 +258,6 @@ export default defineComponent({
       record.value = data.weekData
     }
 
-    // 无token，重定向
-    !token && router.replace({ name: 'discover' })
-
     getUserId()
 
     watch(
@@ -301,8 +292,7 @@ export default defineComponent({
       getUserRecording,
       binding,
       record,
-      handleTime,
-      token
+      handleTime
     }
   }
 })

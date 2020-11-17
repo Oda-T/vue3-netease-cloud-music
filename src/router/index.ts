@@ -74,7 +74,8 @@ const routes: Array<RouteRecordRaw> = [
         name: 'my',
         meta: {
           title: '我的音乐',
-          index: 1
+          index: 1,
+          requireAuth: true
         }
       },
       {
@@ -83,7 +84,8 @@ const routes: Array<RouteRecordRaw> = [
         name: 'friend',
         meta: {
           title: '朋友',
-          index: 2
+          index: 2,
+          requireAuth: true
         }
       },
       {
@@ -204,12 +206,13 @@ const routes: Array<RouteRecordRaw> = [
         }
       },
       {
-        path: 'user',
+        path: 'user/:id?',
         component: () => import(/* webpackChunkName: "userHome" */ '@/views/user/home.vue'),
         name: 'userHome',
         meta: {
           title: '用户中心',
-          subtitle: '基本信息'
+          subtitle: '基本信息',
+          requireAuth: true
         }
       },
       {
@@ -218,7 +221,8 @@ const routes: Array<RouteRecordRaw> = [
         name: 'userSetting',
         meta: {
           title: '用户中心',
-          subtitle: '用户设置'
+          subtitle: '用户设置',
+          requireAuth: true
         }
       },
       {
