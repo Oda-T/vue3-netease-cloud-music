@@ -33,15 +33,12 @@ export default createStore({
       state.curChildIndex = i
     },
     setTopListFull: (state, i) => {
-      sessionStorage.topListFull = JSON.stringify(i)
       state.topListFull = i
     },
-    setPlaylistFull: (state, i) => {
-      sessionStorage.playListFull = JSON.stringify(i)
+    setPlayListFull: (state, i) => {
       state.playListFull = i
     },
     setDjListFull: (state, i) => {
-      sessionStorage.djListFull = JSON.stringify(i)
       state.djListFull = i
     },
     setUserId: (state, i) => {
@@ -65,9 +62,10 @@ export default createStore({
           name: list[i].name
         })
       }
+      sessionStorage.topListFull = JSON.stringify(_list)
       commit('setTopListFull', _list)
     },
-    getPlaylistFull: async ({ commit }) => {
+    getPlayListFull: async ({ commit }) => {
       const _list: Array<topListInt> = []
       const { sub } = await request['httpGET']('GET_PLAYLIST_CATLIST')
 
@@ -81,7 +79,9 @@ export default createStore({
           name: sub[i].name
         }
       }
-      commit('setPlaylistFull', _list)
+
+      sessionStorage.playListFull = JSON.stringify(_list)
+      commit('setPlayListFull', _list)
     },
     getDjListFull: async ({ commit }) => {
       const _list: Array<topListInt> = []
@@ -93,6 +93,7 @@ export default createStore({
           name: data[i].categoryName
         }
       }
+      sessionStorage.djListFull = JSON.stringify(_list)
       commit('setDjListFull', _list)
     },
     getUserId: async ({ commit }) => {

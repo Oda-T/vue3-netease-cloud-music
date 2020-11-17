@@ -16,7 +16,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, reactive, ref, watchEffect } from 'vue'
+import { defineComponent, reactive, ref, watchEffect, computed } from 'vue'
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
 
@@ -53,7 +53,7 @@ export default defineComponent({
     const globalActiveName = ref('云音乐说唱榜')
 
     const headerDetail = ref({} as headerDetailInt)
-
+    const topListFull = computed(() => store.state.topListFull)
     const listDetail: Array<playListInt> = reactive([])
 
     const topListId = ref('')
@@ -82,15 +82,15 @@ export default defineComponent({
     // getSpecialList
     const getSpecialList: () => void = () => {
       for (let i = 0; i < 5; i++) {
-        specialList[i] = store.state.topListFull[i]
+        specialList[i] = topListFull.value[i]
       }
       getPlayList(specialList[0].id, specialCardList)
     }
 
     // getGlobalList
     const getGlobalList: () => void = () => {
-      for (let i = 5; i < store.state.topListFull.length; i++) {
-        globalList[i - 5] = store.state.topListFull[i]
+      for (let i = 5; i < topListFull.value.length; i++) {
+        globalList[i - 5] = topListFull.value[i]
       }
       getPlayList(globalList[0].id, globalCardList)
     }
@@ -109,14 +109,14 @@ export default defineComponent({
 
     const getTopListFull: () => void = async () => {
       // 获取音乐榜媒体榜缓存
-      if (store.state.topListFull.length) {
-        getSpecialList()
-        getGlobalList()
+      if (sessionStorage.topListFull) {
+        store.commit('setTopListFull', JSON.parse(sessionStorage.topListFull))
       } else {
         await store.dispatch('getTopListFull')
-        getSpecialList()
-        getGlobalList()
       }
+
+      getSpecialList()
+      getGlobalList()
     }
 
     const getTopListDetail: (id: string) => void = async id => {

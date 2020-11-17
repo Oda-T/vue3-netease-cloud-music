@@ -28,7 +28,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, reactive, toRefs } from 'vue'
+import { defineComponent, ref, reactive, computed } from 'vue'
 import { useStore } from 'vuex'
 import Recommend from '../../components/recommend.vue'
 
@@ -51,7 +51,7 @@ export default defineComponent({
     const djPanelList: Array<panelInt> = reactive([])
     const djPanelTitle = ref('热门电台Top15')
     const activeName = ref('')
-    const { djListFull } = toRefs(store.state)
+    const djListFull = computed(() => store.state.djListFull)
 
     const getTopList: () => void = async () => {
       for (let i = 0; i < djListFull.value.length; i++) {
@@ -109,14 +109,12 @@ export default defineComponent({
     const getDjListFull: () => void = async () => {
       //  从sessionStorage读取特色dj列表
       if (sessionStorage.djListFull) {
-        djListFull.value = JSON.parse(sessionStorage.djListFull)
-        getTopList()
-      } else if (djListFull.value.length) {
-        getTopList()
+        store.commit('setDjListFull', JSON.parse(sessionStorage.djListFull))
       } else {
         await store.dispatch('getDjListFull')
-        getTopList()
       }
+
+      getTopList()
     }
 
     // 获取推荐目录

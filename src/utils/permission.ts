@@ -2,8 +2,6 @@ import router from '../router'
 import store from '../store/index'
 import mdui from 'mdui'
 
-// const store = useStore()
-
 router.beforeEach((to, from, next) => {
   // 修改layout title subtitle index
   store.commit('setToolbarTitle', to.meta.title)

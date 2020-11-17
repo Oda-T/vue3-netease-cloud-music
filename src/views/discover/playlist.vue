@@ -10,7 +10,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, reactive, ref, toRefs, watchEffect } from 'vue'
+import { computed, defineComponent, reactive, ref, watchEffect } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 
@@ -40,7 +40,7 @@ export default defineComponent({
     const totalListCount = ref(0)
     const forceUpdate = ref('')
     const activeName = ref('全部')
-    const { playListFull } = toRefs(store.state)
+    const playListFull = computed(() => store.state.playListFull)
 
     const getTopList: () => void = async () => {
       for (let i = 0; i < playListFull.value.length; i++) {
@@ -77,17 +77,14 @@ export default defineComponent({
     const pageNumber: (n: number) => void = n => {
       getCardList(activeName.value, n)
     }
+
     const getPlaylistFull: () => void = async () => {
-      // 从sessionStorage读取
       if (sessionStorage.playListFull) {
-        playListFull.value = JSON.parse(sessionStorage.playListFull)
-        getTopList()
-      } else if (playListFull.value.length) {
-        getTopList()
+        store.commit('setPlayListFull', JSON.parse(sessionStorage.playListFull))
       } else {
-        await store.dispatch('getPlaylistFull')
-        getTopList()
+        await store.dispatch('getPlayListFull')
       }
+      getTopList()
     }
 
     getPlaylistFull()

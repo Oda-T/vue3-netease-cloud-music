@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref, toRefs } from 'vue'
+import { defineComponent, reactive, ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 
@@ -50,7 +50,7 @@ export default defineComponent({
     const store = useStore()
     const activeName = ref('云音乐飙升榜')
     const playlistHot: topListInt[] = reactive([])
-    const { topListFull } = toRefs(store.state)
+    const topListFull = computed(() => store.state.topListFull)
 
     // swipe
     const banner: Array<swipeInt> = reactive([])
@@ -212,14 +212,12 @@ export default defineComponent({
     // 首页榜单
     const getTopListFull: () => void = async () => {
       if (sessionStorage.topListFull) {
-        topListFull.value = JSON.parse(sessionStorage.topListFull)
-        getTopList()
-      } else if (topListFull.value.length) {
-        getTopList()
+        store.commit('setTopListFull', JSON.parse(sessionStorage.topListFull))
       } else {
         await store.dispatch('getTopListFull')
-        getTopList()
       }
+
+      getTopList()
     }
     // 调用
     swipe()

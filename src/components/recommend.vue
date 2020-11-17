@@ -18,7 +18,7 @@
         <hr />
       </div>
     </div>
-    <div v-if="cardList" style="width:100%;height:350px">
+    <div v-if="cardList" style="width: 100%; height: 350px">
       <transition name="fade" mode="out-in">
         <div v-if="toggleCoverShow" class="recommend-card-cover">
           <div class="recommend-card-inner"></div>

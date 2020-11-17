@@ -55,7 +55,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, onMounted, reactive, ref, toRefs } from 'vue'
+import { defineComponent, onMounted, reactive, ref, computed } from 'vue'
 import { useStore } from 'vuex'
 import mdui from 'mdui'
 
@@ -80,7 +80,7 @@ export default defineComponent({
     const editTags = ref([] as Array<string>)
     const disabled = ref(false)
 
-    const { playListFull } = toRefs(store.state)
+    const playListFull = computed(() => store.state.playListFull)
 
     let playlistId = ''
     // ***喜欢的音乐，没有修改权限
@@ -138,9 +138,9 @@ export default defineComponent({
     const handleEditTagsPopup: () => void = async () => {
       // 从sessionStorage读取getPlaylistFull
       if (sessionStorage.playListFull) {
-        playListFull.value = JSON.parse(sessionStorage.playListFull)
+        store.commit('setPlayListFull', JSON.parse(sessionStorage.playListFull))
       } else {
-        await store.dispatch('getPlaylistFull')
+        await store.dispatch('getPlayListFull')
       }
     }
 

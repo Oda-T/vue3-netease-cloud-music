@@ -89,7 +89,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs, onMounted, ref, watch } from 'vue'
+import { defineComponent, computed, onMounted, ref, watch } from 'vue'
 import mdui from 'mdui'
 
 import { useRouter } from 'vue-router'
@@ -110,7 +110,6 @@ export default defineComponent({
     const store = useStore()
     const loginFlag = ref('' as string | undefined)
     const loginDialog = ref(null as unknown)
-    const { toolbarTitle, toolbarSubTitle, curIndex, curChildIndex } = toRefs(store.state)
 
     const loginEmailPhone = ref('')
     const loginPassword = ref('')
@@ -201,10 +200,10 @@ export default defineComponent({
       loginFlag,
       loginDialog,
       listItem,
-      toolbarTitle,
-      toolbarSubTitle,
-      curIndex,
-      curChildIndex,
+      toolbarTitle: computed(() => store.state.toolbarTitle),
+      toolbarSubTitle: computed(() => store.state.toolbarSubTitle),
+      curIndex: computed(() => store.state.curIndex),
+      curChildIndex: computed(() => store.state.curChildIndex),
       handleTypoTitle,
       handleTypoSubTitle,
       loginEmailPhone,
