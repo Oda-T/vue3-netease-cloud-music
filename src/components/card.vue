@@ -1,14 +1,14 @@
 <template>
   <div class="c-card-item mdui-card mdui-hoverable">
     <!-- 卡片的媒体内容，可以包含图片、视频等媒体内容，以及标题、副标题 -->
-    <div class="mdui-card-media" @mouseenter="btnShow = !btnShow" @mouseleave="btnShow = !btnShow">
+    <div class="c-card-item-media mdui-card-media" @mouseenter="btnShow = !btnShow" @mouseleave="btnShow = !btnShow">
       <router-link :to="item.id">
-        <img v-lazy="`${item.picUrl}?param=150y150&quality=70`" />
+        <img v-lazy="`${item.picUrl}?param=150y150&quality=30`" />
       </router-link>
       <transition name="fade">
         <div v-show="btnShow" class="mdui-card-menu">
           <button class="mdui-btn mdui-btn-icon mdui-text-color-white">
-            <slot>
+            <slot name="icon">
               <!-- <i class="mdui-icon material-icons">favorite_border</i> -->
             </slot>
           </button>
@@ -23,9 +23,9 @@
     </div>
 
     <!-- 卡片的标题和副标题 -->
-    <div class="mdui-card-primary">
+    <div class="c-card-item-primary mdui-card-primary">
       <div class="mdui-card-primary-title mdui-text-truncate c-card-list-title">
-        <i v-if="item.type === 1">电台节目</i>
+        <slot name="pre"></slot>
         <router-link :to="item.id" class="c-card-list-title-inner">{{ item.name }}</router-link>
       </div>
       <div v-if="item.playCount" class="mdui-card-primary-subtitle mdui-text-truncate"><i class="c-card-list-title-icon mdui-icon material-icons">headset</i>{{ item.playCount }}</div>
@@ -35,12 +35,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, PropType } from 'vue'
+import { cardInt } from '../type/card.type'
 
 export default defineComponent({
   name: 'Card',
   props: {
-    item: Object
+    item: Object as PropType<cardInt>
   },
   emits: ['card-play-click'],
   setup() {
@@ -57,7 +58,16 @@ export default defineComponent({
 .c-card-item {
   display: inline-block;
   width: 192px;
+  height: 285px;
   margin: 25px 15px 10px 15px;
+  .c-card-item-media {
+    width: 192px;
+    height: 192px;
+  }
+  .c-card-item-primary {
+    width: 160px;
+    height: 53px;
+  }
 }
 .c-card-menu-vert-btn {
   background-color: rgba(0, 0, 0, 0.4);
@@ -77,14 +87,6 @@ export default defineComponent({
   margin-bottom: 5px;
   line-height: 28px;
   height: 34px;
-  i {
-    border: 1px solid red;
-    border-radius: 5px;
-    font-size: 13px;
-    letter-spacing: -2px;
-    margin-right: 8px;
-    padding: 2px;
-  }
 
   .c-card-list-title-inner {
     text-decoration: none;

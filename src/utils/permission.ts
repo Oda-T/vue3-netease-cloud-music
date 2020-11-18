@@ -9,7 +9,10 @@ router.beforeEach((to, from, next) => {
 
   store.commit('setCurIndex', to.meta.index)
   store.commit('setCurChildIndex', to.meta.childindex)
-
+  // 登录状态查询，保存userid
+  if (!sessionStorage.login) {
+    store.dispatch('getLoaginStatus')
+  }
   // 需要登录的页面
   if (to.meta.requireAuth && sessionStorage.login !== 'login') {
     mdui.snackbar({
@@ -21,10 +24,5 @@ router.beforeEach((to, from, next) => {
     next({ name: '404' })
   } else {
     next()
-  }
-
-  // 登录状态查询，保存userid
-  if (!sessionStorage.login) {
-    store.dispatch('getLoaginStatus')
   }
 })

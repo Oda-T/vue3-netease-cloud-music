@@ -146,8 +146,7 @@ export default defineComponent({
 
       for (let i = 0, j = banners.length; i < j; i++) {
         banner[i] = {
-          bgSrc: banners[i].imageUrl + '?imageView&blur=40x20',
-          imgSrc: banners[i].imageUrl + '?imageView&quality=30',
+          imgSrc: banners[i].imageUrl,
           aHref: handleHref(banners[i].encodeId, banners[i].targetType, banners[i].url)
         }
       }
@@ -174,9 +173,7 @@ export default defineComponent({
           id: '/playlist?id=' + result[i].id.toString(),
           name: result[i].name,
           playCount: handlePlayCount(result[i].playCount),
-          copywriter: result[i].copywriter,
-          picUrl: result[i].picUrl,
-          type: result[i].type
+          picUrl: result[i].picUrl
         })
       }
       // 电台
@@ -187,9 +184,7 @@ export default defineComponent({
           id: '/dj?id=' + data.result[i].id.toString(),
           name: data.result[i].name,
           playCount: handlePlayCount(data.result[i].program.listenerCount),
-          copywriter: data.result[i].copywriter,
-          picUrl: data.result[i].picUrl,
-          type: data.result[i].type
+          picUrl: data.result[i].picUrl
         })
       }
     }

@@ -29,10 +29,10 @@
       </button>
       <!-- 其他按钮 -->
       <button v-if="typeof headerDetail.likedCount === 'number'" class="c-playlist-header-count mdui-btn mdui-color-red-900 mdui-ripple">
-        <i class="mdui-icon  material-icons" :class="{ 'mdui-icon-left': headerDetail.likedCount }">thumb_up</i><span v-if="headerDetail.likedCount">{{ headerDetail.likedCount }}</span>
+        <i class="mdui-icon material-icons" :class="{ 'mdui-icon-left': headerDetail.likedCount }">thumb_up</i><span v-if="headerDetail.likedCount">{{ headerDetail.likedCount }}</span>
       </button>
       <button v-if="typeof headerDetail.shareCount === 'number'" class="c-playlist-header-count mdui-btn mdui-color-red-900 mdui-ripple">
-        <i class="mdui-icon  material-icons" :class="{ 'mdui-icon-left': headerDetail.shareCount }">share</i><span v-if="headerDetail.shareCount">{{ headerDetail.shareCount }}</span>
+        <i class="mdui-icon material-icons" :class="{ 'mdui-icon-left': headerDetail.shareCount }">share</i><span v-if="headerDetail.shareCount">{{ headerDetail.shareCount }}</span>
       </button>
       <button v-if="typeof headerDetail.subscribedCount === 'number'" class="c-playlist-header-count mdui-btn mdui-color-red-900 mdui-ripple">
         <i class="mdui-icon material-icons" :class="{ 'mdui-icon-left': headerDetail.subscribedCount }">add_to_queue</i>
@@ -50,13 +50,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { handleTime } from '../utils/time'
+import { headerDetailInt } from '../type/playList.type'
 
 export default defineComponent({
   name: 'playListHeader',
   props: {
-    headerDetail: Object
+    headerDetail: Object as PropType<headerDetailInt>
   },
   emits: ['handle-play'],
   setup() {

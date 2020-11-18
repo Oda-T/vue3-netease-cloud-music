@@ -4,22 +4,22 @@
     <div class="c-swipe-container">
       <router-link
         class="c-swipe-link mdui-shadow-16"
-        v-for="(itemlink, indexlink) in banners"
-        :key="itemlink.id"
-        :to="itemlink.aHref"
-        :class="{ 'c-swipe-link-pre': indexlink === preIndex, 'c-swipe-link-cur': indexlink === curIndex, 'c-swipe-link-next': indexlink === nextIndex }"
+        v-for="(item, index) in banners"
+        :key="item.id"
+        :to="item.aHref"
+        :class="{ 'c-swipe-link-pre': index === preIndex, 'c-swipe-link-cur': index === curIndex, 'c-swipe-link-next': index === nextIndex }"
       >
-        <img class="c-swipe-img" :src="itemlink.imgSrc" />
+        <img class="c-swipe-img" :src="`${item.imgSrc}?param=730y271&quality=30`" />
       </router-link>
     </div>
     <!-- 分页 -->
     <div class="c-swipe-pagination">
       <span
-        v-for="(itempag, indexpag) in banners"
+        v-for="(item, index) in banners"
         class="c-swipe-pagination-inner"
-        :class="{ 'c-swipe-pagination-inner-active': indexpag === curIndex }"
-        :key="itempag.id"
-        @click.stop="handleClickSwipe(indexpag)"
+        :class="{ 'c-swipe-pagination-inner-active': index === curIndex }"
+        :key="item.id"
+        @click.stop="handleClickSwipe(index)"
       ></span>
     </div>
     <!-- 左右箭头 -->
@@ -33,12 +33,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watchEffect } from 'vue'
+import { defineComponent, ref, watchEffect, PropType } from 'vue'
+import { swipeInt } from '../type/swipe.type'
 
 export default defineComponent({
   name: 'Swipe',
   props: {
-    banners: Object
+    banners: Array as PropType<Array<swipeInt>>
   },
   setup(props) {
     //初始化index
@@ -79,7 +80,7 @@ export default defineComponent({
         } else if (curIndex.value < 0) {
           curIndex.value = nodeLength - 1
         }
-      }, 10000)
+      }, 10000000000)
     }
 
     // 点击清除timer

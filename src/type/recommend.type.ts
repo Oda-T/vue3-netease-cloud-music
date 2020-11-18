@@ -9,6 +9,4 @@ export type cardListInt = {
   picUrl: string
   playCount?: string
   artist?: string
-  type?: number
-  copywriter?: string
 }

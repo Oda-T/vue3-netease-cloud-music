@@ -14,7 +14,7 @@
         <div class="mdui-typo">
           <hr />
         </div>
-        <img class="comments-item-img" v-lazy="`${item.useravatar}?param=10y10&quality=70`" />
+        <img class="comments-item-img" v-lazy="`${item.useravatar}?param=10y10&quality=30`" />
         <span class="comments-item-user">{{ item.username }}</span>
         <span class="comments-item-time">{{ handleTime(item.time) }}</span>
         <p class="comments-item-comments">{{ item.content }}</p>
@@ -64,14 +64,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { handleTime } from '../utils/time'
-
+import { commentsInt } from '../type/comments.type'
 export default defineComponent({
   name: 'Comments',
   props: {
-    commentsDetail: Object,
-    hotCommentsDetail: Object
+    commentsDetail: Object as PropType<commentsInt>,
+    hotCommentsDetail: Object as PropType<commentsInt>
   },
   setup() {
     return {

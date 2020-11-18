@@ -26,7 +26,11 @@
         <div v-else class="recommend-card">
           <div class="recommend-card-item">
             <div class="recommend-card-item-container" :style="{ left: cardItemContainerLeft }">
-              <card v-for="item in cardList" :key="item.id" :item="item"></card>
+              <card v-for="item in cardList" :key="item.id" :item="item">
+                <!-- <template v-slot:pre>
+                  <i class="card-title-pre">电台节目</i>
+                </template> -->
+              </card>
             </div>
           </div>
           <button v-if="arrowShow" class="recommend-card-arrow-left mdui-fab mdui-color-red-900 mdui-ripple" @click="handleCardItemContainerLeft">
@@ -42,15 +46,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onActivated, ref, watch } from 'vue'
-
+import { defineComponent, onActivated, ref, watch, PropType } from 'vue'
+import { topListInt, cardListInt } from '../type/recommend.type'
 import Card from './card.vue'
 
 export default defineComponent({
   name: 'Recommend',
   props: {
-    cardList: Array,
-    topList: Array,
+    cardList: Array as PropType<Array<cardListInt>>,
+    topList: Array as PropType<Array<topListInt>>,
     topTitle: String,
     activeName: {
       type: String,
@@ -214,6 +218,14 @@ export default defineComponent({
       transform: translate(50%, -126%);
     }
   }
+}
+.card-title-pre {
+  border: 1px solid red;
+  border-radius: 5px;
+  font-size: 13px;
+  letter-spacing: -2px;
+  margin-right: 8px;
+  padding: 2px;
 }
 .fade-enter-active,
 .fade-leave-active {
