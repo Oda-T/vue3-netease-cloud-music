@@ -1,8 +1,7 @@
 export type cardInt = {
   id: string
   name: string
-  artist: string
+  artist?: string
   picUrl: string
-  description?: string
-  tags?: Array<string>
+  playCount?: number
 }
