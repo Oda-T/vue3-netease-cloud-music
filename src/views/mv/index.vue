@@ -46,7 +46,6 @@ export default defineComponent({
         artistId: data.artistId,
         shareCount: data.shareCount,
         subscribedCount: data.subCount,
-        commentCount: data.commentCount,
         playCount: data.playCount
       }
     }

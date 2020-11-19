@@ -1,33 +1,32 @@
 <template>
   <!-- 歌曲详情 -->
-  <div class="c-playlist-main mdui-table-fluid">
+  <div class="c-playlist-main g-card-container mdui-table-fluid">
     <table class="mdui-table mdui-table-hoverable">
       <tbody>
         <tr v-for="(item, index) in listDetail" :key="item.id" @mouseenter="curIndex = index" @mouseleave="curIndex = -1">
-          <td style="width: 123px; maxwidth: 123px">
+          <td style="width: 120px; maxwidth: 120px">
             <router-link :to="item.id">
               <img class="c-playlist-main-img" v-lazy="`${item.imgUrl}?param=32y32`" />
             </router-link>
           </td>
-          <td style="width: 674px; maxwidth: 674px" class="mdui-text-truncate">
+          <td style="width: 410px" class="mdui-text-truncate">
             <router-link :to="item.id">
               {{ item.name }}
             </router-link>
           </td>
-          <td style="width: 308px; maxwidth: 308px" class="mdui-text-truncate">
+          <td style="width: 300px" class="mdui-text-truncate">
             <router-link :to="item.artistUrl">
               {{ handleArtistName(item.artist) }}
             </router-link>
           </td>
-          <td style="width: 184px; maxwidth: 184px" class="c-playlist-main-table-btn">
+          <td style="width: 180px; maxwidth: 180px" class="c-playlist-main-table-btn">
             <div :class="{ btnShow: curIndex !== index }">
               <button class="mdui-btn mdui-btn-icon mdui-btn-dense"><i class="mdui-icon material-icons">add</i></button>
               <button class="mdui-btn mdui-btn-icon mdui-btn-dense"><i class="mdui-icon material-icons">add_to_queue</i></button>
               <button class="mdui-btn mdui-btn-icon mdui-btn-dense"><i class="mdui-icon material-icons">share</i></button>
-              <button class="mdui-btn mdui-btn-icon mdui-btn-dense"><i class="mdui-icon material-icons">vertical_align_bottom</i></button>
             </div>
           </td>
-          <td style="width: 111px" class="mdui-table-col-numeric">{{ handleDrTime(item.time) }}</td>
+          <td style="width: 100px; maxwidth: 100px" class="mdui-table-col-numeric">{{ handleDrTime(item.time) }}</td>
         </tr>
       </tbody>
     </table>
@@ -41,7 +40,7 @@ import { playListInt } from '../type/playList.type'
 export default defineComponent({
   name: 'playListDetail',
   props: {
-    listDetail: Object as PropType<playListInt>
+    listDetail: Object as PropType<Array<playListInt>>
   },
   setup() {
     const curIndex = ref(-1)
@@ -82,7 +81,6 @@ export default defineComponent({
 </script>
 <style lang="less" scoped>
 .c-playlist-main {
-  width: 1400px;
   margin: 0 auto;
   .c-playlist-main-img {
     vertical-align: middle;

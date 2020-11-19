@@ -1,6 +1,6 @@
 <template>
   <div id="userHome">
-    <div class="user-card mdui-card">
+    <div class="user-card g-card-container mdui-card">
       <!-- 卡片头部，包含头像、标题、副标题 -->
       <div class="mdui-card-header">
         <img class="mdui-card-header-avatar" :src="avatarUrl" />
@@ -34,7 +34,7 @@
         </router-link>
       </div>
     </div>
-    <div class="user-card-container">
+    <div class="user-card-container g-card-container">
       <div class="user-card-title">
         <h1 class="mdui-typo-title mdui-text-color-red-900">歌单</h1>
       </div>
@@ -171,20 +171,18 @@ export default defineComponent({
 </script>
 <style lang="less" scoped>
 .user-card {
-  width: 1200px;
   margin: 50px auto;
   overflow: hidden;
   .user-card-list {
     display: flex;
     flex-wrap: wrap;
     li {
-      width: 400px;
+      width: 25%;
     }
   }
 }
 
 .user-card-container {
-  width: 1333px;
   margin: 50px auto;
   .user-card-title {
     margin-left: 20px;

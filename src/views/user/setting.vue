@@ -1,5 +1,5 @@
 <template>
-  <div id="userSetting">
+  <div id="userSetting" class="g-card-container">
     <div class="mdui-tab" mdui-tab>
       <a href="#user-setting-tab1" class="mdui-ripple">基本设置</a>
       <a href="#user-setting-tab2" class="mdui-ripple">修改密码</a>
@@ -299,7 +299,6 @@ export default defineComponent({
 </script>
 <style lang="less" scoped>
 #userSetting {
-  width: 1333px;
   margin: 50px auto;
 }
 .user-setting-tab-container {

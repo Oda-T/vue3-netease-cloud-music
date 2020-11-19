@@ -41,7 +41,6 @@ export default defineComponent({
         trackCount: album.trackCount,
         playCount: album.playCount,
         shareCount: album.info.shareCount,
-        commentCount: album.info.commentCount,
         subscribedCount: album.mark,
         updateTime: album.publishTime,
         artistName: album.artist.name,

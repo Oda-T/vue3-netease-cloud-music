@@ -11,7 +11,7 @@
           <i class="mdui-panel-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
         </div>
         <div class="mdui-panel-item-body">
-          <p v-if="lyric" v-html="lyric" style="line-height:30px"></p>
+          <p v-if="lyric" v-html="lyric" style="line-height: 30px"></p>
           <p v-else>无</p>
         </div>
       </div>
@@ -59,7 +59,6 @@ export default defineComponent({
 
     const getSongDetail: (ids: string) => void = async ids => {
       const { songs } = await request['httpGET']('GET_SONG_DETAIL', { 'ids': ids })
-      const { total } = await request['httpGET']('GET_COMMENT_MUSIC', { 'id': ids })
       const { lrc } = await request['httpGET']('GET_LYRIC', { 'id': ids })
 
       lrc && (lyric.value = lrc.lyric.replace(/\[.*\]/g, '<br />'))
@@ -67,7 +66,6 @@ export default defineComponent({
       headerDetail.value = {
         name: songs[0].name,
         coverImgUrl: songs[0].al.picUrl,
-        commentCount: total,
         album: songs[0].al.name,
         albumId: songs[0].al.id,
         artistName: handleArtistName(songs[0].ar),

@@ -21,7 +21,7 @@
         </select>
       </span>
     </div>
-    <div class="artist-card-container">
+    <div class="artist-card-container g-card-container">
       <card v-for="item in cardList" :key="item.id" :item="item" />
     </div>
   </div>
@@ -87,7 +87,7 @@ export default defineComponent({
 .artist-container {
   margin-top: 20px;
   .artist-span {
-    margin-left: 190px;
+    margin-left: 15%;
     margin-right: 30px;
   }
   .artist-area {
@@ -100,7 +100,6 @@ export default defineComponent({
   }
 }
 .artist-card-container {
-  width: 1333px;
   height: 3230px;
   margin: 0 auto;
 }

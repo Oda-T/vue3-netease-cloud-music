@@ -3,7 +3,7 @@
     <!-- 列表 -->
     <recommend :topTitle="'全部歌单'" :activeName="activeName" :topList="TopList" @get-id="getIdCallBack" />
     <!-- 推荐 -->
-    <div class="playlist-card-container">
+    <div class="playlist-card-container g-card-container">
       <card v-for="item in cardList" :key="item.id" :item="item" />
     </div>
     <pagination :pageCount="totalListCount" @page-number="pageNumber" :key="forceUpdate" />
@@ -109,7 +109,6 @@ export default defineComponent({
 </script>
 <style lang="less" scoped>
 .playlist-card-container {
-  width: 1333px;
   height: 3230px;
   margin: 0 auto;
 }

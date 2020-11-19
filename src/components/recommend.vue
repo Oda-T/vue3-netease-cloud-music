@@ -9,16 +9,14 @@
       <div class="recommend-hot-chip mdui-chip" v-for="item in topList" :class="{ 'mdui-color-red-900': item.name === activeName }" :key="item.id" @click="handleListSwitch(item)">
         <span class="mdui-chip-title">{{ item.name }}</span>
       </div>
-
       <!-- 右侧插槽 -->
       <slot></slot>
-
       <!-- 分割线 -->
       <div class="recommend-typo-bottom mdui-typo">
         <hr />
       </div>
     </div>
-    <div v-if="cardList" style="width: 100%; height: 350px">
+    <div v-if="cardList" class="recommend-card-container" style="width: 100%; height: 350px">
       <transition name="fade" mode="out-in">
         <div v-if="toggleCoverShow" class="recommend-card-cover">
           <div class="recommend-card-inner"></div>
@@ -26,11 +24,7 @@
         <div v-else class="recommend-card">
           <div class="recommend-card-item">
             <div class="recommend-card-item-container" :style="{ left: cardItemContainerLeft }">
-              <card v-for="item in cardList" :key="item.id" :item="item">
-                <!-- <template v-slot:pre>
-                  <i class="card-title-pre">电台节目</i>
-                </template> -->
-              </card>
+              <card v-for="item in cardList" :key="item.id" :item="item"> </card>
             </div>
           </div>
           <button v-if="arrowShow" class="recommend-card-arrow-left mdui-fab mdui-color-red-900 mdui-ripple" @click="handleCardItemContainerLeft">
@@ -133,44 +127,99 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
-.c-hot-recommend {
-  width: 100%;
-  .recommend-playlist {
-    width: 1400px;
-    min-height: 71px;
-    position: relative;
-    margin: 0 auto;
-    .recommend-typo-top {
-      position: absolute;
-      left: 0px;
-      top: 0px;
-      height: 11px;
-      width: 100%;
-    }
-    .recommend-title {
-      display: inline-block;
-      font-size: 24px;
-      vertical-align: -4px;
-      margin-top: 31px;
-      margin-left: 10px;
-      margin-right: 20px;
-      font-weight: 600;
-      letter-spacing: 2px;
-    }
-    .recommend-hot-chip {
-      margin: 0px 10px 24px;
-    }
-    .recommend-typo-bottom {
-      position: absolute;
-      left: 0px;
-      bottom: 0px;
-      height: 11px;
-      width: 100%;
-    }
+@media screen and(min-width: 749px) {
+  .c-hot-recommend .recommend-playlist {
+    width: 1150px;
   }
-
-  .recommend-card-cover {
+  .recommend-card-item {
+    width: 1150px;
+  }
+  .recommend-card-arrow-left {
+    left: calc((100% - 1150px) / 2);
+  }
+  .recommend-card-arrow-right {
+    right: calc((100% - 1150px) / 2);
+  }
+}
+@media screen and(min-width: 1919px) {
+  .c-hot-recommend .recommend-playlist {
     width: 1400px;
+  }
+  .recommend-card-item {
+    width: 1400px;
+  }
+  .recommend-card-arrow-left {
+    left: calc((100% - 1400px) / 2);
+  }
+  .recommend-card-arrow-right {
+    right: calc((100% - 1400px) / 2);
+  }
+}
+@media screen and(min-width: 2398px) {
+  .c-hot-recommend .recommend-playlist {
+    width: 1600px;
+  }
+  .recommend-card-item {
+    width: 1600px;
+  }
+  .recommend-card-arrow-left {
+    left: calc((100% - 1600px) / 2);
+  }
+  .recommend-card-arrow-right {
+    right: calc((100% - 1600px) / 2);
+  }
+}
+@media screen and(min-width: 2559px) {
+  .c-hot-recommend .recommend-playlist {
+    width: 1850px;
+  }
+  .recommend-card-item {
+    width: 1850px;
+  }
+  .recommend-card-arrow-left {
+    left: calc((100% - 1850px) / 2);
+  }
+  .recommend-card-arrow-right {
+    right: calc((100% - 1850px) / 2);
+  }
+}
+.recommend-playlist {
+  min-height: 71px;
+  position: relative;
+  margin: 0 auto;
+  .recommend-typo-top {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    height: 11px;
+    width: 100%;
+  }
+  .recommend-title {
+    display: inline-block;
+    font-size: 24px;
+    vertical-align: -4px;
+    margin-top: 31px;
+    margin-left: 10px;
+    margin-right: 20px;
+    font-weight: 600;
+    letter-spacing: 2px;
+  }
+  .recommend-hot-chip {
+    margin: 0px 10px 24px;
+  }
+  .recommend-typo-bottom {
+    position: absolute;
+    left: 0px;
+    bottom: 0px;
+    height: 11px;
+    width: 100%;
+  }
+}
+
+.recommend-card-container {
+  height: 350px;
+  width: 100%;
+  .recommend-card-cover {
     height: 350px;
     margin: 0 auto;
     display: flex;
@@ -181,51 +230,40 @@ export default defineComponent({
       width: 100px;
     }
   }
+}
 
-  .recommend-card {
-    width: 100%;
-    height: 350px;
+.recommend-card {
+  width: 100%;
+  height: 350px;
+  position: relative;
+
+  .recommend-card-item {
     position: relative;
-
-    .recommend-card-item {
-      position: relative;
-      height: 350px;
-      width: 1400px;
-      margin: 0 auto;
-      overflow-x: hidden;
-      .recommend-card-item-container {
-        position: absolute;
-        top: 0px;
-        transition: left 0.2s ease-in-out;
-        display: flex;
-        .recommend-card-list {
-          display: inline-block;
-          width: 192px;
-          margin: 35px 25px 0px 10px;
-        }
+    height: 350px;
+    margin: 0 auto;
+    overflow-x: hidden;
+    .recommend-card-item-container {
+      position: absolute;
+      top: 0px;
+      transition: left 0.2s ease-in-out;
+      display: flex;
+      .recommend-card-list {
+        display: inline-block;
+        width: 192px;
+        margin: 35px 25px 0px 10px;
       }
     }
-    .recommend-card-arrow-left {
-      position: absolute;
-      left: calc((100% - 1400px) / 2);
-      top: 50%;
-      transform: translate(-50%, -126%);
-    }
-    .recommend-card-arrow-right {
-      position: absolute;
-      right: calc((100% - 1400px) / 2);
-      top: 50%;
-      transform: translate(50%, -126%);
-    }
   }
-}
-.card-title-pre {
-  border: 1px solid red;
-  border-radius: 5px;
-  font-size: 13px;
-  letter-spacing: -2px;
-  margin-right: 8px;
-  padding: 2px;
+  .recommend-card-arrow-left {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -126%);
+  }
+  .recommend-card-arrow-right {
+    position: absolute;
+    top: 50%;
+    transform: translate(50%, -126%);
+  }
 }
 .fade-enter-active,
 .fade-leave-active {

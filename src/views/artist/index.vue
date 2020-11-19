@@ -20,7 +20,7 @@
         <card v-for="item in mvCardList" :key="item.id" :item="item" />
       </div>
       <div id="artist-tab4" class="mdui-p-t-2 mdui-p-b-2">
-        <div class="mdui-typo" v-for="item in description" :key="item.id" :item="item">
+        <div class="mdui-typo" v-for="item in description" :key="item.ti" :item="item">
           <h3>{{ item.ti }}</h3>
           <p>{{ item.txt }}</p>
         </div>

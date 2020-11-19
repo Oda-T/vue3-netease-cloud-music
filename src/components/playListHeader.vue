@@ -1,6 +1,6 @@
 <template>
   <!-- 概览 -->
-  <div class="c-playlist-header mdui-typo">
+  <div class="c-playlist-header g-card-container mdui-typo">
     <img v-if="headerDetail.coverImgUrl" class="c-playlist-header-img" :src="`${headerDetail.coverImgUrl}?param=200y200`" :alt="headerDetail.name" />
     <div v-if="headerDetail.name" class="c-playlist-header-text">
       <h1>{{ headerDetail.name }}</h1>
@@ -38,10 +38,7 @@
         <i class="mdui-icon material-icons" :class="{ 'mdui-icon-left': headerDetail.subscribedCount }">add_to_queue</i>
         <span v-if="headerDetail.subscribedCount">{{ headerDetail.subscribedCount }}</span>
       </button>
-      <button v-if="typeof headerDetail.commentCount === 'number'" class="c-playlist-header-count mdui-btn mdui-color-red-900 mdui-ripple">
-        <i class="mdui-icon material-icons" :class="{ 'mdui-icon-left': headerDetail.commentCount }">sms</i><span v-if="headerDetail.commentCount">{{ headerDetail.commentCount }}</span>
-      </button>
-      <router-link class="c-playlist-header-count mdui-chip" v-for="item in headerDetail.tags" :key="item.id" :to="`/discover/playlist?cat=${encodeURIComponent(item)}`">
+      <router-link class="c-playlist-header-count mdui-chip" v-for="(item, index) in headerDetail.tags" :key="index" :to="`/discover/playlist?cat=${encodeURIComponent(item)}`">
         <span class="mdui-chip-title">{{ item }}</span>
       </router-link>
       <h5 class="c-playlist-header-description">{{ headerDetail.description }}</h5>
@@ -87,7 +84,6 @@ export default defineComponent({
 <style lang="less" scoped>
 .c-playlist-header {
   position: relative;
-  width: 1400px;
   margin: 0 auto;
   height: 360px;
   overflow: hidden;

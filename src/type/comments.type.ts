@@ -4,7 +4,7 @@ export type commentsInt = {
   content: string
   liked: boolean
   likedcount: number
-  time: string
+  time: number
   usertype: number
   replied: {
     username: string | undefined

@@ -47,7 +47,6 @@ export default defineComponent({
         userId: data.creator.userId,
         shareCount: data.shareCount,
         subscribedCount: data.subscribeCount,
-        commentCount: data.commentCount,
         playCount: data.playTime,
         likedCount: data.praisedCount
       }

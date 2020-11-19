@@ -5,7 +5,7 @@
       <router-link
         class="c-swipe-link mdui-shadow-16"
         v-for="(item, index) in banners"
-        :key="item.id"
+        :key="index"
         :to="item.aHref"
         :class="{ 'c-swipe-link-pre': index === preIndex, 'c-swipe-link-cur': index === curIndex, 'c-swipe-link-next': index === nextIndex }"
       >
@@ -18,7 +18,7 @@
         v-for="(item, index) in banners"
         class="c-swipe-pagination-inner"
         :class="{ 'c-swipe-pagination-inner-active': index === curIndex }"
-        :key="item.id"
+        :key="index"
         @click.stop="handleClickSwipe(index)"
       ></span>
     </div>
@@ -131,87 +131,131 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
+@media screen and(min-width: 749px) {
+  .c-swipe {
+    width: 1060px;
+    .c-swipe-container .c-swipe-link-pre {
+      left: -145px;
+    }
+
+    .c-swipe-container .c-swipe-link-next {
+      left: 730px - 539px + 145px;
+    }
+  }
+}
+@media screen and(min-width: 1919px) {
+  .c-swipe {
+    width: 1260px;
+    .c-swipe-container .c-swipe-link-pre {
+      left: -245px;
+    }
+
+    .c-swipe-container .c-swipe-link-next {
+      left: 730px - 539px + 245px;
+    }
+  }
+}
+@media screen and(min-width: 2398px) {
+  .c-swipe {
+    width: 1460px;
+    .c-swipe-container .c-swipe-link-pre {
+      left: -345px;
+    }
+
+    .c-swipe-container .c-swipe-link-next {
+      left: 730px - 539px + 345px;
+    }
+  }
+}
+@media screen and(min-width: 2559px) {
+  .c-swipe {
+    width: 1660px;
+    .c-swipe-container .c-swipe-link-pre {
+      left: -445px;
+    }
+
+    .c-swipe-container .c-swipe-link-next {
+      left: 730px - 539px + 445px;
+    }
+  }
+}
 .c-swipe {
-  width: 1260px;
   height: 271px;
   position: relative;
   margin: 20px auto 10px auto;
+}
+.c-swipe-container {
+  width: 730px;
+  height: 271px;
+  margin: 0 auto;
+  position: relative;
 
-  .c-swipe-container {
-    width: 730px;
-    height: 271px;
-    margin: 0 auto;
-    position: relative;
+  .c-swipe-link {
+    position: absolute;
+    display: none;
+    width: 100%;
+    height: 100%;
+    bottom: 0px;
+    left: 0px;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 
-    .c-swipe-link {
-      position: absolute;
-      display: none;
+    .c-swipe-img {
       width: 100%;
       height: 100%;
-      bottom: 0px;
-      left: 0px;
-      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-
-      .c-swipe-img {
-        width: 100%;
-        height: 100%;
-      }
-    }
-    .c-swipe-link-pre {
-      display: block;
-      bottom: 20px;
-      left: -245px;
-      width: 539px;
-      height: 200px;
-      opacity: 0.7;
-      z-index: 1;
-    }
-    .c-swipe-link-cur {
-      display: block;
-      z-index: 2;
-    }
-    .c-swipe-link-next {
-      display: block;
-      bottom: 20px;
-      left: 730px - 539px + 245px;
-      width: 539px;
-      height: 200px;
-      opacity: 0.7;
-      z-index: 1;
     }
   }
-  .c-swipe-pagination {
-    position: absolute;
+  .c-swipe-link-pre {
+    display: block;
+    bottom: 20px;
+    width: 539px;
+    height: 200px;
+    opacity: 0.7;
+    z-index: 1;
+  }
+  .c-swipe-link-cur {
+    display: block;
+    z-index: 2;
+  }
+  .c-swipe-link-next {
+    display: block;
+    bottom: 20px;
+    width: 539px;
+    height: 200px;
+    opacity: 0.7;
+    z-index: 1;
+  }
+}
+.c-swipe-pagination {
+  position: absolute;
+  display: inline-block;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+
+  .c-swipe-pagination-inner {
     display: inline-block;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 5;
-
-    .c-swipe-pagination-inner {
-      display: inline-block;
-      cursor: pointer;
-      width: 13px;
-      height: 13px;
-      border-radius: 50%;
-      background-color: rgba(255, 255, 255, 0.6);
-      margin: 0 10px;
-    }
-    .c-swipe-pagination-inner-active {
-      background-color: #b71c1c;
-    }
+    cursor: pointer;
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.6);
+    margin: 0 10px;
   }
-  .c-swipe-arrow-left {
-    position: absolute;
-    left: -10px;
-    top: 47%;
-    z-index: 10;
+  .c-swipe-pagination-inner-active {
+    background-color: #b71c1c;
   }
-  .c-swipe-arrow-right {
-    position: absolute;
-    right: -10px;
-    top: 47%;
-    z-index: 10;
-  }
+}
+.c-swipe-arrow-left {
+  position: absolute;
+  left: -10px;
+  top: 47%;
+  z-index: 10;
+}
+.c-swipe-arrow-right {
+  position: absolute;
+  right: -10px;
+  top: 47%;
+  z-index: 10;
 }
 </style>

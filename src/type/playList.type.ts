@@ -4,7 +4,7 @@ export type playListInt = {
   artist: string
   artistUrl: string
   imgUrl: string
-  time: string
+  time: number
 }
 
 export type headerDetailInt = {
@@ -14,9 +14,8 @@ export type headerDetailInt = {
   likedCount?: number
   trackCount?: number
   shareCount?: number
-  commentCount?: number
   subscribedCount?: number
-  updateTime?: string
+  updateTime?: number
   desc?: string
   description?: string
   album?: string

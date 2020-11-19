@@ -1,7 +1,7 @@
 <template>
   <div id="discoverDjradio">
     <recommend :topTitle="'主播电台'" :activeName="activeName" :topList="djList" :cardList="djCardList" @get-id="getIdCallBackDj" />
-    <div class="dj-card-container">
+    <div class="dj-card-container g-card-container">
       <!-- 热门电台/新晋电台toggle -->
       <div class="dj-card-title">
         <h1 class="mdui-typo-title mdui-text-color-red-900">{{ djPanelTitle }}</h1>
@@ -137,7 +137,6 @@ export default defineComponent({
 </script>
 <style lang="less" scoped>
 .dj-card-container {
-  width: 1333px;
   margin: 50px auto;
   .dj-card-title {
     margin: 50px 0 40px 0;
@@ -149,6 +148,7 @@ export default defineComponent({
     }
   }
 }
+
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.3s ease-in-out;

@@ -1,6 +1,6 @@
 <template>
   <div id="my">
-    <div class="my-card-container">
+    <div class="my-card-container g-card-container">
       <div class="my-card-title">
         <h1 class="mdui-typo-title mdui-text-color-red-900">创建的歌单</h1>
       </div>
@@ -8,7 +8,7 @@
         <i class="mdui-icon material-icons" mdui-dialog="{target: '#editDialog'}" @click="handleEditDialog(item)">rate_review</i>
       </card>
     </div>
-    <div class="my-card-container">
+    <div class="my-card-container g-card-container">
       <div class="my-card-title">
         <h1 class="mdui-typo-title mdui-text-color-red-900">收藏的歌单</h1>
       </div>
@@ -42,7 +42,7 @@
       </div>
     </div>
     <!-- tags对话框 -->
-    <div class="my-tags-dialog mdui-dialog" id="tagsDialog">
+    <div class="my-tags-dialog mdui-dialog" id="tagsDialog" :key="random">
       <!-- 纸片 -->
       <div v-for="item in playListFull" :key="item.id" class="my-chip-item mdui-chip" :class="{ 'mdui-color-red-900': editTags.includes(item.name) }" @click="handleEditTags(item.name)">
         <span class="mdui-chip-title">{{ item.name }}</span>
@@ -81,6 +81,7 @@ export default defineComponent({
     const disabled = ref(false)
 
     const playListFull = computed(() => store.state.playListFull)
+    const random = ref(Math.random())
 
     let playlistId = ''
     // ***喜欢的音乐，没有修改权限
@@ -136,6 +137,7 @@ export default defineComponent({
     }
     // tags弹框
     const handleEditTagsPopup: () => void = async () => {
+      random.value = Math.random()
       // 从sessionStorage读取getPlaylistFull
       if (sessionStorage.playListFull) {
         store.commit('setPlayListFull', JSON.parse(sessionStorage.playListFull))
@@ -180,14 +182,14 @@ export default defineComponent({
       editName,
       editDesc,
       editTags,
-      playListFull
+      playListFull,
+      random
     }
   }
 })
 </script>
 <style lang="less" scoped>
 .my-card-container {
-  width: 1333px;
   margin: 50px auto;
   .my-card-title {
     margin-left: 20px;

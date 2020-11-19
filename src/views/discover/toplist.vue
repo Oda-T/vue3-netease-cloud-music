@@ -131,7 +131,6 @@ export default defineComponent({
         trackCount: playlist.trackCount,
         playCount: playlist.playCount,
         shareCount: playlist.shareCount,
-        commentCount: playlist.commentCount,
         subscribedCount: playlist.subscribedCount,
         updateTime: playlist.updateTime
       }

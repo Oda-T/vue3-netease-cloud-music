@@ -15,10 +15,10 @@
     <span
       class="pagination-item"
       :class="{ 'pagination-item-action': curIndex === item }"
-      :style="{ cursor: item !== '......' ? 'pointer' : 'default' }"
+      :style="{ cursor: item.toString() !== '......' ? 'pointer' : 'default' }"
       @click.stop="handlePagItem(item)"
       v-for="item in pageCount"
-      :key="item.id"
+      :key="item"
       >{{ item }}</span
     >
   </div>

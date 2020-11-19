@@ -39,7 +39,6 @@ export default defineComponent({
         likedCount: program.likedCount,
         shareCount: program.shareCount,
         subscribedCount: program.subCount,
-        commentCount: program.commentCount,
         updateTime: program.createTime
       }
     }

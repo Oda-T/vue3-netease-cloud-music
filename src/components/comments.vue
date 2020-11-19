@@ -1,6 +1,6 @@
 <template>
   <div class="c-comments">
-    <div class="c-comments-title mdui-typo">
+    <div class="c-comments-title g-card-container mdui-typo">
       <h2>评论</h2>
       <div class="mdui-textfield mdui-textfield-floating-label">
         <label class="mdui-textfield-label">说点什么</label>
@@ -8,9 +8,9 @@
       </div>
     </div>
     <!-- 热门 -->
-    <div class="c-comments-hot mdui-text-color-red-900" v-if="hotCommentsDetail.length !== 0">热门评论</div>
-    <div class="c-comments-container" v-if="hotCommentsDetail.length !== 0">
-      <div class="comments-item" v-for="item in hotCommentsDetail" :key="item.id">
+    <div class="c-comments-hot g-card-container mdui-text-color-red-900" v-if="hotCommentsDetail.length !== 0">热门评论</div>
+    <div class="c-comments-container g-card-container" v-if="hotCommentsDetail.length !== 0">
+      <div class="comments-item" v-for="item in hotCommentsDetail" :key="item">
         <div class="mdui-typo">
           <hr />
         </div>
@@ -34,9 +34,9 @@
       </div>
     </div>
     <!-- 最新 -->
-    <div v-if="commentsDetail.length !== 0" class="c-comments-new mdui-text-color-red-900">最新评论</div>
-    <div v-if="commentsDetail.length !== 0" class="c-comments-container">
-      <div class="comments-item" v-for="item in commentsDetail" :key="item.id">
+    <div v-if="commentsDetail.length !== 0" class="c-comments-new g-card-container mdui-text-color-red-900">最新评论</div>
+    <div v-if="commentsDetail.length !== 0" class="c-comments-container g-card-container">
+      <div class="comments-item" v-for="item in commentsDetail" :key="item">
         <div class="mdui-typo">
           <hr />
         </div>
@@ -70,8 +70,8 @@ import { commentsInt } from '../type/comments.type'
 export default defineComponent({
   name: 'Comments',
   props: {
-    commentsDetail: Object as PropType<commentsInt>,
-    hotCommentsDetail: Object as PropType<commentsInt>
+    commentsDetail: Object as PropType<Array<commentsInt>>,
+    hotCommentsDetail: Object as PropType<Array<commentsInt>>
   },
   setup() {
     return {
@@ -86,21 +86,17 @@ export default defineComponent({
   overflow: hidden;
 }
 .c-comments-title {
-  width: 1400px;
   margin: 100px auto 80px auto;
 }
 .c-comments-hot {
-  width: 1100px;
   margin: 50px auto;
 }
 
 .c-comments-new {
-  width: 1100px;
   margin: 50px auto;
 }
 
 .c-comments-container {
-  width: 1100px;
   margin: 50px auto;
   .comments-item {
     width: 100%;
