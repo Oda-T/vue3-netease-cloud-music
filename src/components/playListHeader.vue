@@ -3,24 +3,28 @@
   <div class="c-playlist-header g-card-container mdui-typo">
     <img v-if="headerDetail.coverImgUrl" class="c-playlist-header-img" :src="`${headerDetail.coverImgUrl}?param=200y200`" :alt="headerDetail.name" />
     <div v-if="headerDetail.name" class="c-playlist-header-text">
-      <h1>{{ headerDetail.name }}</h1>
-      <p v-if="headerDetail.album">
+      <h3>{{ headerDetail.name }}</h3>
+      <small v-if="headerDetail.album" style="vertical-align: bottom">
         专辑：
-        <router-link :to="`/album?id=${headerDetail.albumId}`">
+        <router-link v-if="headerDetail.album" :to="`/album?id=${headerDetail.albumId}`">
           {{ headerDetail.album }}
         </router-link>
-      </p>
-      <p v-if="headerDetail.category">分类：{{ headerDetail.category }}</p>
-      <p v-if="headerDetail.updateTime">最近更新：{{ handleTime(headerDetail.updateTime) }}</p>
-      <p v-if="headerDetail.playCount">{{ headerDetail.playCount }}次播放</p>
-      <p v-if="headerDetail.artistName">
+        <br />
+      </small>
+      <small v-if="headerDetail.category">分类：{{ headerDetail.category }}<br /></small>
+      <small v-if="headerDetail.updateTime">最近更新：{{ handleTime(headerDetail.updateTime) }}<br /></small>
+      <small v-if="headerDetail.playCount">{{ headerDetail.playCount }}次播放<br /></small>
+      <small v-if="headerDetail.artistName" style="vertical-align: bottom">
         歌手：
         <router-link :to="`/artist?id=${headerDetail.artistId}`">{{ handleArtistName(headerDetail.artistName) }}</router-link>
-      </p>
-      <p v-else-if="headerDetail.userName">
+        <br />
+      </small>
+      <small v-else-if="headerDetail.userName" style="vertical-align: bottom">
         by：
         <router-link :to="`/user/home?id=${headerDetail.userId}`">{{ handleArtistName(headerDetail.userName) }}</router-link>
-      </p>
+        <br />
+      </small>
+      <small v-if="headerDetail.description" class="c-playlist-header-description">{{ headerDetail.description }}<br /></small>
       <!-- 歌手描述 -->
       <p v-if="headerDetail.desc" class="c-playlist-header-desc mdui-typo">{{ headerDetail.desc }}</p>
       <!-- 播放按钮 -->
@@ -41,7 +45,6 @@
       <router-link class="c-playlist-header-count mdui-chip" v-for="(item, index) in headerDetail.tags" :key="index" :to="`/discover/playlist?cat=${encodeURIComponent(item)}`">
         <span class="mdui-chip-title">{{ item }}</span>
       </router-link>
-      <h5 class="c-playlist-header-description">{{ headerDetail.description }}</h5>
     </div>
   </div>
 </template>
@@ -97,20 +100,21 @@ export default defineComponent({
   .c-playlist-header-text {
     position: absolute;
     left: 310px;
-    top: 25px;
+    top: 50%;
+    transform: translateY(-60%);
   }
   .c-playlist-header-count {
     margin-right: 40px;
   }
   .c-playlist-header-description {
+    margin: 0.7em 0px;
     display: -webkit-box;
     overflow: hidden;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
   }
   .c-playlist-header-desc {
-    width: 1090px;
-    height: 190px;
+    font-size: 0.9em;
   }
 }
 </style>

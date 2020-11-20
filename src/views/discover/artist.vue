@@ -87,7 +87,7 @@ export default defineComponent({
 .artist-container {
   margin-top: 20px;
   .artist-span {
-    margin-left: 15%;
+    margin-left: 40%;
     margin-right: 30px;
   }
   .artist-area {

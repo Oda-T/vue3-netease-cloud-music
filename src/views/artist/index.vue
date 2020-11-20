@@ -3,7 +3,7 @@
     <!-- 概览 -->
     <play-list-header :headerDetail="headerDetail" />
     <!-- 作品 -->
-    <div class="artist-body">
+    <div class="artist-body g-card-container">
       <div class="mdui-tab mdui-tab-full-width" mdui-tab>
         <a href="#artist-tab1" class="mdui-ripple mdui-tab-active">热门作品</a>
         <a href="#artist-tab2" class="mdui-ripple" @click="getArtistAlbum(id)">热门专辑</a>
@@ -21,7 +21,7 @@
       </div>
       <div id="artist-tab4" class="mdui-p-t-2 mdui-p-b-2">
         <div class="mdui-typo" v-for="item in description" :key="item.ti" :item="item">
-          <h3>{{ item.ti }}</h3>
+          <h4>{{ item.ti }}</h4>
           <p>{{ item.txt }}</p>
         </div>
       </div>
@@ -167,7 +167,6 @@ export default defineComponent({
 </script>
 <style lang="less" scoped>
 .artist-body {
-  width: 1400px;
   margin: 0 auto;
   overflow: hidden;
 }

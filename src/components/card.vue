@@ -82,7 +82,7 @@ export default defineComponent({
   }
 }
 .c-card-list-title {
-  font-size: 16px;
+  font-size: 0.85em;
   margin-top: -10px;
   margin-bottom: 5px;
   line-height: 28px;
@@ -96,7 +96,7 @@ export default defineComponent({
   }
 }
 .c-card-list-title-icon {
-  font-size: 20px;
+  font-size: 1.5em;
   vertical-align: text-top;
 }
 

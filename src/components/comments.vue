@@ -115,22 +115,22 @@ export default defineComponent({
       position: absolute;
       margin-left: 10px;
       margin-top: 16px;
-      font-size: 12px;
+      font-size: 0.7em;
     }
     .comments-item-time {
       float: right;
       margin-right: 20px;
       margin-top: 16px;
-      font-size: 12px;
+      font-size: 0.7em;
     }
     .comments-item-comments {
-      font-size: 15px;
+      font-size: 0.85em;
       line-height: 30px;
       margin: 0px 200px 0px 60px;
     }
     .comments-item-replaybtn {
       margin-right: 20px;
-      font-size: 14px;
+      font-size: 0.8em;
       line-height: 16px;
       float: right;
       position: relative;
@@ -138,14 +138,14 @@ export default defineComponent({
     }
     .comments-item-likecount {
       margin-right: 100px;
-      font-size: 14px;
+      font-size: 0.8em;
       line-height: 16px;
       float: right;
       opacity: 0.7;
     }
     .comments-item-like {
       margin-right: 10px;
-      font-size: 14px;
+      font-size: 0.8em;
       line-height: 16px;
       float: right;
       opacity: 0.7;
@@ -155,11 +155,11 @@ export default defineComponent({
       margin: 8px 280px -10px 110px;
       overflow: hidden;
       .beforereplay-user {
-        font-size: 12px;
+        font-size: 0.7em;
         margin: 5px 0px 0px 8px;
       }
       .beforereplay-comments {
-        font-size: 13px;
+        font-size: 0.85em;
         margin: 5px 0px 5px 8px;
         color: rgba(0, 0, 0, 0.7);
         line-height: 23px;
