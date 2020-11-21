@@ -4,8 +4,9 @@
       <h2>评论</h2>
       <div class="mdui-textfield mdui-textfield-floating-label">
         <label class="mdui-textfield-label">说点什么</label>
-        <input class="mdui-textfield-input" type="email" />
+        <textarea class="mdui-textfield-input" v-model.trim="commentsVal"></textarea>
       </div>
+      <button :disabled="!commentsVal" style="float: right" class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-red-900" @click.stop="$emit('get-comments-val', commentsVal)">发送评论</button>
     </div>
     <!-- 热门 -->
     <div class="c-comments-hot g-card-container mdui-text-color-red-900" v-if="hotCommentsDetail.length !== 0">热门评论</div>
@@ -27,7 +28,7 @@
         <!-- 点赞 -->
         <i class="comments-item-replaybtn mdui-icon material-icons">textsms</i>
         <span class="comments-item-likecount">{{ item.likedcount }}</span>
-        <i class="comments-item-like mdui-icon material-icons">thumb_up</i>
+        <i class="comments-item-like mdui-icon material-icons" :class="{ 'mdui-text-color-red-900': item.liked }" @click.stop="$emit('thumb-up', item.commentId)">thumb_up</i>
       </div>
       <div class="mdui-typo">
         <hr />
@@ -53,7 +54,7 @@
         <!-- 点赞 -->
         <i class="comments-item-replaybtn mdui-icon material-icons">textsms</i>
         <span class="comments-item-likecount">{{ item.likedcount }}</span>
-        <i class="comments-item-like mdui-icon material-icons">thumb_up</i>
+        <i class="comments-item-like mdui-icon material-icons" :class="{ 'mdui-text-color-red-900': item.liked }" @click.stop="$emit('thumb-up', item.commentId)">thumb_up</i>
       </div>
 
       <div class="mdui-typo">
@@ -64,7 +65,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import { defineComponent, PropType, ref } from 'vue'
 import { handleTime } from '../utils/time'
 import { commentsInt } from '../type/comments.type'
 export default defineComponent({
@@ -73,9 +74,13 @@ export default defineComponent({
     commentsDetail: Object as PropType<Array<commentsInt>>,
     hotCommentsDetail: Object as PropType<Array<commentsInt>>
   },
+  emits: ['get-comments-val', 'thumb-up'],
   setup() {
+    const commentsVal = ref('')
+
     return {
-      handleTime
+      handleTime,
+      commentsVal
     }
   }
 })
@@ -149,17 +154,18 @@ export default defineComponent({
       line-height: 16px;
       float: right;
       opacity: 0.7;
+      cursor: pointer;
     }
     .comments-item-beforereplay {
       background-color: rgba(0, 0, 0, 0.12);
       margin: 8px 280px -10px 110px;
       overflow: hidden;
       .beforereplay-user {
-        font-size: 0.7em;
+        font-size: 0.65em;
         margin: 5px 0px 0px 8px;
       }
       .beforereplay-comments {
-        font-size: 0.85em;
+        font-size: 0.75em;
         margin: 5px 0px 5px 8px;
         color: rgba(0, 0, 0, 0.7);
         line-height: 23px;

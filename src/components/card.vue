@@ -7,11 +7,7 @@
       </router-link>
       <transition name="fade">
         <div v-show="btnShow" class="mdui-card-menu">
-          <button class="mdui-btn mdui-btn-icon mdui-text-color-white">
-            <slot>
-              <!-- <i class="mdui-icon material-icons">favorite_border</i> -->
-            </slot>
-          </button>
+          <slot></slot>
         </div>
       </transition>
 
@@ -21,7 +17,6 @@
         </div>
       </transition>
     </div>
-
     <!-- 卡片的标题和副标题 -->
     <div class="c-card-item-primary mdui-card-primary">
       <div class="mdui-card-primary-title mdui-text-truncate c-card-list-title">

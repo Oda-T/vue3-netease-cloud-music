@@ -1,1 +1,0 @@
-(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["nmusician"],{7211:function(n,i,e){"use strict";e.r(i);var t=e("7a23"),c={id:"nmusician"};function u(n,i,e,u,a,r){return Object(t["t"])(),Object(t["f"])("div",c,"no API")}var a=Object(t["k"])({name:"Nmusician",setup:function(){return{}}});a.render=u;i["default"]=a}}]);

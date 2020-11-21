@@ -1,8 +1,7 @@
 <template>
   <div id="song">
     <!-- 详情 -->
-    <play-list-header :headerDetail="headerDetail" />
-    <play-list-detail :listDetail="listDetail" />
+    <play-list-header :headerDetail="headerDetail" @handle-play="handlePlay(id)" />
     <!-- 歌词 -->
     <div class="g-card-container song-lyric-container mdui-panel mdui-panel-gapless" mdui-panel>
       <div class="mdui-panel-item">
@@ -17,34 +16,35 @@
       </div>
     </div>
     <!-- 评论、分页 -->
-    <comments-pagination :reuqestURL="'GET_COMMENT_MUSIC'" />
+    <comments-pagination :reuqestURL="'GET_COMMENT_MUSIC'" @get-comments-val="sendCommentsVal" @thumb-up="thumbUp" :key="renderDom" />
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, reactive, ref, onMounted } from 'vue'
+import { defineComponent, ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import mdui from 'mdui'
 
 import PlayListHeader from '../../components/playListHeader.vue'
-import PlayListDetail from '../../components/playListDetail.vue'
 import CommentsPagination from '../../components/commentsPagination.vue'
+import { handlePlay } from '../../utils/usePlayListHeader'
 
-import { playListInt, headerDetailInt } from '../../type/playList.type'
-
+import { headerDetailInt } from '../../type/playList.type'
+import { commentsEnum } from '../../enum/comments'
+import { useSendComments, useCommentsLike } from '../../utils/comments'
 import request from '../../api/index'
 
 export default defineComponent({
   name: 'Song',
   components: {
     PlayListHeader,
-    PlayListDetail,
     CommentsPagination
   },
   setup() {
     const route = useRoute()
     const headerDetail = ref({} as headerDetailInt)
-    const listDetail: Array<playListInt> = reactive([])
     const lyric = ref('')
+    const id = ref('')
+    const renderDom = ref(Math.random())
 
     const handleArtistName: (arr: Array<{ name: string }>) => string = arr => {
       if (arr.length === 1) {
@@ -72,8 +72,17 @@ export default defineComponent({
         artistId: songs[0].ar[0].id
       }
     }
+    const sendCommentsVal: (v: string) => void = async v => {
+      await useSendComments(id.value, commentsEnum['歌曲'], v)
+      renderDom.value = Math.random()
+    }
 
-    typeof route.query.id === 'string' && getSongDetail(route.query.id)
+    const thumbUp: (n: number) => void = async n => {
+      await useCommentsLike(id.value, commentsEnum['歌曲'], n)
+      renderDom.value = Math.random()
+    }
+
+    typeof route.query.id === 'string' && ((id.value = route.query.id), getSongDetail(id.value))
 
     onMounted(() => {
       mdui.mutation()
@@ -82,8 +91,12 @@ export default defineComponent({
     return {
       route,
       headerDetail,
-      listDetail,
-      lyric
+      lyric,
+      handlePlay,
+      id,
+      sendCommentsVal,
+      renderDom,
+      thumbUp
     }
   }
 })

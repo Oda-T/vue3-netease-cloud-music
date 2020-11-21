@@ -1,1 +1,0 @@
-(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["friend"],{"176b":function(n,e,r){"use strict";r.r(e);var t=r("7a23"),i={id:"friend"};function c(n,e,r,c,d,u){return Object(t["t"])(),Object(t["f"])("div",i,"懒得弄")}var d=Object(t["k"])({name:"Friend",setup:function(){return{}}});d.render=c;e["default"]=d}}]);

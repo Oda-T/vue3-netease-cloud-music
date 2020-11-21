@@ -30,9 +30,6 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 ### TODO:
 
-1. 骨架屏
-2. 分享订阅下载
-3. 播放
-4. 分辨率适配
-5. 朋友/分享界面
-6. 搜索
+1. 播放
+2. 朋友/分享界面
+3. 搜索

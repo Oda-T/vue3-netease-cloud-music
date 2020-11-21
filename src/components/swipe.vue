@@ -80,7 +80,7 @@ export default defineComponent({
         } else if (curIndex.value < 0) {
           curIndex.value = nodeLength - 1
         }
-      }, 10000000000)
+      }, 10000)
     }
 
     // 点击清除timer

@@ -6,7 +6,7 @@
         <span class="mdui-btn mdui-btn-icon mdui-ripple mdui-ripple-white" mdui-drawer="{target:'.g-left-drawer'}"><i class="mdui-icon material-icons">menu</i></span>
         <router-link to="/" class="mdui-typo-headline">网易云音乐</router-link>
         <a class="mdui-typo-title">{{ toolbarTitle }}</a>
-        <a v-if="toolbarSubTitle" class="type-title-subTitle">{{ toolbarSubTitle }}</a>
+        <a v-if="toolbarSubTitle">{{ toolbarSubTitle }}</a>
         <div class="mdui-toolbar-spacer"></div>
         <a class="mdui-btn mdui-btn-icon mdui-ripple mdui-ripple-white" mdui-tooltip="{content: '音乐/视频/电台/用户'}"><i class="mdui-icon material-icons">search</i></a>
         <a class="mdui-btn mdui-btn-icon mdui-ripple mdui-ripple-white" @click="handleTypoTitle('creator')" mdui-tooltip="{content: '创作者中心'}">
@@ -183,8 +183,8 @@ export default defineComponent({
         let data = { code: 0, msg: '' }
         // 手机邮箱登录接口不同
         emailValidate.test(loginEmailPhone.value)
-          ? (data = await request['httpPOST']('POST_LOGIN', { 'email': loginEmailPhone.value, 'password': loginPassword.value, 'timestamp': Date.now() }))
-          : (data = await request['httpPOST']('POST_LOGIN_CELLPHONE', { 'phone': loginEmailPhone.value, 'password': loginPassword.value, 'timestamp': Date.now() }))
+          ? (data = await request['httpPOST']('POST_LOGIN', { 'email': loginEmailPhone.value, 'password': loginPassword.value }))
+          : (data = await request['httpPOST']('POST_LOGIN_CELLPHONE', { 'phone': loginEmailPhone.value, 'password': loginPassword.value }))
 
         if (data.code === 200) {
           sessionStorage.login = ''
@@ -214,10 +214,6 @@ export default defineComponent({
 })
 </script>
 <style lang="less" scoped>
-.type-title-subTitle {
-  width: 65px;
-}
-
 .slide-fade-enter-active {
   transition: all 0.15s ease;
 }

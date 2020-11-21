@@ -11,7 +11,7 @@
         <a href="#artist-tab4" class="mdui-ripple" @click="getArtistDesc(id)">艺人介绍</a>
       </div>
       <div id="artist-tab1" class="mdui-p-t-2 mdui-p-b-2">
-        <play-list-detail :listDetail="listDetail" />
+        <play-list-detail :listDetail="listDetail" @handle-list-play="handlePlay" @handle-list-share="handleShare" />
       </div>
       <div id="artist-tab2" class="mdui-p-t-2 mdui-p-b-2">
         <card v-for="item in cardList" :key="item.id" :item="item" />
@@ -31,7 +31,7 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted, reactive } from 'vue'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
-
+import { handlePlay, handleShare } from '../../utils/usePlayListHeader'
 import mdui from 'mdui'
 
 import Card from '../../components/card.vue'
@@ -160,7 +160,9 @@ export default defineComponent({
       getArtistMv,
       getArtistDesc,
       id,
-      description
+      description,
+      handlePlay,
+      handleShare
     }
   }
 })

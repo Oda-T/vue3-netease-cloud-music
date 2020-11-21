@@ -1,7 +1,9 @@
 <template>
   <!-- 概览 -->
   <div class="c-playlist-header g-card-container mdui-typo">
-    <img v-if="headerDetail.coverImgUrl" class="c-playlist-header-img" :src="`${headerDetail.coverImgUrl}?param=200y200`" :alt="headerDetail.name" />
+    <div v-if="!headerDetail.coverImgUrl" class="c-playlist-header-img" style="background: #f2f2f2"></div>
+    <img v-else class="c-playlist-header-img" :src="`${headerDetail.coverImgUrl}?param=200y200`" :alt="headerDetail.name" />
+
     <div v-if="headerDetail.name" class="c-playlist-header-text">
       <h3>{{ headerDetail.name }}</h3>
       <small v-if="headerDetail.album" style="vertical-align: bottom">
@@ -21,7 +23,7 @@
       </small>
       <small v-else-if="headerDetail.userName" style="vertical-align: bottom">
         by：
-        <router-link :to="`/user/home?id=${headerDetail.userId}`">{{ handleArtistName(headerDetail.userName) }}</router-link>
+        <router-link :to="`/user?id=${headerDetail.userId}`">{{ handleArtistName(headerDetail.userName) }}</router-link>
         <br />
       </small>
       <small v-if="headerDetail.description" class="c-playlist-header-description">{{ headerDetail.description }}<br /></small>
@@ -31,19 +33,37 @@
       <button v-else class="c-playlist-header-count mdui-btn mdui-color-red-900 mdui-btn-raised mdui-ripple" @click.stop="$emit('handle-play')">
         <i class="mdui-icon mdui-icon-left material-icons">play_arrow</i>播放
       </button>
-      <!-- 其他按钮 -->
-      <button v-if="typeof headerDetail.likedCount === 'number'" class="c-playlist-header-count mdui-btn mdui-color-red-900 mdui-ripple">
+      <!-- 喜欢 -->
+      <button
+        v-if="typeof headerDetail.likedCount === 'number'"
+        :disabled="headerDetail.liked"
+        class="c-playlist-header-count mdui-btn mdui-btn-raised mdui-color-red-900 mdui-ripple"
+        @click.stop="$emit('handle-like')"
+      >
         <i class="mdui-icon material-icons" :class="{ 'mdui-icon-left': headerDetail.likedCount }">thumb_up</i><span v-if="headerDetail.likedCount">{{ headerDetail.likedCount }}</span>
       </button>
-      <button v-if="typeof headerDetail.shareCount === 'number'" class="c-playlist-header-count mdui-btn mdui-color-red-900 mdui-ripple">
+      <!-- 分享 -->
+      <button v-if="typeof headerDetail.shareCount === 'number'" class="c-playlist-header-count mdui-btn mdui-btn-raised mdui-color-red-900 mdui-ripple" @click.stop="$emit('handle-share')">
         <i class="mdui-icon material-icons" :class="{ 'mdui-icon-left': headerDetail.shareCount }">share</i><span v-if="headerDetail.shareCount">{{ headerDetail.shareCount }}</span>
       </button>
-      <button v-if="typeof headerDetail.subscribedCount === 'number'" class="c-playlist-header-count mdui-btn mdui-color-red-900 mdui-ripple">
+      <!-- 订阅 -->
+      <button
+        v-if="typeof headerDetail.subscribedCount === 'number'"
+        :disabled="headerDetail.subscribed"
+        class="c-playlist-header-count mdui-btn mdui-btn-raised mdui-color-red-900 mdui-ripple"
+        @click.stop="$emit('handle-subscribe')"
+      >
         <i class="mdui-icon material-icons" :class="{ 'mdui-icon-left': headerDetail.subscribedCount }">add_to_queue</i>
         <span v-if="headerDetail.subscribedCount">{{ headerDetail.subscribedCount }}</span>
       </button>
-      <router-link class="c-playlist-header-count mdui-chip" v-for="(item, index) in headerDetail.tags" :key="index" :to="`/discover/playlist?cat=${encodeURIComponent(item)}`">
-        <span class="mdui-chip-title">{{ item }}</span>
+      <router-link
+        class="c-playlist-header-count mdui-chip"
+        style="vertical-align: bottom"
+        v-for="(item, index) in headerDetail.tags"
+        :key="index"
+        :to="`/discover/playlist?cat=${encodeURIComponent(item)}`"
+      >
+        <span class="mdui-chip-title" style="vertical-align: bottom">{{ item }}</span>
       </router-link>
     </div>
   </div>
@@ -59,7 +79,7 @@ export default defineComponent({
   props: {
     headerDetail: Object as PropType<headerDetailInt>
   },
-  emits: ['handle-play'],
+  emits: ['handle-play', 'handle-share', 'handle-subscribe', 'handle-like'],
   setup() {
     // 多个作者用/分割
     const handleArtistName: (arr: string | Array<{ name: string }>) => string = arr => {
@@ -105,9 +125,10 @@ export default defineComponent({
   }
   .c-playlist-header-count {
     margin-right: 40px;
+    margin-top: 20px;
   }
   .c-playlist-header-description {
-    margin: 0.7em 0px;
+    margin-top: 6px;
     display: -webkit-box;
     overflow: hidden;
     -webkit-line-clamp: 2;

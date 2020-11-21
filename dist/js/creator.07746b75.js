@@ -1,1 +1,0 @@
-(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["creator"],{b355:function(e,r,t){"use strict";t.r(r);var n=t("7a23"),c={id:"creator"};function o(e,r,t,o,a,u){return Object(n["t"])(),Object(n["f"])("div",c,"no API")}var a=Object(n["k"])({name:"Creator",setup:function(){return{}}});a.render=o;r["default"]=a}}]);

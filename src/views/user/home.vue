@@ -87,7 +87,7 @@ export default defineComponent({
     }
 
     const handleRouteQuery: () => void = async () => {
-      const data = await request['httpGET']('GET_USER_DETAIL', { 'uid': userId, 'timestamp': Date.now() })
+      const data = await request['httpGET']('GET_USER_DETAIL', { 'uid': userId })
 
       avatarUrl.value = data.profile.avatarUrl + '?param=50y50'
       backgroundUrl.value = data.profile.backgroundUrl + '?param=950y350'
@@ -126,7 +126,7 @@ export default defineComponent({
     }
     // 登出
     const logout: () => void = async () => {
-      await request['httpGET']('GET_LOGOUT', { 'timestamp': Date.now() })
+      await request['httpGET']('GET_LOGOUT')
 
       sessionStorage.login = ''
       sessionStorage.userId = ''

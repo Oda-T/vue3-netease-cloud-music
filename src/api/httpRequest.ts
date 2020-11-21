@@ -25,6 +25,7 @@ class HttpRequest {
   }
   // get
   public get = async <T>(url: string, data: T, callback: Function): Promise<void> => {
+    data = data ? Object.assign(data, { 'timestamp': Date.now() }) : Object.assign({ 'timestamp': Date.now() })
     const response: returnDataType = await this.axiosIns.get(url, {
       params: data
     })
@@ -32,6 +33,7 @@ class HttpRequest {
   }
   // post
   public post = async <T>(url: string, data: T, callback: Function): Promise<void> => {
+    data = data ? Object.assign(data, { 'timestamp': Date.now() }) : Object.assign({ 'timestamp': Date.now() })
     const response: returnDataType = await this.axiosIns.post(url, data)
 
     callback(response)

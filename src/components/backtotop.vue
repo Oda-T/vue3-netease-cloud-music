@@ -1,5 +1,5 @@
 <template>
-  <button class="mdui-fab mdui-fab-fixed mdui-color-red-900 mdui-ripple" :class="{ 'mdui-fab-hide': isShow }" @click="backToTop"><i class="mdui-icon material-icons">golf_course</i></button>
+  <button class="mdui-fab mdui-fab-fixed mdui-color-red-900 mdui-ripple" :class="{ 'mdui-fab-hide': isShow }" @click="backToTop"><i class="mdui-icon material-icons">navigation</i></button>
 </template>
 
 <script lang="ts">

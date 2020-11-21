@@ -1,18 +1,38 @@
 <template>
   <div id="my">
     <div class="my-card-container g-card-container">
-      <div class="my-card-title">
+      <div v-show="cardList.length" class="my-card-title">
         <h1 class="mdui-typo-title mdui-text-color-red-900">创建的歌单</h1>
       </div>
       <card v-for="item in cardList" :key="item.id" :item="item">
-        <i class="mdui-icon material-icons" mdui-dialog="{target: '#editDialog'}" @click="handleEditDialog(item)">rate_review</i>
+        <button class="mdui-btn mdui-btn-icon mdui-text-color-white">
+          <i class="mdui-icon material-icons" mdui-dialog="{target: '#editDialog'}" @click="handleEditDialog(item)">rate_review</i>
+        </button>
       </card>
     </div>
     <div class="my-card-container g-card-container">
-      <div class="my-card-title">
+      <div v-show="cardListSub.length" class="my-card-title">
         <h1 class="mdui-typo-title mdui-text-color-red-900">收藏的歌单</h1>
       </div>
       <card v-for="item in cardListSub" :key="item.id" :item="item" />
+    </div>
+    <div class="my-card-container g-card-container">
+      <div v-show="cardListMV.length" class="my-card-title">
+        <h1 class="mdui-typo-title mdui-text-color-red-900">收藏的MV</h1>
+      </div>
+      <card v-for="item in cardListMV" :key="item.id" :item="item" />
+    </div>
+    <div class="my-card-container g-card-container">
+      <div v-show="cardListAlbum.length" class="my-card-title">
+        <h1 class="mdui-typo-title mdui-text-color-red-900">收藏的专辑</h1>
+      </div>
+      <card v-for="item in cardListAlbum" :key="item.id" :item="item" />
+    </div>
+    <div class="my-card-container g-card-container">
+      <div v-show="cardListDjRadio.length" class="my-card-title">
+        <h1 class="mdui-typo-title mdui-text-color-red-900">订阅的电台</h1>
+      </div>
+      <card v-for="item in cardListDjRadio" :key="item.id" :item="item" />
     </div>
     <!-- 编辑对话框 -->
     <div class="mdui-dialog" id="editDialog" ref="editDialog">
@@ -73,6 +93,10 @@ export default defineComponent({
     const store = useStore()
     const cardList: Array<cardInt> = reactive([])
     const cardListSub: Array<cardInt> = reactive([])
+    const cardListMV: Array<cardInt> = reactive([])
+    const cardListAlbum: Array<cardInt> = reactive([])
+    const cardListDjRadio: Array<cardInt> = reactive([])
+
     const editDialog = ref(null as unknown)
 
     const editName = ref('')
@@ -97,11 +121,14 @@ export default defineComponent({
       editTags.value = []
       tags && (editTags.value = editTags.value.concat(tags))
     }
+    const getMvVidoetype: (n: number) => string = n => {
+      return n === 1 ? '/video?id=' : '/mv?id='
+    }
 
-    const getUserPlayList: (n?: number) => void = async (n = 0) => {
+    const getPlayList: () => void = async () => {
       cardList.length = 0
       cardListSub.length = 0
-      const { playlist } = await request['httpGET']('GET_USER_PLAYLIST', { 'uid': userId, 'limit': 30, 'offset': n, 'timestamp': Date.now() })
+      const { playlist } = await request['httpGET']('GET_USER_PLAYLIST', { 'uid': userId, 'limit': 30, 'offset': 0 })
 
       playlistIdFav = playlist[0].id.toString()
 
@@ -128,11 +155,65 @@ export default defineComponent({
       }
     }
 
+    const getMvList: () => void = async () => {
+      cardListMV.length = 0
+
+      const { data } = await request['httpGET']('GET_MV_SUBLIST')
+      for (let i = 0; i < data.length; i++) {
+        cardListMV.push({
+          id: getMvVidoetype(data[i].type) + data[i].vid,
+          name: data[i].title,
+          artist: 'id=' + data[i].vid,
+          picUrl: data[i].coverUrl
+        })
+      }
+    }
+
+    const getAlbumList: () => void = async () => {
+      cardListAlbum.length = 0
+      const { data } = await request['httpGET']('GET_ALBUM_SUBLIST')
+
+      for (let i = 0; i < data.length; i++) {
+        cardListAlbum.push({
+          id: '/album?id=' + data[i].id,
+          name: data[i].name,
+          artist: 'id=' + data[i].id,
+          picUrl: data[i].picUrl
+        })
+      }
+    }
+
+    const getDjRadioList: () => void = async () => {
+      cardListDjRadio.length = 0
+      const { djRadios } = await request['httpGET']('GET_DJ_SUBLIST')
+
+      for (let i = 0; i < djRadios.length; i++) {
+        cardListDjRadio.push({
+          id: '/djradio?id=' + djRadios[i].id,
+          name: djRadios[i].name,
+          artist: 'id=' + djRadios[i].id,
+          picUrl: djRadios[i].picUrl
+        })
+      }
+    }
+
+    const getUserPlayList: () => void = async () => {
+      // 创建的歌单 收藏的歌单
+      getPlayList()
+      // 收藏的 mv video
+      getMvList()
+      // 收藏的专辑
+      getAlbumList()
+      // 订阅的电台
+      getDjRadioList()
+    }
+
     const getUserId: () => void = async () => {
       if (!sessionStorage.userId) {
         await store.dispatch('getUserId')
       }
       userId = sessionStorage.userId
+
       getUserPlayList()
     }
     // tags弹框
@@ -163,9 +244,9 @@ export default defineComponent({
       const el = editDialog.value as HTMLElement
       // 点击修改歌单信息 mdui
       el.addEventListener('confirm.mdui.dialog', async () => {
-        playlistId !== playlistIdFav && (await request['httpGET']('GET_PLAYLIST_NAME_UPDATE', { 'id': playlistId, 'name': editName.value, 'timestamp': Date.now() }))
-        await request['httpGET']('GET_PLAYLIST_DESC_UPDATE', { 'id': playlistId, 'desc': editDesc.value, 'timestamp': Date.now() })
-        await request['httpGET']('GET_PLAYLIST_TAGS_UPDATE', { 'id': playlistId, 'tags': editTags.value.join(';'), 'timestamp': Date.now() })
+        playlistId !== playlistIdFav && (await request['httpGET']('GET_PLAYLIST_NAME_UPDATE', { 'id': playlistId, 'name': editName.value }))
+        await request['httpGET']('GET_PLAYLIST_DESC_UPDATE', { 'id': playlistId, 'desc': editDesc.value })
+        await request['httpGET']('GET_PLAYLIST_TAGS_UPDATE', { 'id': playlistId, 'tags': editTags.value.join(';') })
 
         getUserPlayList()
       })
@@ -175,6 +256,9 @@ export default defineComponent({
       disabled,
       cardList,
       cardListSub,
+      cardListMV,
+      cardListAlbum,
+      cardListDjRadio,
       handleEditDialog,
       handleEditTags,
       handleEditTagsPopup,

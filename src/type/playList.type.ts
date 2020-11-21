@@ -11,6 +11,7 @@ export type headerDetailInt = {
   name: string
   coverImgUrl: string
   category?: string
+  liked?: boolean
   likedCount?: number
   trackCount?: number
   shareCount?: number
@@ -26,4 +27,5 @@ export type headerDetailInt = {
   userName?: string
   userId?: number
   tags?: Array<string>
+  subscribed?: boolean
 }

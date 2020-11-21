@@ -3,7 +3,8 @@
   <div class="g-card-container c-playlist-main mdui-table-fluid">
     <table class="mdui-table mdui-table-hoverable">
       <tbody>
-        <tr v-for="(item, index) in listDetail" :key="item.id" @mouseenter="curIndex = index" @mouseleave="curIndex = -1">
+        <tr v-if="!listDetail.length" style="height: 57px"></tr>
+        <tr v-else v-for="(item, index) in listDetail" :key="item.id" @mouseenter="curIndex = index" @mouseleave="curIndex = -1">
           <td style="width: 120px; max-width: 120px">
             <router-link :to="item.id">
               <img class="c-playlist-main-img" v-lazy="`${item.imgUrl}?param=32y32`" />
@@ -21,9 +22,13 @@
           </td>
           <td style="width: 180px; max-width: 180px" class="c-playlist-main-table-btn">
             <div :class="{ btnShow: curIndex !== index }">
-              <button class="mdui-btn mdui-btn-icon mdui-btn-dense"><i class="mdui-icon material-icons">add</i></button>
-              <button class="mdui-btn mdui-btn-icon mdui-btn-dense"><i class="mdui-icon material-icons">add_to_queue</i></button>
-              <button class="mdui-btn mdui-btn-icon mdui-btn-dense"><i class="mdui-icon material-icons">share</i></button>
+              <button class="mdui-btn mdui-btn-icon mdui-btn-dense" @click.stop="$emit('handle-list-play', item.id.split('?id=')[1])"><i class="mdui-icon material-icons">add</i></button>
+              <button class="mdui-btn mdui-btn-icon mdui-btn-dense" @click.stop="$emit('handle-list-share', item.id.split('?id=')[1], 'song', 'test')">
+                <i class="mdui-icon material-icons">share</i>
+              </button>
+              <button disabled class="mdui-btn mdui-btn-icon mdui-btn-dense" @click.stop="$emit('handle-list-subscribe', item.id.split('?id=')[1], 'song')">
+                <i class="mdui-icon material-icons">add_to_queue</i>
+              </button>
             </div>
           </td>
           <td style="width: 100px; max-width: 100px" class="mdui-table-col-numeric">{{ handleDrTime(item.time) }}</td>
@@ -42,6 +47,7 @@ export default defineComponent({
   props: {
     listDetail: Object as PropType<Array<playListInt>>
   },
+  emits: ['handle-list-play', 'handle-list-share', 'handle-list-subscribe'],
   setup() {
     const curIndex = ref(-1)
 

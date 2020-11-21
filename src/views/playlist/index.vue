@@ -1,10 +1,10 @@
 <template>
   <div id="playlist">
-    <play-list-header :headerDetail="headerDetail" />
-    <play-list-detail :listDetail="listDetail" />
+    <play-list-header :headerDetail="headerDetail" @handle-play="handlePlay(songList)" @handle-share="handleShare(id, 'playlist', 'test')" @handle-subscribe="handleSubscribe(id, 'playlist')" />
+    <play-list-detail :listDetail="listDetail" @handle-list-play="handlePlay" @handle-list-share="handleShare" />
 
     <!-- 评论、分页 -->
-    <comments-pagination :reuqestURL="'GET_COMMENT_PLAYLIST'" />
+    <comments-pagination :reuqestURL="'GET_COMMENT_PLAYLIST'" @get-comments-val="sendCommentsVal" @thumb-up="thumbUp" :key="renderDom" />
   </div>
 </template>
 <script lang="ts">
@@ -16,7 +16,10 @@ import PlayListDetail from '../../components/playListDetail.vue'
 import CommentsPagination from '../../components/commentsPagination.vue'
 
 import { playListInt, headerDetailInt } from '../../type/playList.type'
+import { handlePlay, handleShare, handleSubscribe } from '../../utils/usePlayListHeader'
 
+import { commentsEnum } from '../../enum/comments'
+import { useSendComments, useCommentsLike } from '../../utils/comments'
 import request from '../../api/index'
 
 export default defineComponent({
@@ -30,11 +33,14 @@ export default defineComponent({
     const route = useRoute()
     const headerDetail = ref({} as headerDetailInt)
     const listDetail: Array<playListInt> = reactive([])
+    const songList: Array<string> = reactive([])
+    const id = ref('')
+    const renderDom = ref(Math.random())
 
     // 获得歌单
     const getPlayList: (n: string) => void = async n => {
-      const { playlist } = await request['httpGET']('GET_PLAYLIST_DETAIL', { 'id': n, 'timestamp': Date.now() })
-
+      songList.length = 0
+      const { playlist } = await request['httpGET']('GET_PLAYLIST_DETAIL', { 'id': n })
       const tracks = playlist.tracks
 
       headerDetail.value = {
@@ -46,7 +52,8 @@ export default defineComponent({
         shareCount: playlist.shareCount,
         subscribedCount: playlist.subscribedCount,
         updateTime: playlist.updateTime,
-        tags: playlist.tags
+        tags: playlist.tags,
+        subscribed: playlist.subscribed
       }
 
       for (let i = 0; i < tracks.length; i++) {
@@ -58,14 +65,32 @@ export default defineComponent({
           imgUrl: tracks[i].al.picUrl,
           time: tracks[i].dt
         }
+        songList[i] = tracks[i].id
       }
     }
+    const sendCommentsVal: (v: string) => void = async v => {
+      await useSendComments(id.value, commentsEnum['歌单'], v)
+      renderDom.value = Math.random()
+    }
 
-    typeof route.query.id === 'string' && getPlayList(route.query.id)
+    const thumbUp: (n: number) => void = async n => {
+      await useCommentsLike(id.value, commentsEnum['歌单'], n)
+      renderDom.value = Math.random()
+    }
+
+    typeof route.query.id === 'string' && ((id.value = route.query.id), getPlayList(id.value))
 
     return {
       headerDetail,
-      listDetail
+      listDetail,
+      handlePlay,
+      handleShare,
+      handleSubscribe,
+      songList,
+      id,
+      sendCommentsVal,
+      thumbUp,
+      renderDom
     }
   }
 })

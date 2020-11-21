@@ -1,8 +1,8 @@
 <template>
   <div id="dj">
-    <play-list-header :headerDetail="headerDetail" />
+    <play-list-header :headerDetail="headerDetail" @handle-play="handlePlay(id)" @handle-share="handleShare(id, 'djprogram', 'test')" @handle-like="handleLike(id, 'djprogram')" />
     <!-- 评论、分页 -->
-    <comments-pagination :reuqestURL="'GET_COMMENT_DJ'" />
+    <comments-pagination :reuqestURL="'GET_COMMENT_DJ'" @get-comments-val="sendCommentsVal" @thumb-up="thumbUp" :key="renderDom" />
   </div>
 </template>
 <script lang="ts">
@@ -14,7 +14,10 @@ import PlayListHeader from '../../components/playListHeader.vue'
 import CommentsPagination from '../../components/commentsPagination.vue'
 
 import { headerDetailInt } from '../../type/playList.type'
+import { handlePlay, handleShare, handleLike } from '../../utils/usePlayListHeader'
 
+import { commentsEnum } from '../../enum/comments'
+import { useSendComments, useCommentsLike } from '../../utils/comments'
 import request from '../../api/index'
 
 export default defineComponent({
@@ -26,9 +29,11 @@ export default defineComponent({
   setup() {
     const route = useRoute()
     const headerDetail = ref({} as headerDetailInt)
+    const id = ref('')
+    const renderDom = ref(Math.random())
 
-    // 获得歌单
-    const getPlayList: (n: string) => void = async n => {
+    // 获得详情
+    const getHeaderDetail: (n: string) => void = async n => {
       const { program } = await request['httpGET']('GET_DJ_PROGRAM_DETAIL', { 'id': n })
 
       headerDetail.value = {
@@ -37,17 +42,36 @@ export default defineComponent({
         category: program.radio.category,
         description: program.description,
         likedCount: program.likedCount,
+        liked: program.liked,
         shareCount: program.shareCount,
-        subscribedCount: program.subCount,
-        updateTime: program.createTime
+        subscribedCount: program.subscribedCount,
+        updateTime: program.createTime,
+        subscribed: program.subscribed
       }
     }
 
-    typeof route.query.id === 'string' && getPlayList(route.query.id)
+    const sendCommentsVal: (v: string) => void = async v => {
+      await useSendComments(id.value, commentsEnum['电台'], v)
+      renderDom.value = Math.random()
+    }
+
+    const thumbUp: (n: number) => void = async n => {
+      await useCommentsLike(id.value, commentsEnum['电台'], n)
+      renderDom.value = Math.random()
+    }
+
+    typeof route.query.id === 'string' && ((id.value = route.query.id), getHeaderDetail(route.query.id))
 
     return {
       route,
-      headerDetail
+      headerDetail,
+      handlePlay,
+      handleShare,
+      handleLike,
+      id,
+      sendCommentsVal,
+      thumbUp,
+      renderDom
     }
   }
 })

@@ -26,6 +26,25 @@ import * as USER_SETTING from './user/setting'
 
 import * as MY_INDEX from './my/index'
 
+// utils usePlayListHeader
+const SHARE_RESOURCE = '/share/resource'
+
+const PLAYLIST_SUBSCRIBE = '/playlist/subscribe'
+
+const ALBUM_SUB = '/album/sub'
+
+const DJ_SUB = '/dj/sub'
+
+const MV_SUB = '/mv/sub'
+
+const VIDEO_SUB = '/video/sub'
+
+const RESOURCE_LIKE = '/resource/like'
+// 评论
+const COMMENT = '/comment'
+// 点赞评论
+const COMMENT_LIKE = '/comment/like'
+
 type REQUEST_NAME = {
   [key: string]: string
 }
@@ -47,7 +66,16 @@ const REQUEST_NAME: REQUEST_NAME = {
   ...VIDEO_INDEX,
   ...USER_HOME,
   ...USER_SETTING,
-  ...MY_INDEX
+  ...MY_INDEX,
+  SHARE_RESOURCE,
+  PLAYLIST_SUBSCRIBE,
+  ALBUM_SUB,
+  DJ_SUB,
+  MV_SUB,
+  VIDEO_SUB,
+  RESOURCE_LIKE,
+  COMMENT,
+  COMMENT_LIKE
 }
 
 export default REQUEST_NAME

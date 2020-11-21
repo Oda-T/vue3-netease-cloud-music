@@ -1,7 +1,7 @@
 <template>
   <div id="djradio">
-    <play-list-header :headerDetail="headerDetail" />
-    <play-list-detail :listDetail="listDetail" />
+    <play-list-header :headerDetail="headerDetail" @handle-play="handlePlay(djRadioList)" @handle-share="handleShare(id, 'djradio', 'test')" @handle-subscribe="handleSubscribe(id, 'djradio')" />
+    <play-list-detail :listDetail="listDetail" @handle-list-play="handlePlay" />
   </div>
 </template>
 <script lang="ts">
@@ -12,6 +12,7 @@ import PlayListHeader from '../../components/playListHeader.vue'
 import PlayListDetail from '../../components/playListDetail.vue'
 
 import { playListInt, headerDetailInt } from '../../type/playList.type'
+import { handlePlay, handleShare, handleSubscribe } from '../../utils/usePlayListHeader'
 
 import request from '../../api/index'
 
@@ -25,9 +26,10 @@ export default defineComponent({
     const route = useRoute()
     const headerDetail = ref({} as headerDetailInt)
     const listDetail: Array<playListInt> = reactive([])
-
+    const djRadioList: Array<string> = reactive([])
+    const id = ref('')
     // 获得歌单
-    const getPlayList: (n: string) => void = async n => {
+    const getDjradioList: (n: string) => void = async n => {
       const { data } = await request['httpGET']('GET_DJ_DETAIL', { 'rid': n })
       headerDetail.value = {
         name: data.name,
@@ -35,6 +37,7 @@ export default defineComponent({
         description: data.desc,
         shareCount: data.shareCount,
         subscribedCount: data.subCount,
+        subscribed: data.subed,
         updateTime: data.lastProgramCreateTime
       }
 
@@ -45,19 +48,25 @@ export default defineComponent({
           name: programs[i].name,
           id: '/dj?id=' + programs[i].id,
           artist: programs[i].dj.nickname,
-          artistUrl: '/user/home?id=' + programs[i].dj.userId,
+          artistUrl: '/user?id=' + programs[i].dj.userId,
           imgUrl: programs[i].blurCoverUrl,
           time: programs[i].duration
         }
+        djRadioList[i] = programs[i].id
       }
     }
 
-    typeof route.query.id === 'string' && getPlayList(route.query.id)
+    typeof route.query.id === 'string' && ((id.value = route.query.id), getDjradioList(route.query.id))
 
     return {
       route,
       headerDetail,
-      listDetail
+      listDetail,
+      handlePlay,
+      handleShare,
+      handleSubscribe,
+      djRadioList,
+      id
     }
   }
 })

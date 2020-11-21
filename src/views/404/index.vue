@@ -1,5 +1,5 @@
 <template>
-  <div id="404" />
+  <div id="404">That's a Four-Oh-Four.</div>
 </template>
 <script lang="ts">
 import { defineComponent, onMounted } from 'vue'

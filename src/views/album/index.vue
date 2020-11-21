@@ -1,10 +1,10 @@
 <template>
   <div id="album">
-    <play-list-header :headerDetail="headerDetail" />
-    <play-list-detail :listDetail="listDetail" />
+    <play-list-header :headerDetail="headerDetail" @handle-play="handlePlay(albumList)" @handle-share="handleShare(id, 'album', 'test')" @handle-subscribe="handleSubscribe(id, 'album')" />
+    <play-list-detail :listDetail="listDetail" @handle-list-play="handlePlay" @handle-list-share="handleShare" />
 
     <!-- 评论、分页 -->
-    <comments-pagination :reuqestURL="'GET_COMMENT_ALBUM'" />
+    <comments-pagination :reuqestURL="'GET_COMMENT_ALBUM'" @get-comments-val="sendCommentsVal" @thumb-up="thumbUp" :key="renderDom" />
   </div>
 </template>
 <script lang="ts">
@@ -18,6 +18,10 @@ import CommentsPagination from '../../components/commentsPagination.vue'
 
 import { playListInt, headerDetailInt } from '../../type/playList.type'
 
+import { handlePlay, handleShare, handleSubscribe } from '../../utils/usePlayListHeader'
+
+import { commentsEnum } from '../../enum/comments'
+import { useSendComments, useCommentsLike } from '../../utils/comments'
 import request from '../../api/index'
 
 export default defineComponent({
@@ -31,8 +35,12 @@ export default defineComponent({
     const route = useRoute()
     const headerDetail = ref({} as headerDetailInt)
     const listDetail: playListInt[] = reactive([])
+    const albumList: Array<string> = reactive([])
+    const id = ref('')
+    const renderDom = ref(Math.random())
 
-    const getPlayList: (n: string) => void = async n => {
+    const getAlbumList: (n: string) => void = async n => {
+      albumList.length = 0
       const { album, songs } = await request['httpGET']('GET_ALBUM', { 'id': n })
       headerDetail.value = {
         name: album.name,
@@ -45,7 +53,8 @@ export default defineComponent({
         updateTime: album.publishTime,
         artistName: album.artist.name,
         artistId: album.artist.id,
-        tags: album.tags
+        tags: album.tags,
+        subscribed: album.subscribed
       }
 
       for (let i = 0; i < songs.length; i++) {
@@ -57,15 +66,34 @@ export default defineComponent({
           imgUrl: songs[i].al.picUrl,
           time: songs[i].dt
         }
+        albumList[i] = songs[i].id
       }
     }
 
+    const sendCommentsVal: (v: string) => void = async v => {
+      await useSendComments(id.value, commentsEnum['专辑'], v)
+      renderDom.value = Math.random()
+    }
+
+    const thumbUp: (n: number) => void = async n => {
+      await useCommentsLike(id.value, commentsEnum['专辑'], n)
+      renderDom.value = Math.random()
+    }
+
     // 单碟 album?id=n
-    typeof route.query.id === 'string' && getPlayList(route.query.id)
+    typeof route.query.id === 'string' && ((id.value = route.query.id), getAlbumList(id.value))
 
     return {
       headerDetail,
-      listDetail
+      listDetail,
+      handlePlay,
+      handleShare,
+      handleSubscribe,
+      albumList,
+      id,
+      thumbUp,
+      sendCommentsVal,
+      renderDom
     }
   }
 })

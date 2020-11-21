@@ -1,5 +1,6 @@
 export type commentsInt = {
   username: string
+  commentId: number
   useravatar: string
   content: string
   liked: boolean

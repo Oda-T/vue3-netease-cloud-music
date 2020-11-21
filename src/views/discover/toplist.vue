@@ -8,10 +8,15 @@
     </div>
     <!-- 榜单详情 -->
     <div v-else>
-      <play-list-header :headerDetail="headerDetail" />
-      <play-list-detail :listDetail="listDetail" />
+      <play-list-header
+        :headerDetail="headerDetail"
+        @handle-play="handlePlay(topList)"
+        @handle-share="handleShare(topListId, 'playlist', 'test')"
+        @handle-subscribe="handleSubscribe(topListId, 'playlist')"
+      />
+      <play-list-detail :listDetail="listDetail" @handle-list-play="handlePlay" @handle-list-share="handleShare" />
       <!-- 评论、分页 -->
-      <comments-pagination :reuqestURL="'GET_COMMENT_PLAYLIST'" />
+      <comments-pagination :reuqestURL="'GET_COMMENT_PLAYLIST'" @get-comments-val="sendCommentsVal" @thumb-up="thumbUp" :key="renderDom" />
     </div>
   </div>
 </template>
@@ -29,6 +34,10 @@ import CommentsPagination from '../../components/commentsPagination.vue'
 import { topListInt, cardListInt } from '../../type/recommend.type'
 import { playListInt, headerDetailInt } from '../../type/playList.type'
 
+import { handlePlay, handleShare, handleSubscribe } from '../../utils/usePlayListHeader'
+
+import { commentsEnum } from '../../enum/comments'
+import { useSendComments, useCommentsLike } from '../../utils/comments'
 import request from '../../api/index'
 
 export default defineComponent({
@@ -56,7 +65,9 @@ export default defineComponent({
     const topListFull = computed(() => store.state.topListFull)
     const listDetail: Array<playListInt> = reactive([])
 
+    const topList: Array<string> = reactive([])
     const topListId = ref('')
+    const renderDom = ref(Math.random())
 
     const getPlayList: (n: number, arr: cardListInt[]) => void = async (n, arr) => {
       const { playlist } = await request['httpGET']('GET_PLAYLIST_DETAIL', { 'id': n })
@@ -121,7 +132,7 @@ export default defineComponent({
 
     const getTopListDetail: (id: string) => void = async id => {
       listDetail.length = 0
-
+      topList.length = 0
       const { playlist } = await request['httpGET']('GET_PLAYLIST_DETAIL', { 'id': id })
 
       headerDetail.value = {
@@ -132,7 +143,8 @@ export default defineComponent({
         playCount: playlist.playCount,
         shareCount: playlist.shareCount,
         subscribedCount: playlist.subscribedCount,
-        updateTime: playlist.updateTime
+        updateTime: playlist.updateTime,
+        subscribed: playlist.subscribed
       }
 
       for (let i = 0; i < playlist.tracks.length; i++) {
@@ -144,7 +156,18 @@ export default defineComponent({
           imgUrl: playlist.tracks[i].al.picUrl,
           time: playlist.tracks[i].dt
         }
+        topList[i] = playlist.tracks[i].id
       }
+    }
+
+    const sendCommentsVal: (v: string) => void = async v => {
+      await useSendComments(topListId.value, commentsEnum['歌单'], v)
+      renderDom.value = Math.random()
+    }
+
+    const thumbUp: (n: number) => void = async n => {
+      await useCommentsLike(topListId.value, commentsEnum['歌单'], n)
+      renderDom.value = Math.random()
     }
 
     getTopListFull()
@@ -167,7 +190,14 @@ export default defineComponent({
       getIdCallBackGlobal,
       topListId,
       listDetail,
-      headerDetail
+      headerDetail,
+      handlePlay,
+      handleShare,
+      handleSubscribe,
+      topList,
+      sendCommentsVal,
+      thumbUp,
+      renderDom
     }
   }
 })

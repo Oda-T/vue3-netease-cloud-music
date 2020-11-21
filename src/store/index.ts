@@ -15,7 +15,8 @@ export default createStore({
     playListFull: [],
     djListFull: [],
     userId: '',
-    loginStatus: 'unlogin'
+    loginStatus: 'unlogin',
+    songList: [] as Array<string>
   },
   mutations: {
     setToolbarTitle: (state, i) => {
@@ -48,6 +49,13 @@ export default createStore({
     setLoaginStatus: (state, i) => {
       sessionStorage.login = i
       state.loginStatus = i
+    },
+    setSongList: (state, i) => {
+      if (typeof i === 'string') {
+        state.songList.push(i)
+      } else {
+        state.songList = state.songList.concat(i)
+      }
     }
   },
   actions: {
@@ -101,7 +109,7 @@ export default createStore({
       commit('setUserId', profile.userId)
     },
     getLoaginStatus: async ({ commit }) => {
-      const { code, profile } = await request['httpGET']('GET_LOGIN_STATUS', { 'timestamp': Date.now() })
+      const { code, profile } = await request['httpGET']('GET_LOGIN_STATUS')
 
       if (code === 200) {
         commit('setLoaginStatus', 'login')

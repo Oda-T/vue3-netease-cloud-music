@@ -147,7 +147,7 @@ export default defineComponent({
     const record = ref([])
 
     const handleRouteQuery: () => void = async () => {
-      const data = await request['httpGET']('GET_USER_DETAIL', { 'uid': userId, 'timestamp': Date.now() })
+      const data = await request['httpGET']('GET_USER_DETAIL', { 'uid': userId })
 
       userSettingName.value = data.profile.nickname
       userSettingDesc.value = data.profile.signature
@@ -172,8 +172,7 @@ export default defineComponent({
         'signature': userSettingDesc.value,
         'gender': userSettingSex.value,
         'birthday': handleTimeStamp(userSettingBirthday.value),
-        'nickname': userSettingName.value,
-        'timestamp': Date.now()
+        'nickname': userSettingName.value
       })
       // 修改失败，原因未知
       if (data.code === 200 && data.full !== false) {
@@ -218,8 +217,7 @@ export default defineComponent({
       const data = await request['httpPOST']('POST_REGISTER_CELLPHONE', {
         'phone': userSettingPhone.value,
         'password': userSettingPassword.value,
-        'captcha': userSettingCaptcha.value,
-        'timestamp': Date.now()
+        'captcha': userSettingCaptcha.value
       })
 
       if (data.code === 200) {
@@ -248,13 +246,13 @@ export default defineComponent({
     }
 
     const getUserBinding: () => void = async () => {
-      const { bindings } = await request['httpGET']('GET_USER_BINDING', { 'uid': userId, 'timestamp': Date.now() })
+      const { bindings } = await request['httpGET']('GET_USER_BINDING', { 'uid': userId })
       binding.value = bindings
     }
 
     // 播放记录
     const getUserRecording: () => void = async () => {
-      const data = await request['httpGET']('GET_USER_RECORD', { 'uid': userId, 'type': 1, 'timestamp': Date.now() })
+      const data = await request['httpGET']('GET_USER_RECORD', { 'uid': userId, 'type': 1 })
       record.value = data.weekData
     }
 

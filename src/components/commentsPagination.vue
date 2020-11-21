@@ -1,13 +1,13 @@
 <template>
   <div class="c-comments-pagination" ref="domContainer">
     <!-- 评论 -->
-    <comments :commentsDetail="commentsDetail" :hotCommentsDetail="hotCommentsDetail" />
+    <comments :commentsDetail="commentsDetail" :hotCommentsDetail="hotCommentsDetail" @get-comments-val="getCommentsVal" @thumb-up="thumbUp" />
     <!-- 分页 -->
     <pagination :pageCount="pageCount" @page-number="pageNumber" />
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, reactive, ref } from 'vue'
+import { defineComponent, onBeforeUpdate, reactive, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 import Comments from './comments.vue'
@@ -22,11 +22,12 @@ export default defineComponent({
   props: {
     reuqestURL: String
   },
+  emits: ['get-comments-val', 'thumb-up'],
   components: {
     Comments,
     Pagination
   },
-  setup(prop) {
+  setup(prop, { emit }) {
     const route = useRoute()
     const pageCount = ref(0)
     const commentsDetail: Array<commentsInt> = reactive([])
@@ -43,6 +44,7 @@ export default defineComponent({
         pageCount.value = Math.ceil(total / 20)
         for (let i = 0; i < hotComments.length; i++) {
           hotCommentsDetail[i] = {
+            commentId: hotComments[i].commentId,
             username: hotComments[i].user.nickname,
             useravatar: hotComments[i].user.avatarUrl,
             usertype: hotComments[i].user.userType,
@@ -63,6 +65,7 @@ export default defineComponent({
       // 最新评论
       for (let i = 0; i < comments.length; i++) {
         commentsDetail[i] = {
+          commentId: comments[i].commentId,
           username: comments[i].user.nickname,
           useravatar: comments[i].user.avatarUrl,
           usertype: comments[i].user.userType,
@@ -82,14 +85,28 @@ export default defineComponent({
       window.scrollTo({ top: 0 })
     }
 
+    const getCommentsVal: (v: string) => void = v => {
+      emit('get-comments-val', v)
+    }
+    const thumbUp: (n: number) => void = n => {
+      emit('thumb-up', n)
+    }
+
     typeof route.query.id === 'string' && getComments(route.query.id)
+
+    onBeforeUpdate(() => {
+      typeof route.query.id === 'string' && getComments(route.query.id)
+    })
 
     return {
       commentsDetail,
       hotCommentsDetail,
       pageCount,
+      getComments,
       pageNumber,
-      domContainer
+      domContainer,
+      getCommentsVal,
+      thumbUp
     }
   }
 })
