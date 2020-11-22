@@ -7,7 +7,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, onBeforeUpdate, reactive, ref } from 'vue'
+import { defineComponent, reactive, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 import Comments from './comments.vue'
@@ -91,12 +91,7 @@ export default defineComponent({
     const thumbUp: (n: number) => void = n => {
       emit('thumb-up', n)
     }
-
     typeof route.query.id === 'string' && getComments(route.query.id)
-
-    onBeforeUpdate(() => {
-      typeof route.query.id === 'string' && getComments(route.query.id)
-    })
 
     return {
       commentsDetail,

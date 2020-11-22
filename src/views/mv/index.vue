@@ -16,7 +16,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
 
 import PlayListHeader from '../../components/playListHeader.vue'
@@ -66,12 +66,16 @@ export default defineComponent({
 
     const sendCommentsVal: (v: string) => void = async v => {
       await useSendComments(id.value, commentsEnum['mv'], v)
-      renderDom.value = Math.random()
+      nextTick(() => {
+        renderDom.value = Math.random()
+      })
     }
 
     const thumbUp: (n: number) => void = async n => {
       await useCommentsLike(id.value, commentsEnum['mv'], n)
-      renderDom.value = Math.random()
+      nextTick(() => {
+        renderDom.value = Math.random()
+      })
     }
 
     typeof route.query.id === 'string' && ((id.value = route.query.id), getMvDetail(id.value), getMvUrl(id.value))

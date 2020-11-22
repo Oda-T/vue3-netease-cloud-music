@@ -20,7 +20,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue'
+import { defineComponent, ref, onMounted, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
 import mdui from 'mdui'
 
@@ -74,12 +74,16 @@ export default defineComponent({
     }
     const sendCommentsVal: (v: string) => void = async v => {
       await useSendComments(id.value, commentsEnum['歌曲'], v)
-      renderDom.value = Math.random()
+      nextTick(() => {
+        renderDom.value = Math.random()
+      })
     }
 
     const thumbUp: (n: number) => void = async n => {
       await useCommentsLike(id.value, commentsEnum['歌曲'], n)
-      renderDom.value = Math.random()
+      nextTick(() => {
+        renderDom.value = Math.random()
+      })
     }
 
     typeof route.query.id === 'string' && ((id.value = route.query.id), getSongDetail(id.value))

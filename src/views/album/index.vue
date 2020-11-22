@@ -8,7 +8,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, reactive, ref } from 'vue'
+import { defineComponent, reactive, ref, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
 
 import PlayListHeader from '../../components/playListHeader.vue'
@@ -72,12 +72,16 @@ export default defineComponent({
 
     const sendCommentsVal: (v: string) => void = async v => {
       await useSendComments(id.value, commentsEnum['专辑'], v)
-      renderDom.value = Math.random()
+      nextTick(() => {
+        renderDom.value = Math.random()
+      })
     }
 
     const thumbUp: (n: number) => void = async n => {
       await useCommentsLike(id.value, commentsEnum['专辑'], n)
-      renderDom.value = Math.random()
+      nextTick(() => {
+        renderDom.value = Math.random()
+      })
     }
 
     // 单碟 album?id=n

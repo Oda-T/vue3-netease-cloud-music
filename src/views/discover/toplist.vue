@@ -21,7 +21,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, reactive, ref, watchEffect, computed } from 'vue'
+import { defineComponent, reactive, ref, watchEffect, computed, nextTick } from 'vue'
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
 
@@ -162,12 +162,16 @@ export default defineComponent({
 
     const sendCommentsVal: (v: string) => void = async v => {
       await useSendComments(topListId.value, commentsEnum['歌单'], v)
-      renderDom.value = Math.random()
+      nextTick(() => {
+        renderDom.value = Math.random()
+      })
     }
 
     const thumbUp: (n: number) => void = async n => {
       await useCommentsLike(topListId.value, commentsEnum['歌单'], n)
-      renderDom.value = Math.random()
+      nextTick(() => {
+        renderDom.value = Math.random()
+      })
     }
 
     getTopListFull()
