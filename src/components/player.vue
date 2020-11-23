@@ -9,7 +9,7 @@
       <transition name="fade">
         <div v-show="hidebtnshow" class="c-player-hide-btn">
           <button class="c-player-hide-btn-prev mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon material-icons">fast_rewind</i></button>
-          <button class="c-player-hide-btn-play mdui-btn mdui-btn-icon mdui-ripple" @click="handlePlay">
+          <button class="c-player-hide-btn-play mdui-btn mdui-btn-icon mdui-ripple" @click="togglePlayPause">
             <i class="mdui-icon material-icons">{{ circleOutline }}</i>
           </button>
           <button class="c-player-hide-btn-next mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon material-icons">fast_forward</i></button>
@@ -38,7 +38,7 @@
     <!-- 播放进度条 -->
     <div class="c-player-range">
       <label class="c-player-range-slider mdui-slider">
-        <input type="range" step="0.1" min="0" max="100" :value="audioPlayRange" />
+        <input type="range" step="0.1" min="0" max="100" v-model="audioPlayRange" />
       </label>
     </div>
     <audio ref="audioPlayer" style="display: none" :src="songUrl" />
@@ -48,7 +48,7 @@
       <div class="c-player-detail-avatar" :style="{ width: cDetailAvatarWidth }" @mouseenter="avatarplayshow = !avatarplayshow" @mouseleave="avatarplayshow = !avatarplayshow">
         <img :src="avatarS" />
         <transition name="fade">
-          <button v-show="avatarplayshow" class="c-player-detail-avatar-play mdui-btn mdui-btn-icon mdui-ripple" @click="handlePlay">
+          <button v-show="avatarplayshow" class="c-player-detail-avatar-play mdui-btn mdui-btn-icon mdui-ripple" @click="togglePlayPause">
             <i class="mdui-icon material-icons">{{ circleOutline }}</i>
           </button>
         </transition>
@@ -68,6 +68,8 @@
 
 <script lang="ts">
 import { defineComponent, reactive, ref, toRefs, watch, PropType, onMounted } from 'vue'
+import mdui from 'mdui'
+
 import { handleDrTime } from '../utils/time'
 import request from '../api/index'
 
@@ -128,14 +130,26 @@ export default defineComponent({
       }
     }
 
-    const audioPlay: () => void = () => {
-      el.play()
+    const audioPlay: () => void = async () => {
+      try {
+        await el.play()
+      } catch (err) {
+        console.log(err)
+      }
+    }
+    const audioPause: () => void = async () => {
+      try {
+        await el.pause()
+      } catch (err) {
+        console.log(err)
+      }
     }
 
-    const audioPause: () => void = () => {
-      el.pause()
+    const togglePlayPause: () => void = () => {
+      isPlay ? audioPause() : audioPlay()
     }
 
+    // 播放暂停事件
     const handlePlayPauseEvent: () => void = () => {
       el.addEventListener('pause', () => {
         circleOutline.value = 'play_arrow'
@@ -148,18 +162,49 @@ export default defineComponent({
       })
     }
 
-    const handlePlay: () => void = () => {
-      isPlay ? audioPause() : audioPlay()
+    // waiting end 事件
+    const handleWaitingEndEvent: () => void = () => {
+      el.addEventListener('waiting', () => {
+        circleOutline.value = 'play_arrow'
+        isPlay = false
+      })
+      el.addEventListener('ended', () => {
+        circleOutline.value = 'play_arrow'
+        isPlay = false
+      })
     }
 
+    // 播放进行事件
     const handleTimeUpdateEvent: () => void = () => {
-      const el = audioPlayer.value as HTMLAudioElement
       el.addEventListener('timeupdate', () => {
         curTime.value = handleDrTime(Math.round(el.currentTime * 1000))
         audioPlayRange.value = (el.currentTime / el.duration) * 100
+        mdui.updateSliders()
       })
     }
+
+    // error
+    const handleErrorEvent: () => void = () => {
+      el.addEventListener('error', err => {
+        console.log(err)
+      })
+    }
+
+    // canplay
+    const handleCanPlayEvent: () => void = () => {
+      el.addEventListener('canplay', () => {
+        handlePlayPauseEvent()
+        handleWaitingEndEvent()
+        handleTimeUpdateEvent()
+        handleErrorEvent()
+
+        audioPlay()
+      })
+    }
+
     onMounted(() => {
+      mdui.mutation()
+
       el = audioPlayer.value
     })
     // songList监听
@@ -173,6 +218,7 @@ export default defineComponent({
           // 获取音乐url
           const { data } = await request['httpGET']('SONG_URL', { id: val[0] })
           songUrl.value = data[0].url
+          handleCanPlayEvent()
 
           // 获取音乐详情
           const { songs } = await request['httpGET']('SONG_DETAIL', { ids: val[0] })
@@ -181,9 +227,6 @@ export default defineComponent({
           song.avatarL = songs[0].al.picUrl + '?param=280y280'
           song.avatarS = songs[0].al.picUrl + '?param=56y56'
           totalTime.value = handleDrTime(songs[0].dt)
-          handlePlayPauseEvent()
-          handleTimeUpdateEvent()
-          handlePlay()
         }
       },
       { immediate: true, deep: true }
@@ -200,7 +243,7 @@ export default defineComponent({
       hidebtnshow,
       avatarplayshow,
       toggleAvatarShowHide,
-      handlePlay,
+      togglePlayPause,
       songUrl,
       audioPlayer,
       audioPlayRange,
