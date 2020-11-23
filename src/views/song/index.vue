@@ -1,7 +1,7 @@
 <template>
   <div id="song">
     <!-- 详情 -->
-    <play-list-header :headerDetail="headerDetail" @handle-play="handlePlay(id)" />
+    <PlayListHeader :headerDetail="headerDetail" @handle-play="handlePlay(id)" />
     <!-- 歌词 -->
     <div class="g-card-container song-lyric-container mdui-panel mdui-panel-gapless" mdui-panel>
       <div class="mdui-panel-item">
@@ -16,7 +16,7 @@
       </div>
     </div>
     <!-- 评论、分页 -->
-    <comments-pagination :reuqestURL="'GET_COMMENT_MUSIC'" @get-comments-val="sendCommentsVal" @thumb-up="thumbUp" :key="renderDom" />
+    <CommentsPagination :reuqestURL="'GET_COMMENT_MUSIC'" @get-comments-val="sendCommentsVal" @thumb-up="thumbUp" :key="renderDom" />
   </div>
 </template>
 <script lang="ts">

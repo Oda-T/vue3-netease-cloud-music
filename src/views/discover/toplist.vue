@@ -2,21 +2,21 @@
   <div id="discoverToplist">
     <div v-if="!topListId">
       <!-- 特色榜单 -->
-      <recommend :topTitle="'特色音乐榜'" :activeName="specialActiveName" :topList="specialList" :cardList="specialCardList" @get-id="getIdCallBackSpecial"></recommend>
+      <Recommend :topTitle="'特色音乐榜'" :activeName="specialActiveName" :topList="specialList" :cardList="specialCardList" @get-id="getIdCallBackSpecial" />
       <!-- 全球媒体榜单 -->
-      <recommend :topTitle="'全球媒体榜'" :activeName="globalActiveName" :topList="globalList" :cardList="globalCardList" @get-id="getIdCallBackGlobal"></recommend>
+      <Recommend :topTitle="'全球媒体榜'" :activeName="globalActiveName" :topList="globalList" :cardList="globalCardList" @get-id="getIdCallBackGlobal" />
     </div>
     <!-- 榜单详情 -->
     <div v-else>
-      <play-list-header
+      <PlayListHeader
         :headerDetail="headerDetail"
         @handle-play="handlePlay(topList)"
         @handle-share="handleShare(topListId, 'playlist', 'test')"
         @handle-subscribe="handleSubscribe(topListId, 'playlist')"
       />
-      <play-list-detail :listDetail="listDetail" @handle-list-play="handlePlay" @handle-list-share="handleShare" />
+      <PlayListDetail :listDetail="listDetail" @handle-list-play="handlePlay" @handle-list-share="handleShare" />
       <!-- 评论、分页 -->
-      <comments-pagination :reuqestURL="'GET_COMMENT_PLAYLIST'" @get-comments-val="sendCommentsVal" @thumb-up="thumbUp" :key="renderDom" />
+      <CommentsPagination :reuqestURL="'GET_COMMENT_PLAYLIST'" @get-comments-val="sendCommentsVal" @thumb-up="thumbUp" :key="renderDom" />
     </div>
   </div>
 </template>
@@ -156,7 +156,7 @@ export default defineComponent({
           imgUrl: playlist.tracks[i].al.picUrl,
           time: playlist.tracks[i].dt
         }
-        topList[i] = playlist.tracks[i].id
+        topList[i] = playlist.tracks[i].id.toString()
       }
     }
 

@@ -44,6 +44,10 @@ const RESOURCE_LIKE = '/resource/like'
 const COMMENT = '/comment'
 // 点赞评论
 const COMMENT_LIKE = '/comment/like'
+// 音乐url
+const SONG_URL = '/song/url'
+// 音乐详情
+const SONG_DETAIL = '/song/detail'
 
 type REQUEST_NAME = {
   [key: string]: string
@@ -75,7 +79,9 @@ const REQUEST_NAME: REQUEST_NAME = {
   VIDEO_SUB,
   RESOURCE_LIKE,
   COMMENT,
-  COMMENT_LIKE
+  COMMENT_LIKE,
+  SONG_URL,
+  SONG_DETAIL
 }
 
 export default REQUEST_NAME

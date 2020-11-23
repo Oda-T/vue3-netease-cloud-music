@@ -1,9 +1,9 @@
 <template>
   <div class="c-comments-pagination" ref="domContainer">
     <!-- 评论 -->
-    <comments :commentsDetail="commentsDetail" :hotCommentsDetail="hotCommentsDetail" @get-comments-val="getCommentsVal" @thumb-up="thumbUp" />
+    <Comments :commentsDetail="commentsDetail" :hotCommentsDetail="hotCommentsDetail" @get-comments-val="getCommentsVal" @thumb-up="thumbUp" />
     <!-- 分页 -->
-    <pagination :pageCount="pageCount" @page-number="pageNumber" />
+    <Pagination :pageCount="pageCount" @page-number="pageNumber" />
   </div>
 </template>
 <script lang="ts">

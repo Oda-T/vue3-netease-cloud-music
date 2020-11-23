@@ -41,6 +41,7 @@
 <script lang="ts">
 import { defineComponent, ref, PropType } from 'vue'
 import { playListInt } from '../type/playList.type'
+import { handleDrTime } from '../utils/time'
 
 export default defineComponent({
   name: 'playListDetail',
@@ -50,15 +51,6 @@ export default defineComponent({
   emits: ['handle-list-play', 'handle-list-share', 'handle-list-subscribe'],
   setup() {
     const curIndex = ref(-1)
-
-    const getDuoNum: (d: number) => string | number = d => {
-      return d >= 10 ? d : `0${d}`
-    }
-
-    const handleDrTime: (d: number) => string = d => {
-      const _d = Math.floor(d / 1000)
-      return `${Math.floor(_d / 60)}:${getDuoNum(Math.floor(_d % 60))}`
-    }
 
     // 多个作者用/分割
     const handleArtistName: (arr: string | Array<{ name: string }>) => string = arr => {
@@ -78,7 +70,6 @@ export default defineComponent({
 
     return {
       curIndex,
-      getDuoNum,
       handleDrTime,
       handleArtistName
     }

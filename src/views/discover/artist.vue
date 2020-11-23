@@ -22,7 +22,7 @@
       </span>
     </div>
     <div class="artist-card-container g-card-container">
-      <card v-for="item in cardList" :key="item.id" :item="item" />
+      <Card v-for="item in cardList" :key="item.id" :item="item" />
     </div>
   </div>
 </template>

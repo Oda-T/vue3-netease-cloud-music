@@ -1,5 +1,17 @@
 <template>
-  <button class="mdui-fab mdui-fab-fixed mdui-color-red-900 mdui-ripple" :class="{ 'mdui-fab-hide': isShow }" @click="backToTop"><i class="mdui-icon material-icons">navigation</i></button>
+  <div class="mdui-fab-wrapper back-to-top" mdui-fab>
+    <button class="mdui-fab mdui-ripple mdui-color-red-900" :class="{ 'mdui-fab-hide': isShow }" @click="backToTop">
+      <!-- 默认显示的图标 -->
+      <i class="mdui-icon material-icons">navigation</i>
+      <i class="mdui-icon mdui-fab-opened material-icons">near_me</i>
+    </button>
+    <div class="mdui-fab-dial">
+      <button class="mdui-fab mdui-fab-mini mdui-ripple mdui-color-pink"><i class="mdui-icon material-icons">backup</i></button>
+      <button class="mdui-fab mdui-fab-mini mdui-ripple mdui-color-red"><i class="mdui-icon material-icons">bookmark</i></button>
+      <button class="mdui-fab mdui-fab-mini mdui-ripple mdui-color-orange"><i class="mdui-icon material-icons">access_alarms</i></button>
+      <button class="mdui-fab mdui-fab-mini mdui-ripple mdui-color-blue"><i class="mdui-icon material-icons">touch_app</i></button>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -34,3 +46,8 @@ export default defineComponent({
   }
 })
 </script>
+<style lang="less" scoped>
+.back-to-top {
+  z-index: 5001;
+}
+</style>

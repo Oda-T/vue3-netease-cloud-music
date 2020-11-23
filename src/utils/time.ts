@@ -1,3 +1,11 @@
+export const getDuoNum: (d: number) => string | number = d => {
+  return d >= 10 ? d : `0${d}`
+}
+
+export const handleDrTime: (d: number) => string = d => {
+  const _d = Math.floor(d / 1000)
+  return `${Math.floor(_d / 60)}:${getDuoNum(Math.floor(_d % 60))}`
+}
 // 事件戳转字符串
 export const handleTime: (d: number) => string = d => {
   const _d = new Date(d)

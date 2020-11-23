@@ -38,7 +38,7 @@
       <div class="user-card-title">
         <h1 class="mdui-typo-title mdui-text-color-red-900">歌单</h1>
       </div>
-      <card v-for="item in cardList" :key="item.id" :item="item" />
+      <Card v-for="item in cardList" :key="item.id" :item="item" />
     </div>
   </div>
 </template>

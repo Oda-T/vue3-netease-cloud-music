@@ -20,7 +20,6 @@
     <!-- 卡片的标题和副标题 -->
     <div class="c-card-item-primary mdui-card-primary">
       <div class="mdui-card-primary-title mdui-text-truncate c-card-list-title">
-        <slot name="pre"></slot>
         <router-link :to="item.id" class="c-card-list-title-inner">{{ item.name }}</router-link>
       </div>
       <div v-if="item.playCount" class="mdui-card-primary-subtitle mdui-text-truncate"><i class="c-card-list-title-icon mdui-icon material-icons">headset</i>{{ item.playCount }}</div>

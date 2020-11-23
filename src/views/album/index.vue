@@ -1,10 +1,10 @@
 <template>
   <div id="album">
-    <play-list-header :headerDetail="headerDetail" @handle-play="handlePlay(albumList)" @handle-share="handleShare(id, 'album', 'test')" @handle-subscribe="handleSubscribe(id, 'album')" />
-    <play-list-detail :listDetail="listDetail" @handle-list-play="handlePlay" @handle-list-share="handleShare" />
+    <PlayListHeader :headerDetail="headerDetail" @handle-play="handlePlay(albumList)" @handle-share="handleShare(id, 'album', 'test')" @handle-subscribe="handleSubscribe(id, 'album')" />
+    <PlayListDetail :listDetail="listDetail" @handle-list-play="handlePlay" @handle-list-share="handleShare" />
 
     <!-- 评论、分页 -->
-    <comments-pagination :reuqestURL="'GET_COMMENT_ALBUM'" @get-comments-val="sendCommentsVal" @thumb-up="thumbUp" :key="renderDom" />
+    <CommentsPagination :reuqestURL="'GET_COMMENT_ALBUM'" @get-comments-val="sendCommentsVal" @thumb-up="thumbUp" :key="renderDom" />
   </div>
 </template>
 <script lang="ts">
@@ -66,7 +66,7 @@ export default defineComponent({
           imgUrl: songs[i].al.picUrl,
           time: songs[i].dt
         }
-        albumList[i] = songs[i].id
+        albumList[i] = songs[i].id.toString()
       }
     }
 

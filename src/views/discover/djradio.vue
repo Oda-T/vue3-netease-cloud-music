@@ -1,6 +1,6 @@
 <template>
   <div id="discoverDjradio">
-    <recommend :topTitle="'主播电台'" :activeName="activeName" :topList="djList" :cardList="djCardList" @get-id="getIdCallBackDj" />
+    <Recommend :topTitle="'主播电台'" :activeName="activeName" :topList="djList" :cardList="djCardList" @get-id="getIdCallBackDj" />
     <div class="dj-card-container g-card-container">
       <!-- 热门电台/新晋电台toggle -->
       <div class="dj-card-title">

@@ -1,8 +1,8 @@
 <template>
   <div id="dj">
-    <play-list-header :headerDetail="headerDetail" @handle-play="handlePlay(id)" @handle-share="handleShare(id, 'djprogram', 'test')" @handle-like="handleLike(id, 'djprogram')" />
+    <PlayListHeader :headerDetail="headerDetail" @handle-play="handlePlay(id)" @handle-share="handleShare(id, 'djprogram', 'test')" @handle-like="handleLike(id, 'djprogram')" />
     <!-- 评论、分页 -->
-    <comments-pagination :reuqestURL="'GET_COMMENT_DJ'" @get-comments-val="sendCommentsVal" @thumb-up="thumbUp" :key="renderDom" />
+    <CommentsPagination :reuqestURL="'GET_COMMENT_DJ'" @get-comments-val="sendCommentsVal" @thumb-up="thumbUp" :key="renderDom" />
   </div>
 </template>
 <script lang="ts">

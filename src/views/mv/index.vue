@@ -1,6 +1,6 @@
 <template>
   <div id="mv">
-    <play-list-header :headerDetail="headerDetail" @handle-play="videoShow = true" @handle-share="handleShare(id, 'mv', 'test')" @handle-subscribe="handleSubscribe(id, 'mv')" />
+    <PlayListHeader :headerDetail="headerDetail" @handle-play="videoShow = true" @handle-share="handleShare(id, 'mv', 'test')" @handle-subscribe="handleSubscribe(id, 'mv')" />
     <!-- 视频信息 -->
 
     <teleport to="#modals">
@@ -12,7 +12,7 @@
     </teleport>
 
     <!-- 评论、分页 -->
-    <comments-pagination :reuqestURL="'GET_COMMENT_MV'" @get-comments-val="sendCommentsVal" @thumb-up="thumbUp" :key="renderDom" />
+    <CommentsPagination :reuqestURL="'GET_COMMENT_MV'" @get-comments-val="sendCommentsVal" @thumb-up="thumbUp" :key="renderDom" />
   </div>
 </template>
 <script lang="ts">

@@ -1,7 +1,7 @@
 <template>
   <div id="djradio">
-    <play-list-header :headerDetail="headerDetail" @handle-play="handlePlay(djRadioList)" @handle-share="handleShare(id, 'djradio', 'test')" @handle-subscribe="handleSubscribe(id, 'djradio')" />
-    <play-list-detail :listDetail="listDetail" @handle-list-play="handlePlay" />
+    <PlayListHeader :headerDetail="headerDetail" @handle-play="handlePlay(djRadioList)" @handle-share="handleShare(id, 'djradio', 'test')" @handle-subscribe="handleSubscribe(id, 'djradio')" />
+    <PlayListDetail :listDetail="listDetail" @handle-list-play="handlePlay" />
   </div>
 </template>
 <script lang="ts">
@@ -52,7 +52,7 @@ export default defineComponent({
           imgUrl: programs[i].blurCoverUrl,
           time: programs[i].duration
         }
-        djRadioList[i] = programs[i].id
+        djRadioList[i] = programs[i].id.toString()
       }
     }
 

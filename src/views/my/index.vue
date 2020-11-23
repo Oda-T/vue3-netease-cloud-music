@@ -4,35 +4,35 @@
       <div v-show="cardList.length" class="my-card-title">
         <h1 class="mdui-typo-title mdui-text-color-red-900">创建的歌单</h1>
       </div>
-      <card v-for="item in cardList" :key="item.id" :item="item">
+      <Card v-for="item in cardList" :key="item.id" :item="item">
         <button class="mdui-btn mdui-btn-icon mdui-text-color-white">
           <i class="mdui-icon material-icons" mdui-dialog="{target: '#editDialog'}" @click="handleEditDialog(item)">rate_review</i>
         </button>
-      </card>
+      </Card>
     </div>
     <div class="my-card-container g-card-container">
       <div v-show="cardListSub.length" class="my-card-title">
         <h1 class="mdui-typo-title mdui-text-color-red-900">收藏的歌单</h1>
       </div>
-      <card v-for="item in cardListSub" :key="item.id" :item="item" />
+      <Card v-for="item in cardListSub" :key="item.id" :item="item" />
     </div>
     <div class="my-card-container g-card-container">
       <div v-show="cardListMV.length" class="my-card-title">
         <h1 class="mdui-typo-title mdui-text-color-red-900">收藏的MV</h1>
       </div>
-      <card v-for="item in cardListMV" :key="item.id" :item="item" />
+      <Card v-for="item in cardListMV" :key="item.id" :item="item" />
     </div>
     <div class="my-card-container g-card-container">
       <div v-show="cardListAlbum.length" class="my-card-title">
         <h1 class="mdui-typo-title mdui-text-color-red-900">收藏的专辑</h1>
       </div>
-      <card v-for="item in cardListAlbum" :key="item.id" :item="item" />
+      <Card v-for="item in cardListAlbum" :key="item.id" :item="item" />
     </div>
     <div class="my-card-container g-card-container">
       <div v-show="cardListDjRadio.length" class="my-card-title">
         <h1 class="mdui-typo-title mdui-text-color-red-900">订阅的电台</h1>
       </div>
-      <card v-for="item in cardListDjRadio" :key="item.id" :item="item" />
+      <Card v-for="item in cardListDjRadio" :key="item.id" :item="item" />
     </div>
     <!-- 编辑对话框 -->
     <div class="mdui-dialog" id="editDialog" ref="editDialog">

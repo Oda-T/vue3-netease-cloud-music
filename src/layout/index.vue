@@ -3,7 +3,7 @@
     <!-- 顶部工具栏 -->
     <div class="mdui-appbar mdui-appbar-fixed">
       <div class="mdui-toolbar mdui-color-red-900">
-        <span class="mdui-btn mdui-btn-icon mdui-ripple mdui-ripple-white" mdui-drawer="{target:'.g-left-drawer'}"><i class="mdui-icon material-icons">menu</i></span>
+        <span class="mdui-btn mdui-btn-icon mdui-ripple mdui-ripple-white" mdui-drawer="{target:'#g-left-drawer'}"><i class="mdui-icon material-icons">menu</i></span>
         <router-link to="/" class="mdui-typo-headline">网易云音乐</router-link>
         <a class="mdui-typo-title">{{ toolbarTitle }}</a>
         <a v-if="toolbarSubTitle">{{ toolbarSubTitle }}</a>
@@ -28,7 +28,7 @@
       </div>
     </div>
     <!-- 左侧抽屉 -->
-    <div class="mdui-drawer g-left-drawer">
+    <div class="mdui-drawer" id="g-left-drawer">
       <ul class="mdui-list" mdui-collapse="{accordion: true}">
         <li v-for="(item, index) in listItem" :key="index" class="mdui-collapse-item mdui-collapse-item-open">
           <div class="mdui-collapse-item-header mdui-list-item mdui-ripple" :class="{ 'mdui-list-item-active': index === curIndex }" @click.stop="handleTypoTitle(item.name)">
@@ -73,16 +73,15 @@
         <button class="mdui-btn mdui-ripple" :disabled="!canLogin" mdui-dialog-confirm>登录</button>
       </div>
     </div>
-    <!-- 底栏播放器 -->
-    <!-- 返回顶端 -->
-    <back-to-top />
 
+    <!-- 返回顶端 -->
+    <BackToTop />
+    <!-- 底栏播放器 -->
+    <Player :songList="songList" />
     <!-- 路由 transition -->
     <router-view v-slot="{ Component }">
       <transition name="slide-fade">
-        <keep-alive include="Discover,discoverTopList,discoverDjradio,discoverArtist">
-          <component :is="Component" />
-        </keep-alive>
+        <component :is="Component" />
       </transition>
     </router-view>
   </div>
@@ -95,7 +94,8 @@ import mdui from 'mdui'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 
-import BackToTop from '../components/backToTop.vue'
+import BackToTop from '../components/backtotop.vue'
+import Player from '../components/player.vue'
 
 import { getToken } from '../utils/auth'
 import { emailValidate, passwordValidate, phoneValidate } from '../validator/layout'
@@ -103,7 +103,8 @@ import request from '../api/index'
 
 export default defineComponent({
   components: {
-    BackToTop
+    BackToTop,
+    Player
   },
   setup() {
     const router = useRouter()
@@ -208,7 +209,8 @@ export default defineComponent({
       handleTypoSubTitle,
       loginEmailPhone,
       loginPassword,
-      canLogin
+      canLogin,
+      songList: computed(() => store.state.songList)
     }
   }
 })

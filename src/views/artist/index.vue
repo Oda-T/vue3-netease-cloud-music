@@ -1,7 +1,7 @@
 <template>
   <div id="artist">
     <!-- 概览 -->
-    <play-list-header :headerDetail="headerDetail" />
+    <PlayListHeader :headerDetail="headerDetail" />
     <!-- 作品 -->
     <div class="artist-body g-card-container">
       <div class="mdui-tab mdui-tab-full-width" mdui-tab>
@@ -11,13 +11,13 @@
         <a href="#artist-tab4" class="mdui-ripple" @click="getArtistDesc(id)">艺人介绍</a>
       </div>
       <div id="artist-tab1" class="mdui-p-t-2 mdui-p-b-2">
-        <play-list-detail :listDetail="listDetail" @handle-list-play="handlePlay" @handle-list-share="handleShare" />
+        <PlayListDetail :listDetail="listDetail" @handle-list-play="handlePlay" @handle-list-share="handleShare" />
       </div>
       <div id="artist-tab2" class="mdui-p-t-2 mdui-p-b-2">
-        <card v-for="item in cardList" :key="item.id" :item="item" />
+        <Card v-for="item in cardList" :key="item.id" :item="item" />
       </div>
       <div id="artist-tab3" class="mdui-p-t-2 mdui-p-b-2">
-        <card v-for="item in mvCardList" :key="item.id" :item="item" />
+        <Card v-for="item in mvCardList" :key="item.id" :item="item" />
       </div>
       <div id="artist-tab4" class="mdui-p-t-2 mdui-p-b-2">
         <div class="mdui-typo" v-for="item in description" :key="item.ti" :item="item">

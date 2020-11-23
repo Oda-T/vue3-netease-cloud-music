@@ -4,7 +4,7 @@
     <!-- 显示隐藏内容 -->
 
     <div class="c-player-hide" :style="{ height: cPlayerHideHeight }" @mouseenter="hidebtnshow = !hidebtnshow" @mouseleave="hidebtnshow = !hidebtnshow">
-      <img class="c-player-hide-avatar" v-lazy="avatarL" />
+      <img class="c-player-hide-avatar" :src="avatarL" />
 
       <transition name="fade">
         <div v-show="hidebtnshow" class="c-player-hide-btn">
@@ -21,14 +21,14 @@
       </button>
       <ul class="mdui-menu" id="example-attr">
         <li class="mdui-menu-item">
-          <a href="javascript:;" class="mdui-ripple">Refresh</a>
+          <a href="javascript:;" class="mdui-ripple">PlayList</a>
         </li>
         <li class="mdui-menu-item">
-          <a href="javascript:;" class="mdui-ripple">loop</a>
+          <a href="javascript:;" class="mdui-ripple">Loop</a>
         </li>
         <li class="mdui-divider"></li>
         <li class="mdui-menu-item">
-          <a href="javascript:;" class="mdui-ripple">Sign out</a>
+          <a href="javascript:;" class="mdui-ripple">Clear</a>
         </li>
       </ul>
 
@@ -38,14 +38,15 @@
     <!-- 播放进度条 -->
     <div class="c-player-range">
       <label class="c-player-range-slider mdui-slider">
-        <input type="range" step="0.1" min="0" max="100" />
+        <input type="range" step="0.1" min="0" max="100" :value="audioPlayRange" />
       </label>
     </div>
+    <audio ref="audioPlayer" style="display: none" :src="songUrl" />
 
     <!-- 头部，包含头像、标题、作者 -->
     <div class="c-player-detail">
       <div class="c-player-detail-avatar" :style="{ width: cDetailAvatarWidth }" @mouseenter="avatarplayshow = !avatarplayshow" @mouseleave="avatarplayshow = !avatarplayshow">
-        <img v-lazy="avatarS" />
+        <img :src="avatarS" />
         <transition name="fade">
           <button v-show="avatarplayshow" class="c-player-detail-avatar-play mdui-btn mdui-btn-icon mdui-ripple" @click="handlePlay">
             <i class="mdui-icon material-icons">{{ circleOutline }}</i>
@@ -54,7 +55,7 @@
       </div>
 
       <div class="c-player-detail-detail">
-        <div class="c-player-detail-title mdui-text-truncate">{{ title }}{{ songUrl }}</div>
+        <div class="c-player-detail-title mdui-text-truncate">{{ title }}</div>
         <div class="c-player-detail-author mdui-text-truncate">{{ author }}</div>
       </div>
 
@@ -66,48 +67,45 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref, toRefs, watch } from 'vue'
-
-import axios from 'axios'
+import { defineComponent, reactive, ref, toRefs, watch, PropType, onMounted } from 'vue'
+import { handleDrTime } from '../utils/time'
+import request from '../api/index'
 
 export default defineComponent({
   name: 'Player',
   props: {
-    ids: String
+    songList: Array as PropType<Array<string>>
   },
   setup(props) {
     const circleOutline = ref('play_arrow')
 
     const curTime = ref('00:00')
     const totalTime = ref('00:00')
+    const audioPlayer = ref()
+    let el: HTMLAudioElement
+    const audioPlayRange = ref(0)
 
     let avatarShow = false
     let isPlay = false
 
     const cPlayerWidth = ref('')
-
     const cPlayerOverflow = ref('')
-
     const cPlayerHideHeight = ref('')
-
     const hidebtnshow = ref(false)
-
     const avatarplayshow = ref(false)
-
     const cDetailAvatarWidth = ref('')
 
     // 解构ids
-    const { ids } = toRefs(props)
     const songUrl = ref('')
-    const songs = reactive({
+    const song = reactive({
       title: '',
       author: '',
       avatarL: 'http://s4.music.126.net/style/web2/img/default/default_album.jpg',
       avatarS: 'http://s4.music.126.net/style/web2/img/default/default_album.jpg'
     })
 
-    const togglePlayerWidth: (val?: string) => void = val => {
-      if (val) {
+    const togglePlayerWidth: (val?: Array<string>) => void = val => {
+      if (val && val.length) {
         cPlayerWidth.value = '240px'
         cPlayerOverflow.value = 'visible'
       } else {
@@ -130,57 +128,65 @@ export default defineComponent({
       }
     }
 
-    const handlePlay: () => void = () => {
-      if (isPlay) {
+    const audioPlay: () => void = () => {
+      el.play()
+    }
+
+    const audioPause: () => void = () => {
+      el.pause()
+    }
+
+    const handlePlayPauseEvent: () => void = () => {
+      el.addEventListener('pause', () => {
         circleOutline.value = 'play_arrow'
         isPlay = false
-      } else {
+      })
+
+      el.addEventListener('play', () => {
         circleOutline.value = 'pause'
         isPlay = true
-      }
+      })
     }
-    // 监听音乐ids的变化
+
+    const handlePlay: () => void = () => {
+      isPlay ? audioPause() : audioPlay()
+    }
+
+    const handleTimeUpdateEvent: () => void = () => {
+      const el = audioPlayer.value as HTMLAudioElement
+      el.addEventListener('timeupdate', () => {
+        curTime.value = handleDrTime(Math.round(el.currentTime * 1000))
+        audioPlayRange.value = (el.currentTime / el.duration) * 100
+      })
+    }
+    onMounted(() => {
+      el = audioPlayer.value
+    })
+    // songList监听
     watch(
       () => {
-        if (ids) {
-          return ids.value
+        return props.songList
+      },
+      async val => {
+        togglePlayerWidth(val)
+        if (val && val.length) {
+          // 获取音乐url
+          const { data } = await request['httpGET']('SONG_URL', { id: val[0] })
+          songUrl.value = data[0].url
+
+          // 获取音乐详情
+          const { songs } = await request['httpGET']('SONG_DETAIL', { ids: val[0] })
+          song.title = songs[0].name
+          song.author = songs[0].ar
+          song.avatarL = songs[0].al.picUrl + '?param=280y280'
+          song.avatarS = songs[0].al.picUrl + '?param=56y56'
+          totalTime.value = handleDrTime(songs[0].dt)
+          handlePlayPauseEvent()
+          handleTimeUpdateEvent()
+          handlePlay()
         }
       },
-      val => {
-        togglePlayerWidth(val)
-
-        // 获取音乐url
-        axios({
-          url: `http://localhost:3000/song/url?id=${val}`
-        })
-          .then(res => {
-            if (res.status === 200 && val) {
-              songUrl.value = res.data.data[0].url
-            }
-          })
-          .catch(err => {
-            console.log(err)
-          })
-
-        // 获取音乐详情
-        axios({
-          url: `http://localhost:3000/song/detail?ids=${val}`
-        })
-          .then(res => {
-            if (res.status === 200 && val) {
-              const _songs = res.data.songs[0]
-
-              songs.title = _songs.name
-              songs.author = _songs.ar[0].name
-              songs.avatarL = _songs.al.picUrl + '?param=280y280'
-              songs.avatarS = _songs.al.picUrl + '?param=56y56'
-            }
-          })
-          .catch(err => {
-            console.log(err)
-          })
-      },
-      { immediate: true }
+      { immediate: true, deep: true }
     )
 
     return {
@@ -196,7 +202,9 @@ export default defineComponent({
       toggleAvatarShowHide,
       handlePlay,
       songUrl,
-      ...toRefs(songs)
+      audioPlayer,
+      audioPlayRange,
+      ...toRefs(song)
     }
   }
 })
@@ -204,7 +212,6 @@ export default defineComponent({
 
 <style lang="less" scoped>
 .c-player {
-  width: 240px;
   transition: width 0.5s;
   overflow: hidden;
   z-index: 1000;
@@ -245,11 +252,11 @@ export default defineComponent({
       .c-player-detail-title {
         margin-top: 12px;
         width: 100%;
-        font-size: 90%;
+        font-size: 80%;
       }
       .c-player-detail-author {
         margin-top: 15px;
-        font-size: 70%;
+        font-size: 60%;
         opacity: 0.7;
         width: 100%;
       }
@@ -350,6 +357,7 @@ export default defineComponent({
       bottom: 5px;
       left: 7px;
       font-feature-settings: 'tnum';
+      font-size: 90%;
     }
   }
 }

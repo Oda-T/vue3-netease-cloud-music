@@ -1,12 +1,12 @@
 <template>
   <div id="discoverPlaylist">
     <!-- 列表 -->
-    <recommend :topTitle="'全部歌单'" :activeName="activeName" :topList="TopList" @get-id="getIdCallBack" />
+    <Recommend :topTitle="'全部歌单'" :activeName="activeName" :topList="TopList" @get-id="getIdCallBack" />
     <!-- 推荐 -->
     <div class="playlist-card-container g-card-container">
-      <card v-for="item in cardList" :key="item.id" :item="item" />
+      <Card v-for="item in cardList" :key="item.id" :item="item" />
     </div>
-    <pagination :pageCount="totalListCount" @page-number="pageNumber" :key="forceUpdate" />
+    <Pagination :pageCount="totalListCount" @page-number="pageNumber" :key="forceUpdate" />
   </div>
 </template>
 <script lang="ts">

@@ -17,32 +17,31 @@
       </div>
     </div>
     <div v-if="cardList" class="recommend-card-container" style="width: 100%; height: 350px">
-      <transition name="fade" mode="in-out">
-        <div v-if="toggleCoverShow" class="recommend-card-cover">
-          <div class="recommend-card-inner"></div>
-        </div>
-        <div v-else class="recommend-card">
-          <div class="recommend-card-item">
-            <div class="recommend-card-item-container" :style="{ left: cardItemContainerLeft }">
-              <card v-for="item in cardList" :key="item.id" :item="item"> </card>
-            </div>
+      <div v-show="toggleCoverShow" class="recommend-card-cover">
+        <div class="recommend-card-inner mdui-spinner"></div>
+      </div>
+      <div v-show="!toggleCoverShow" class="recommend-card">
+        <div class="recommend-card-item">
+          <div class="recommend-card-item-container" :style="{ left: cardItemContainerLeft }">
+            <Card v-for="item in cardList" :key="item.id" :item="item" />
           </div>
-          <button v-if="arrowShow" class="recommend-card-arrow-left mdui-fab mdui-color-red-900 mdui-ripple" @click="handleCardItemContainerLeft">
-            <i class="mdui-icon material-icons">chevron_left</i>
-          </button>
-          <button v-else class="recommend-card-arrow-right mdui-fab mdui-color-red-900 mdui-ripple" @click="handleCardItemContainerRight">
-            <i class="mdui-icon material-icons">chevron_right</i>
-          </button>
         </div>
-      </transition>
+        <button v-show="arrowShow" class="recommend-card-arrow-left mdui-fab mdui-color-red-900 mdui-ripple" @click="handleCardItemContainerLeft">
+          <i class="mdui-icon material-icons">chevron_left</i>
+        </button>
+        <button v-show="!arrowShow" class="recommend-card-arrow-right mdui-fab mdui-color-red-900 mdui-ripple" @click="handleCardItemContainerRight">
+          <i class="mdui-icon material-icons">chevron_right</i>
+        </button>
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onActivated, ref, watch, PropType } from 'vue'
+import { defineComponent, ref, watch, PropType, onMounted, computed } from 'vue'
 import { topListInt, cardListInt } from '../type/recommend.type'
 import Card from './card.vue'
+import mdui from 'mdui'
 
 export default defineComponent({
   name: 'Recommend',
@@ -65,24 +64,27 @@ export default defineComponent({
     const listName = ref(props.activeName)
 
     const toggleCoverShow = ref(true)
+    const n = ref(0)
+    const recommendCardItemWidth = ref(0)
 
-    let n: number
+    const diff = computed(() => {
+      return 222 * n.value - recommendCardItemWidth.value
+    })
 
     const handleCardItemContainerLeft: () => void = () => {
       if (cardItemContainerLeft.value === '0px') {
         return
       }
       cardItemContainerLeft.value = '0px'
-      arrowShow.value = !arrowShow.value
+      arrowShow.value = false
     }
 
     const handleCardItemContainerRight: () => void = () => {
-      if (cardItemContainerLeft.value === `-${826 + n * 222}px`) {
+      if (cardItemContainerLeft.value === `-${diff.value}px`) {
         return
       }
-      cardItemContainerLeft.value = `-${826 + n * 222}px`
-
-      arrowShow.value = !arrowShow.value
+      cardItemContainerLeft.value = `-${diff.value}px`
+      arrowShow.value = true
     }
 
     const handleListSwitch: (one: { name: string }) => void = obj => {
@@ -103,24 +105,28 @@ export default defineComponent({
         return props.cardList
       },
       val => {
-        n = val ? val.length - 10 : 0
-
-        toggleCoverShow.value = false
+        if (val) {
+          val.length !== 0 ? ((n.value = val.length), (toggleCoverShow.value = false)) : (toggleCoverShow.value = true)
+        }
       },
       { deep: true, immediate: true }
     )
+    onMounted(() => {
+      mdui.mutation()
 
-    onActivated(() => {
-      toggleCoverShow.value = false
+      if (props.cardList) {
+        const recommendCardItem = document.querySelector('.recommend-card-item') as Element
+        recommendCardItemWidth.value = parseInt(window.getComputedStyle(recommendCardItem).getPropertyValue('width'))
+      }
     })
 
     return {
       toggleCoverShow,
-      arrowShow,
       cardItemContainerLeft,
       handleCardItemContainerLeft,
       handleCardItemContainerRight,
-      handleListSwitch
+      handleListSwitch,
+      arrowShow
     }
   }
 })
@@ -226,8 +232,8 @@ export default defineComponent({
     justify-content: center;
     align-items: center;
     .recommend-card-inner {
-      height: 100px;
-      width: 100px;
+      height: 50px;
+      width: 50px;
     }
   }
 }
