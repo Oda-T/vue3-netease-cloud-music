@@ -30,6 +30,5 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 ### TODO:
 
-1. 播放
-2. 朋友/分享界面
-3. 搜索
+1. 朋友/分享界面
+2. 搜索

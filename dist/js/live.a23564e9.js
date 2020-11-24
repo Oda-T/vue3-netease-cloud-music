@@ -1,0 +1,1 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["live"],{1502:function(e,n,t){"use strict";t.r(n);var i=t("7a23"),r={id:"live"};function c(e,n,t,c,u,o){return Object(i["t"])(),Object(i["f"])("div",r,"no API")}var u=Object(i["k"])({name:"Live",setup:function(){return{}}});u.render=c;n["default"]=u}}]);

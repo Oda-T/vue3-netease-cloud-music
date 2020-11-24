@@ -60,6 +60,7 @@ export default defineComponent({
     const getSongDetail: (ids: string) => void = async ids => {
       const { songs } = await request['httpGET']('GET_SONG_DETAIL', { 'ids': ids })
       const { lrc } = await request['httpGET']('GET_LYRIC', { 'id': ids })
+      const { success } = await request['httpGET']('GET_CHECK_MUSIC', { 'id': ids })
 
       lrc && (lyric.value = lrc.lyric.replace(/\[.*\]/g, '<br />'))
 
@@ -69,7 +70,8 @@ export default defineComponent({
         album: songs[0].al.name,
         albumId: songs[0].al.id,
         artistName: handleArtistName(songs[0].ar),
-        artistId: songs[0].ar[0].id
+        artistId: songs[0].ar[0].id,
+        disabled: !success
       }
     }
     const sendCommentsVal: (v: string) => void = async v => {

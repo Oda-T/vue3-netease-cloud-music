@@ -16,7 +16,8 @@ export default createStore({
     djListFull: [],
     userId: '',
     loginStatus: 'unlogin',
-    songList: [] as Array<string>
+    songList: [] as Array<string>,
+    loop: false
   },
   mutations: {
     setToolbarTitle: (state, i) => {
@@ -52,10 +53,51 @@ export default createStore({
     },
     setSongList: (state, i) => {
       if (typeof i === 'string') {
-        state.songList.push(i)
+        if (state.songList[0] !== i) {
+          state.songList.unshift(i)
+          mdui.snackbar({
+            message: '已添加到播放列表',
+            position: 'right-bottom',
+            timeout: 1200
+          })
+        }
+        if (state.songList.includes(i)) {
+          state.songList = [...new Set(state.songList)]
+        }
       } else {
         state.songList = state.songList.concat(i)
+        mdui.snackbar({
+          message: '已添加到播放列表',
+          position: 'right-bottom',
+          timeout: 1200
+        })
       }
+    },
+    pushHeadToLast: state => {
+      if (!state.loop) {
+        const arr = state.songList.shift()
+        if (arr !== undefined) {
+          state.songList.push(arr)
+        }
+      } else {
+        state.songList = state.songList.concat([])
+      }
+    },
+    pullLastToHead: state => {
+      if (!state.loop) {
+        const arr = state.songList.pop()
+        if (arr !== undefined) {
+          state.songList.unshift(arr)
+        }
+      } else {
+        state.songList = state.songList.concat([])
+      }
+    },
+    clearSongList: state => {
+      state.songList.length = 0
+    },
+    toggleLoop: state => {
+      state.loop = !state.loop
     }
   },
   actions: {

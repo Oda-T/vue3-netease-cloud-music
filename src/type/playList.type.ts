@@ -28,4 +28,5 @@ export type headerDetailInt = {
   userId?: number
   tags?: Array<string>
   subscribed?: boolean
+  disabled?: boolean
 }

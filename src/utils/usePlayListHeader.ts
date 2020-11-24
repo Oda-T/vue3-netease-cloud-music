@@ -4,11 +4,6 @@ import mdui from 'mdui'
 
 export const handlePlay: (list: string | Array<string>) => void = songList => {
   store.commit('setSongList', songList)
-  mdui.snackbar({
-    message: '已添加到播放列表',
-    position: 'right-bottom',
-    timeout: 1200
-  })
 }
 
 export const handleShare: (id: string, type?: string, msg?: string) => void = async (id, type, msg) => {

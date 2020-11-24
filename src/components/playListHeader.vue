@@ -30,7 +30,7 @@
       <!-- 歌手描述 -->
       <p v-if="headerDetail.desc" class="c-playlist-header-desc mdui-typo">{{ headerDetail.desc }}</p>
       <!-- 播放按钮 -->
-      <button v-else class="c-playlist-header-count mdui-btn mdui-color-red-900 mdui-btn-raised mdui-ripple" @click.stop="$emit('handle-play')">
+      <button v-else :disabled="headerDetail.disabled" class="c-playlist-header-count mdui-btn mdui-color-red-900 mdui-btn-raised mdui-ripple" @click.stop="$emit('handle-play')">
         <i class="mdui-icon mdui-icon-left material-icons">play_arrow</i>播放
       </button>
       <!-- 喜欢 -->

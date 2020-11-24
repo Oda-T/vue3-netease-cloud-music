@@ -1,5 +1,5 @@
 <template>
-  <div id="discoverArtist">
+  <div v-if="cardList.length" id="discoverArtist">
     <div class="artist-container">
       <span class="artist-span">类别选择</span>
       <span class="artist-area">

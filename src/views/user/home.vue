@@ -1,5 +1,5 @@
 <template>
-  <div id="userHome">
+  <div v-if="cardList.length" id="userHome">
     <div class="user-card g-card-container mdui-card">
       <!-- 卡片头部，包含头像、标题、副标题 -->
       <div class="mdui-card-header">

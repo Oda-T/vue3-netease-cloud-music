@@ -17,7 +17,7 @@
           </td>
           <td style="width: 300px; max-width: 300px" class="mdui-text-truncate">
             <router-link :to="item.artistUrl">
-              {{ handleArtistName(item.artist) }}
+              {{ item.artist }}
             </router-link>
           </td>
           <td style="width: 180px; max-width: 180px" class="c-playlist-main-table-btn">
@@ -52,26 +52,9 @@ export default defineComponent({
   setup() {
     const curIndex = ref(-1)
 
-    // 多个作者用/分割
-    const handleArtistName: (arr: string | Array<{ name: string }>) => string = arr => {
-      if (typeof arr === 'string') {
-        return arr
-      } else {
-        if (arr.length === 1) {
-          return arr[0].name
-        }
-        const _arr: Array<string> = []
-        for (let i = 0; i < arr.length; i++) {
-          _arr.push(arr[i].name)
-        }
-        return _arr.join('/')
-      }
-    }
-
     return {
       curIndex,
-      handleDrTime,
-      handleArtistName
+      handleDrTime
     }
   }
 })

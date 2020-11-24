@@ -8,9 +8,10 @@
         <a class="mdui-typo-title">{{ toolbarTitle }}</a>
         <a v-if="toolbarSubTitle">{{ toolbarSubTitle }}</a>
         <div class="mdui-toolbar-spacer"></div>
-        <a class="mdui-btn mdui-btn-icon mdui-ripple mdui-ripple-white" mdui-tooltip="{content: '音乐/视频/电台/用户'}"><i class="mdui-icon material-icons">search</i></a>
+        <a class="mdui-btn mdui-btn-icon mdui-ripple mdui-ripple-white" @click.stop="showPlayer = !showPlayer" mdui-tooltip="{content: '播放器'}"><i class="mdui-icon material-icons">audiotrack</i></a>
+        <a class="mdui-btn mdui-btn-icon mdui-ripple mdui-ripple-white" mdui-tooltip="{content: '搜索音乐/视频/电台/用户'}"><i class="mdui-icon material-icons">search</i></a>
         <a class="mdui-btn mdui-btn-icon mdui-ripple mdui-ripple-white" @click="handleTypoTitle('creator')" mdui-tooltip="{content: '创作者中心'}">
-          <i class="mdui-icon material-icons">queue</i>
+          <i class="mdui-icon material-icons">attach_money</i>
         </a>
         <!-- 未登录 -->
         <a v-if="!loginFlag" class="mdui-btn mdui-btn-icon mdui-ripple mdui-ripple-white" mdui-tooltip="{content: 'Login'}" mdui-dialog="{target: '#loginDialog'}">
@@ -18,7 +19,7 @@
         </a>
         <!-- 登录 -->
         <router-link v-else class="mdui-btn mdui-btn-icon mdui-ripple mdui-ripple-white" mdui-tooltip="{content: 'User Center'}" to="/user">
-          <i class="mdui-icon material-icons">free_breakfast</i>
+          <i class="mdui-icon material-icons">account_circle</i>
         </router-link>
         <a href="https://github.com/OdaNeo/vue3-netease-cloud-music" target="_blank" class="mdui-btn mdui-btn-icon mdui-ripple mdui-ripple-white" mdui-tooltip="{content: 'Github'}">
           <svg class="mdui-icon">
@@ -77,7 +78,9 @@
     <!-- 返回顶端 -->
     <BackToTop />
     <!-- 底栏播放器 -->
-    <Player :songList="songList" />
+    <transition name="fade">
+      <Player v-show="showPlayer" />
+    </transition>
     <!-- 路由 transition -->
     <router-view v-slot="{ Component }">
       <transition name="slide-fade">
@@ -117,7 +120,8 @@ export default defineComponent({
     const canLogin = ref(false)
 
     loginFlag.value = getToken()
-
+    const showPlayer = ref(false)
+    const songListLength = computed(() => store.state.songList.length)
     const listItem = [
       {
         icon: 'near_me',
@@ -170,9 +174,11 @@ export default defineComponent({
       router.push({ name: name })
     }
 
-    watch([loginEmailPhone, loginPassword], ([emailPhone, pass]) => {
+    watch([loginEmailPhone, loginPassword, songListLength], ([emailPhone, pass, songListLength]) => {
       // 验证是否通过
       canLogin.value = (emailValidate.test(emailPhone) || phoneValidate.test(emailPhone)) && passwordValidate.test(pass)
+
+      showPlayer.value = !!songListLength
     })
 
     onMounted(() => {
@@ -210,12 +216,20 @@ export default defineComponent({
       loginEmailPhone,
       loginPassword,
       canLogin,
-      songList: computed(() => store.state.songList)
+      showPlayer
     }
   }
 })
 </script>
 <style lang="less" scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
 .slide-fade-enter-active {
   transition: all 0.15s ease;
 }

@@ -151,7 +151,7 @@ export default defineComponent({
         listDetail[i] = {
           name: playlist.tracks[i].name,
           id: '/song?id=' + playlist.tracks[i].id,
-          artist: playlist.tracks[i].ar,
+          artist: playlist.tracks[i].ar[0].name,
           artistUrl: '/artist?id=' + playlist.tracks[i].ar[0].id,
           imgUrl: playlist.tracks[i].al.picUrl,
           time: playlist.tracks[i].dt
