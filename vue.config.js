@@ -1,8 +1,7 @@
 'use strict'
-const path = require('path')
 
 function resolve(dir) {
-  return path.join(__dirname, dir)
+  return require('path').join(__dirname, dir)
 }
 
 module.exports = {
@@ -40,7 +39,11 @@ module.exports = {
       .use('svgo-loader') // 压缩 svg
       .loader('svgo-loader')
       .options({
-        plugins: [{ removeTitle: true }, { convertColors: { shorthex: false } }, { convertPathData: false }]
+        plugins: [
+          { removeTitle: true },
+          { convertColors: { shorthex: false } },
+          { convertPathData: false }
+        ]
       })
 
     config.plugin('preload').tap(() => [

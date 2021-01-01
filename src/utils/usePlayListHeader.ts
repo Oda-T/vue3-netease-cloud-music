@@ -10,15 +10,15 @@ export const handleShare: (id: string, type?: string, msg?: string) => void = as
   const { code } = await request['httpGET']('SHARE_RESOURCE', { 'id': id, 'type': type, 'msg': msg })
   code === 200
     ? mdui.snackbar({
-        message: '成功分享到动态',
-        position: 'right-bottom',
-        timeout: 1200
-      })
+      message: '成功分享到动态',
+      position: 'right-bottom',
+      timeout: 1200
+    })
     : mdui.snackbar({
-        message: '分享失败',
-        position: 'right-bottom',
-        timeout: 1200
-      })
+      message: '分享失败',
+      position: 'right-bottom',
+      timeout: 1200
+    })
 }
 
 const getSubUrl: (s: string) => string = s => {
@@ -61,15 +61,15 @@ export const handleSubscribe: (id: string, type: string) => void = async (id, ty
 
   code === 200
     ? mdui.snackbar({
-        message: '收藏成功',
-        position: 'right-bottom',
-        timeout: 1200
-      })
+      message: '收藏成功',
+      position: 'right-bottom',
+      timeout: 1200
+    })
     : mdui.snackbar({
-        message: '收藏失败',
-        position: 'right-bottom',
-        timeout: 1200
-      })
+      message: '收藏失败',
+      position: 'right-bottom',
+      timeout: 1200
+    })
 }
 
 const getType: (s: string) => string = s => {

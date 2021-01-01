@@ -42,7 +42,7 @@ export default defineComponent({
     banners: Array as PropType<Array<swipeInt>>
   },
   setup(props) {
-    //初始化index
+    // 初始化index
     const preIndex = ref(0)
     const curIndex = ref(0)
     const nextIndex = ref(0)

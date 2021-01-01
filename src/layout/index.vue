@@ -176,7 +176,7 @@ export default defineComponent({
 
     watch([loginEmailPhone, loginPassword, songListLength], ([emailPhone, pass, songListLength]) => {
       // 验证是否通过
-      canLogin.value = (emailValidate.test(emailPhone) || phoneValidate.test(emailPhone)) && passwordValidate.test(pass)
+      canLogin.value = (emailValidate.test(emailPhone.toString()) || phoneValidate.test(emailPhone.toString())) && passwordValidate.test(pass.toString())
 
       showPlayer.value = !!songListLength
     })

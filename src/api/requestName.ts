@@ -50,7 +50,7 @@ const SONG_URL = '/song/url'
 const SONG_DETAIL = '/song/detail'
 
 type REQUEST_NAME = {
-  [key: string]: string
+  [key: string]: string;
 }
 
 const REQUEST_NAME: REQUEST_NAME = {

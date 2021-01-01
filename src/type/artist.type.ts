@@ -1,5 +1,5 @@
 export type artistDetailInt = {
-  coverImgUrl: string
-  description: string
-  name: string
+  coverImgUrl: string;
+  description: string;
+  name: string;
 }

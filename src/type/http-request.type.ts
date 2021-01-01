@@ -1,3 +1,3 @@
 export type returnDataType = {
-  code: number
+  code: number;
 }

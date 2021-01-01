@@ -261,9 +261,9 @@ export default defineComponent({
     watch(
       [userSettingPhone, userSettingPassword, userSettingCaptcha],
       ([phone, password, captcha]) => {
-        canSendCaptcha.value = phoneValidate.test(phone)
+        canSendCaptcha.value = phoneValidate.test(phone.toString())
 
-        captcha && (canSendPassword.value = phoneValidate.test(phone) && passwordValidate.test(password))
+        captcha && (canSendPassword.value = phoneValidate.test(phone.toString()) && passwordValidate.test(password.toString()))
       },
       { immediate: true }
     )

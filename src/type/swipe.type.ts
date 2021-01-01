@@ -1,4 +1,4 @@
 export type swipeInt = {
-  imgSrc: string
-  aHref: string
+  imgSrc: string;
+  aHref: string;
 }

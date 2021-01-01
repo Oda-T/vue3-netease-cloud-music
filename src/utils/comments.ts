@@ -5,21 +5,21 @@ export const useSendComments: (id: string, type: number, ctx: string) => Promise
   const { code } = await request['httpGET']('COMMENT', { t: 1, type: type, id: id, content: content })
   code === 200
     ? mdui.snackbar({
-        message: '评论成功',
-        position: 'right-bottom',
-        timeout: 1200,
-        onClose: function() {
-          return Promise.resolve()
-        }
-      })
+      message: '评论成功',
+      position: 'right-bottom',
+      timeout: 1200,
+      onClose: function () {
+        return Promise.resolve()
+      }
+    })
     : mdui.snackbar({
-        message: '评论失败',
-        position: 'right-bottom',
-        timeout: 1200,
-        onClose: function() {
-          return Promise.reject()
-        }
-      })
+      message: '评论失败',
+      position: 'right-bottom',
+      timeout: 1200,
+      onClose: function () {
+        return Promise.reject()
+      }
+    })
 }
 
 export const useCommentsLike: (id: string, type: number, cid: number) => Promise<void> = async (id, type, cid) => {
