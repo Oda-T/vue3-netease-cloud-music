@@ -2,6 +2,14 @@
   "name": "vue3-netease-cloud-music",
   "version": "0.1.0",
   "private": true,
+  "keywords": [
+    "vue3",
+    "typescript",
+    "ts",
+    "网易云音乐",
+    "网易云",
+    "音乐"
+  ],
   "scripts": {
     "dev": "vue-cli-service serve",
     "build": "vue-cli-service build",
